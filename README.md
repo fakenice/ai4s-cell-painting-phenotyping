@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_0011f813bba411f189c8525400393706
-    ReservedCode1: CqvlcRU/0P2wzu905Mhf28mpKVYxRwwPFeb/zW59ri/tzF/kPHPZXf3sBK7s1KG7JdVkWtDZP3+41l+xMF9+a+ZPSsVWrOxB6IDvAyMpV07xDW0mozgmWP0+jSfIY2/ZX6C/k70MYkghPatZSpHemewuTAFodWXmx1Q7AdoBTkBhXzRsMRrRSbr12Sw=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_58d2727abbab11f189c8525400393706
+    ReservedCode1: ownNAWLP0eWVo/dlUfOk3PAPUSguIUG2R0GPF+nkPbae3Bt8qUitJQvOdxLVH5CYsfS1Wk36XDjthsexRD5fJ5EjiAwhx/KMYB4EYwxTMCHm+QQiQ4XrN+GyDmARkpS6u1F6H9tC0sZGklRtWYoLxoPPhzqq+7iajXszYq4vmgqhUkNp58iAkcQEKIY=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_0011f813bba411f189c8525400393706
-    ReservedCode2: CqvlcRU/0P2wzu905Mhf28mpKVYxRwwPFeb/zW59ri/tzF/kPHPZXf3sBK7s1KG7JdVkWtDZP3+41l+xMF9+a+ZPSsVWrOxB6IDvAyMpV07xDW0mozgmWP0+jSfIY2/ZX6C/k70MYkghPatZSpHemewuTAFodWXmx1Q7AdoBTkBhXzRsMRrRSbr12Sw=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_58d2727abbab11f189c8525400393706
+    ReservedCode2: ownNAWLP0eWVo/dlUfOk3PAPUSguIUG2R0GPF+nkPbae3Bt8qUitJQvOdxLVH5CYsfS1Wk36XDjthsexRD5fJ5EjiAwhx/KMYB4EYwxTMCHm+QQiQ4XrN+GyDmARkpS6u1F6H9tC0sZGklRtWYoLxoPPhzqq+7iajXszYq4vmgqhUkNp58iAkcQEKIY=
 ---
+
+
 
 # Morphological Phenotypic Profiling of Chemical Perturbations with JUMP-Cell Painting Data
 
@@ -115,14 +117,17 @@ Cellpose (cyto2) segmentation of the DNA channel.
    Scripts read/write relative to the repository root and will create
    `reports/figures/` and result CSVs automatically.
 
-5. (Optional) Rebuild the demo video from the seven figure PNGs:
+5. (Optional) Rebuild the **live run** demo video — it actually executes the
+   stage scripts, runs a real Cellpose inference and renders charts from the
+   result CSVs (no fictional footage; every frame comes from real execution):
 
    ```bash
-   python scripts/make_demo_video.py
+   python scripts/make_demo_video_live.py
    ```
 
-   → outputs `demo_video.mp4` (1280×720, 42 s, 30 fps, English titles,
-   cross-fade transitions). Requires `pip install pillow imageio-ffmpeg`.
+   → outputs `demo_video.mp4` (1280×720, 72 s, 30 fps, H.264, English titles,
+   cross-fade transitions). Requires
+   `pip install pillow imageio-ffmpeg pandas numpy scipy scikit-learn matplotlib seaborn umap-learn xgboost statsmodels tifffile cellpose`.
 
 ## 4. Data Sources
 
@@ -173,15 +178,19 @@ repository root:
 
 A narrated demo video is included:
 
-- [demo_video.mp4](demo_video.mp4) — 7-slide overview (1280×720, 42 s, 30 fps,
-  ≤ 5 min requirement satisfied, no login required).
-  Content structure: (1) pipeline workflow overview → (2) UMAP of wells, DMSO vs
-  treatments → (3) compound fingerprints, KMeans k=12 → (4) ROC/PR curves →
-  (5) enrichment bubble chart → (6) refined cluster UMAP + Cellpose segmentation →
-  (7) target-class phenotypic strength. Rebuild it from the committed figures with:
-  `pip install pillow imageio-ffmpeg && python scripts/make_demo_video.py`.
+- [demo_video.mp4](demo_video.mp4) — **live run screen-capture** (1280×720,
+  72 s, 30 fps, H.264, ≤ 5 min requirement satisfied, no login required).
+  Content structure: (1) pipeline overview title → (2–4) real terminal runs of
+  `src/01_phenotypic_profiling.py`, `src/02_classification_target.py`,
+  `src/03_enrichment_strength.py` with scrolling stdout → (5) live Cellpose
+  (cpsam_v2) inference on a real 1080×1080 DNA-channel image (model loading,
+  masks, contour overlay; 115 cells, ~98 s CPU) → (6) charts rendered
+  progressively from the result CSVs: UMAP points appearing, ROC curve growing,
+  target-class strength bars appearing → (7) closing summary. Rebuild with:
+  `pip install pillow imageio-ffmpeg pandas numpy scipy scikit-learn matplotlib seaborn umap-learn xgboost statsmodels tifffile cellpose && python scripts/make_demo_video_live.py`.
 
 ## 7. License
 
 MIT — see [LICENSE](LICENSE).
+*（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*

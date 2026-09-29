@@ -21,3 +21,6 @@ data/
 Thumbs.db
 .idea/
 .vscode/
+
+# Live demo capture intermediates (rebuilt by make_demo_video_live.py)
+.demo_capture/
