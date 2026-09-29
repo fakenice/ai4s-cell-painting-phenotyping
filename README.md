@@ -41,6 +41,7 @@ and (v) demonstrates single-cell segmentation with Cellpose on raw 8-channel ima
 | 2 | `02_classification_target.py` | Classification baseline + target consistency | `reports/figures/03_classification_roc_pr.png`, `reports/03_target_validation.csv`, `reports/03_pred_*.csv` |
 | 3 | `03_enrichment_strength.py` | Refined clusters, Fisher enrichment, strength score | `reports/figures/04_enrichment_bubble.png`, `04_refined_clusters_umap.png`, `reports/04_enrichment*.csv`, `04_phenotypic_strength.csv` |
 | 4 | `04_cellpose_demo.py` | Cellpose single-cell segmentation demo | `reports/figures/05_cellpose_segmentation.png`, `reports/05_cellpose_summary.csv` |
+| — | `demo.py` | **Entry script** — one-command demo / full pipeline runner | summary on stdout; runs 01–04 with `--full` |
 
 Method flow: well-level CellProfiler profiles → standardize (z-score) → compound
 fingerprint = mean over replicate wells → UMAP visualization → KMeans / Ward
@@ -61,6 +62,29 @@ Cellpose (cyto2) segmentation of the DNA channel.
 
 3. Download the data and place it as follows:
 
+   ```bash
+   # The data are public in the cellpainting-gallery S3 bucket (AWS Open Data,
+   # no sign-in required). S3 prefix: cpg0000-jump-pilot/source_4
+   # Bucket browser: https://registry.opendata.aws/cellpainting-gallery/
+
+   # 3a. Morphological profiles (normalized, feature-selected, per plate):
+   aws s3 cp --no-sign-request --recursive \
+     s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/profiles/ \
+     data/profiles/
+
+   # 3b. Metadata (compound metadata, targets, barcode–platemap):
+   aws s3 cp --no-sign-request --recursive \
+     s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/metadata/ \
+     data/metadata/
+
+   # 3c. Raw 8-channel TIFFs for the Cellpose demo (one plate is enough):
+   aws s3 cp --no-sign-request --recursive \
+     s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/images/BR00116991/ \
+     data/raw/BR00116991/
+   ```
+
+   Expected layout:
+
    ```
    data/
      profiles/        # *_normalized_feature_select_negcon_batch.csv.gz from JUMP-CP source_4
@@ -68,7 +92,18 @@ Cellpose (cyto2) segmentation of the DNA channel.
      raw/BR00116991/  # 8-channel TIFFs (only needed for the Cellpose demo)
    ```
 
-4. Run the scripts in order (from the repository root):
+   > If a path component differs on the live bucket, list the parent prefix and
+   > adjust: `aws s3 ls --no-sign-request s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/`
+
+4. Run the pipeline. **Recommended entry point (one command):**
+
+   ```bash
+   python demo.py          # lightweight demo: prints a summary of existing results
+   python demo.py --full   # runs stages 01 → 04 in order
+   python demo.py --stage 3  # run a single stage (1..4)
+   ```
+
+   Or run the stage scripts directly, in order:
 
    ```bash
    python 01_phenotypic_profiling.py
@@ -138,7 +173,13 @@ repository root:
 
 A narrated demo video is included:
 
-- [demo_video.mp4](demo_video.mp4) — 7-slide overview (1280×720, 42 s, 30 fps)
+- [demo_video.mp4](demo_video.mp4) — 7-slide overview (1280×720, 42 s, 30 fps,
+  ≤ 5 min requirement satisfied, no login required).
+  Content structure: (1) pipeline workflow overview → (2) UMAP of wells, DMSO vs
+  treatments → (3) compound fingerprints, KMeans k=12 → (4) ROC/PR curves →
+  (5) enrichment bubble chart → (6) refined cluster UMAP + Cellpose segmentation →
+  (7) target-class phenotypic strength. Rebuild it from the committed figures with:
+  `pip install pillow imageio-ffmpeg && python scripts/make_demo_video.py`.
 
 ## 7. License
 
