@@ -124,17 +124,17 @@ Cellpose (cyto2) segmentation of the DNA channel.
 
 ## 6. Figures
 
-All figures are generated under `reports/figures/` by the scripts above
-(they live outside this repository folder but are referenced here for the
-Hackathon submission):
+All figures are included in this repository under `figures/` (copied from
+`reports/figures/` of the analysis workspace) and linked relative to the
+repository root:
 
-- [01_umap_overview.png](../reports/figures/01_umap_overview.png) — UMAP of wells, DMSO vs treatments
-- [02_compound_fingerprint_clusters.png](../reports/figures/02_compound_fingerprint_clusters.png) — compound fingerprints, KMeans k=12
-- [03_classification_roc_pr.png](../reports/figures/03_classification_roc_pr.png) — ROC / PR curves
-- [04_enrichment_bubble.png](../reports/figures/04_enrichment_bubble.png) — cluster × target enrichment bubble chart
-- [04_refined_clusters_umap.png](../reports/figures/04_refined_clusters_umap.png) — refined cluster UMAP
-- [05_cellpose_segmentation.png](../reports/figures/05_cellpose_segmentation.png) — Cellpose segmentation demo
-- [12_target_class_strength.png](../reports/figures/12_target_class_strength.png) — target-class phenotypic strength
+- [01_umap_overview.png](figures/01_umap_overview.png) — UMAP of wells, DMSO vs treatments
+- [02_compound_fingerprint_clusters.png](figures/02_compound_fingerprint_clusters.png) — compound fingerprints, KMeans k=12
+- [03_classification_roc_pr.png](figures/03_classification_roc_pr.png) — ROC / PR curves
+- [04_enrichment_bubble.png](figures/04_enrichment_bubble.png) — cluster × target enrichment bubble chart
+- [04_refined_clusters_umap.png](figures/04_refined_clusters_umap.png) — refined cluster UMAP
+- [05_cellpose_segmentation.png](figures/05_cellpose_segmentation.png) — Cellpose segmentation demo
+- [12_target_class_strength.png](figures/12_target_class_strength.png) — target-class phenotypic strength
 
 A narrated demo video is included:
 
