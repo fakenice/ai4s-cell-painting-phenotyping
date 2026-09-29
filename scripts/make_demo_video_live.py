@@ -23,6 +23,7 @@ import os
 import sys
 import glob
 import json
+import re
 import shutil
 import subprocess
 import time
@@ -37,7 +38,38 @@ FPS = 30
 CRF = 20
 FADE_FRAMES = int(0.5 * FPS)          # 0.5 s cross-fade between clips
 FONT_SIZE = 26
-TERM_FONT = r"C:\Windows\Fonts\consola.ttf"   # monospace terminal font
+# Monospace terminal font does NOT contain CJK glyphs -> tofu boxes.
+# Use a CJK-capable font (Microsoft YaHei / SimHei / SimSun) for terminal text.
+def pick_term_font():
+    for c in [r"C:\Windows\Fonts\msyh.ttc",      # Microsoft YaHei (CJK + symbols)
+              r"C:\Windows\Fonts\msyhbd.ttc",
+              r"C:\Windows\Fonts\simhei.ttf",    # SimHei
+              r"C:\Windows\Fonts\simsun.ttc",    # SimSun
+              r"C:\Windows\Fonts\consola.ttf"]:
+        if os.path.exists(c):
+            return c
+    return None
+
+TERM_FONT = pick_term_font()
+
+
+def sanitize_terminal_text(text):
+    """Map rare non-ASCII symbols (which CJK fonts may still lack) to ASCII
+    and strip ANSI escape / control sequences from captured stdout."""
+    text = re.sub(r"\x1b\[[0-9;?]*[ -/]*[@-~]", "", text)   # ANSI CSI/OSC
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", text)  # control chars
+    reps = {
+        "\u2192": "->", "\u2190": "<-", "\u2191": "^^", "\u2193": "vv",
+        "\u2605": "*",  "\u2606": "*",  "\u2713": "OK", "\u2714": "OK",
+        "\u2717": "X",  "\u2718": "X",  "\u25cf": "*", "\u25a0": "#",
+        "\u25b2": "^",  "\u25bc": "v",  "\u2588": "#", "\u2500": "-",
+        "\u2502": "|",  "\u252c": "+",  "\u253c": "+", "\u2514": "+",
+        "\u251c": "+",  "\u250c": "+",  "\u2510": "+", "\u2518": "+",
+        "\u2026": "...",
+    }
+    for k, v in reps.items():
+        text = text.replace(k, v)
+    return text
 
 BASE = os.path.dirname(os.path.abspath(__file__))          # github_repo/scripts
 ROOT = os.path.dirname(BASE)                                # github_repo/
@@ -242,7 +274,8 @@ def render_cellpose_frames():
 def terminal_frames(logfile, cmdline, seconds, fg=(214, 228, 214)):
     """Render a terminal window with real log lines scrolling in."""
     with open(logfile, encoding="utf-8", errors="replace") as fh:
-        lines = [l.rstrip("\n") for l in fh if l.strip()]
+        lines = [sanitize_terminal_text(l.rstrip("\n")) for l in fh if l.strip()]
+    cmdline = sanitize_terminal_text(cmdline)
     total = int(seconds * FPS)
     n_lines = len(lines)
     # max visible text rows in the terminal body
@@ -261,11 +294,15 @@ def terminal_frames(logfile, cmdline, seconds, fg=(214, 228, 214)):
         d = ImageDraw.Draw(frame)
         d.rectangle([0, 0, W, 34], fill=(60, 62, 68))
         d.text((14, 17), cmdline, font=get_font(18), fill=(235, 235, 235), anchor="lm")
-        # body text
-        font = ImageFont.truetype(TERM_FONT, 18) if os.path.exists(TERM_FONT) else get_font(18)
+        # body text (CJK-capable font, truncate by pixel width not char count)
+        font = ImageFont.truetype(TERM_FONT, 18) if TERM_FONT and os.path.exists(TERM_FONT) else get_font(18)
+        max_w = W - 36
         y = 52
-        for i, t in enumerate(shown):
-            d.text((18, y), t[:110], font=font, fill=fg)
+        for t in shown:
+            t = sanitize_terminal_text(t)
+            while t and d.textlength(t, font=font) > max_w:
+                t = t[:-1]
+            d.text((18, y), t, font=font, fill=fg)
             y += row_h
         # cursor
         if visible < n_lines:
