@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Large data files (not committed)
+data/
+*.csv.gz
+*.tiff
+*.tif
+
+# Numpy binary caches
+*.npy
+*.npz
+
+# Logs & notebooks
+*.log
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
