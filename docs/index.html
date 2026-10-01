@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI4S Cell Painting Phenotyping — Project Home</title>
+<style>
+  :root { --accent:#0969da; --bg:#f6f8fa; --ink:#222; }
+  * { box-sizing:border-box; }
+  body { font-family:"Segoe UI", Arial, sans-serif; margin:0; background:var(--bg); color:var(--ink); line-height:1.65; }
+  .wrap { max-width:1080px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:30px; margin:0 0 6px; }
+  .sub { color:#57606a; font-size:15px; margin-bottom:22px; }
+  .badge { display:inline-block; background:#ddf4ff; color:#0969da; border:1px solid #54aeff66; border-radius:20px; padding:2px 12px; font-size:13px; margin-right:6px; }
+  .hero { background:#fff; border:1px solid #d0d7de; border-radius:10px; padding:24px; margin-bottom:26px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:18px; }
+  .card { background:#fff; border:1px solid #d0d7de; border-radius:10px; padding:16px; }
+  .card h3 { margin-top:0; }
+  figure { margin:0; }
+  img { width:100%; height:auto; border:1px solid #d0d7de; border-radius:6px; }
+  figcaption { font-size:13px; color:#57606a; margin-top:6px; }
+  video { width:100%; border-radius:6px; background:#000; }
+  a { color:var(--accent); }
+  .kpi { display:flex; flex-wrap:wrap; gap:12px; margin:14px 0; }
+  .kpi div { background:#f6f8fa; border:1px solid #d0d7de; border-radius:8px; padding:10px 16px; flex:1; min-width:150px; }
+  .kpi b { font-size:22px; display:block; color:var(--accent); }
+  code, pre { background:#eff1f3; border-radius:4px; font-family:Consolas, monospace; }
+  pre { padding:12px; overflow-x:auto; font-size:13px; }
+  .note { font-size:13px; color:#57606a; background:#fff8c5; border-left:4px solid #d4a72c; padding:10px 14px; border-radius:4px; }
+  footer { margin-top:36px; font-size:13px; color:#57606a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>AI4S Cell Painting Phenotyping</h1>
+    <div class="sub">Morphological phenotypic profiling of 303 chemical perturbations with JUMP-Cell Painting data (pilot source_4) — an end-to-end reproducible ML pipeline for the AI4S Open Innovation Hackathon.</div>
+    <div>
+      <span class="badge">Category: Model &amp; Algorithm</span>
+      <span class="badge">XGBoost AUC 0.768</span>
+      <span class="badge">36 enriched cluster–target pairs</span>
+      <span class="badge">MIT License</span>
+    </div>
+    <div class="kpi">
+      <div><b>0.768</b>AUC treated vs DMSO (5-fold CV)</div>
+      <div><b>0.936</b>Average Precision</div>
+      <div><b>36</b>Sig. cluster–target pairs (q&lt;0.05)</div>
+      <div><b>p=0.00145</b>Microtubule MWU strength</div>
+    </div>
+    <p><b>Pipeline:</b> CellPainting profiles (904 features) → compound fingerprints → UMAP + KMeans clustering → XGBoost classification → Fisher enrichment → phenotypic strength scoring → Cellpose single-cell segmentation demo. Scripts 01–04 + one-command <code>demo.py</code>.</p>
+  </div>
+
+  <h2>Demo video (72 s, ≤ 5 min)</h2>
+  <div class="card">
+    <video controls preload="metadata" src="demo_video.mp4"></video>
+    <p style="font-size:13px;color:#57606a;">Live run of the pipeline: data loading → profiles → clustering → classification → enrichment → strength → Cellpose segmentation. No login required. Direct link: <a href="https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4">raw.githubusercontent.com</a></p>
+  </div>
+
+  <h2>Key results</h2>
+  <div class="grid">
+    <div class="card"><figure><img src="figures/01_umap_overview.png" alt="UMAP overview"><figcaption>Compound UMAP overview (k=12, silhouette=0.166).</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/02_compound_fingerprint_clusters.png" alt="Fingerprint clusters"><figcaption>Compound fingerprint clusters.</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/03_classification_roc_pr.png" alt="ROC/PR"><figcaption>Classification ROC &amp; PR — treated vs DMSO.</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/04_enrichment_bubble.png" alt="Enrichment bubble"><figcaption>Cluster–target enrichment (36 significant pairs).</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/04_refined_clusters_umap.png" alt="Refined clusters"><figcaption>Refined clusters used for enrichment.</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/05_cellpose_segmentation.png" alt="Cellpose segmentation"><figcaption>Cellpose (cyto2) single-cell segmentation demo.</figcaption></figure></div>
+    <div class="card"><figure><img src="figures/12_target_class_strength.png" alt="Target class strength"><figcaption>Target-class phenotypic strength (microtubule p=0.00145).</figcaption></figure></div>
+  </div>
+
+  <h2>Interactive dashboard</h2>
+  <div class="card">
+    <p>Self-contained interactive HTML (Plotly, opens offline): UMAP scatter, ROC curve, enrichment bubble chart, target-strength bars.</p>
+    <p><a href="interactive_report.html">Open interactive_report.html</a> · (<em>~4.8 MB, no internet required</em>)</p>
+  </div>
+
+  <h2>Links</h2>
+  <ul>
+    <li>Public repository: <a href="https://github.com/fakenice/ai4s-cell-painting-phenotyping">github.com/fakenice/ai4s-cell-painting-phenotyping</a></li>
+    <li>Technical report (v4): <a href="../reports/12_technical_report_draft_v4.md">reports/12_technical_report_draft_v4.md</a> · <a href="../reports/12_technical_report_draft_v4.pdf">PDF</a></li>
+    <li>Kaggle Writeup draft: <a href="../reports/21_kaggle_writeup_draft.md">reports/21_kaggle_writeup_draft.md</a></li>
+    <li>Optimization plan &amp; log: <a href="../reports/20_improvement_plan.md">20_improvement_plan.md</a> · <a href="../reports/22_optimization_log.md">22_optimization_log.md</a></li>
+  </ul>
+
+  <h2>Reproduction</h2>
+  <pre>git clone https://github.com/fakenice/ai4s-cell-painting-phenotyping
+pip install -r requirements.txt
+# optional data download (public S3, no sign-in)
+aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/profiles/ data/profiles/
+aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/metadata/ data/metadata/
+python demo.py            # lightweight summary
+python demo.py --full     # full pipeline 01 -> 04</pre>
+  <div class="note">This page is served by GitHub Pages from the <code>docs/</code> folder. After pushing to GitHub, enable it in <b>Settings → Pages → Deploy from a branch → select branch (e.g. master/main) / folder docs</b>. Data: JUMP-CP CC BY 4.0 · ChEMBL CC BY-SA 3.0 · Code: MIT.</div>
+
+  <footer>AI4S Open Innovation: AI for Life Science · generated 2026-10-01 · team placeholder: <code>&lt;TEAM_NAME&gt;</code> to be filled by submitting team.</footer>
+</div>
+</body>
+</html>
