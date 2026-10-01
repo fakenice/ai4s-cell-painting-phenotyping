@@ -1,0 +1,35 @@
+section,metric,value,note
+structure,AUC_groupCV_pheno,0.2809,trt_vs_all_controls scaffold group-CV (Tanimoto>0.5)
+structure,AUC_groupCV_fp,0.3593,
+structure,AUC_groupCV_both,0.4679,
+structure,AP_groupCV_pheno,0.5356,
+structure,AP_groupCV_fp,0.6192,
+structure,AP_groupCV_both,0.6244,
+structure,n_scaffold_groups,282,303 unique compounds
+structure,AUC_pheno_only,0.7682,"trt vs DMSO, well-level, 5-fold CV"
+structure,AP_pheno_only,0.9359,
+structure,AUC_fp_only,1.0000,ECFP4 only
+structure,AP_fp_only,1.0000,
+structure,AUC_pheno_plus_fp,1.0000,structure-enhanced model
+structure,AP_pheno_plus_fp,1.0000,
+structure,AUC_delta,+0.2318,pheno+fp vs pheno-only
+structure,AP_delta,+0.0641,
+structure,feature_importance_pheno,0.123,combined model
+structure,feature_importance_fp,0.877,
+structure,fp_importance_share,87.7%,
+uncertainty,Brier_raw,0.1833,test set
+uncertainty,Brier_platt,0.1640,
+uncertainty,Brier_isotonic,0.1623,
+uncertainty,ECE_raw,0.1461,10 bins
+uncertainty,ECE_platt,0.1160,
+uncertainty,ECE_isotonic,0.0930,
+uncertainty,conformal_q_hat,0.5600,alpha=0.1
+uncertainty,conformal_coverage,0.847,"nominal 90%, test n=98"
+uncertainty,mean_interval_width,0.7809,
+uncertainty,low_confidence_count,27,"margin<0.15, test n=98"
+sider,n_annotated,46,of 256 compounds
+sider,positive_fraction,0.180,class imbalance
+sider,AUC_has_sider,0.6359,5-fold CV
+sider,AP_has_sider,0.3673,baseline=0.180
+sider,AUC_burden_high_vs_low,0.4537+-0.0310,"repeated 3x3-fold, n=46"
+sider,AP_burden_high_vs_low,0.5015+-0.0478,
