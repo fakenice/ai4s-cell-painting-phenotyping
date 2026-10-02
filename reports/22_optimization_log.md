@@ -185,7 +185,7 @@ Drivers: strengthen the "AI / deep learning" content of the submission with an i
 | Stage 7 (I/J: in-house MLP, GroupKFold leakage, ResNet18 embeddings, CNN limitation) | 完成 (script 06, figures 22–23, results CSV, report v6, writeup/plan/log synced) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
-| Git push (Stage 6 commit) | see commit/push result below |
+| Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*
