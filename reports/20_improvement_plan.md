@@ -140,9 +140,13 @@ AIGC:
 | Technical report v4 | `reports/12_technical_report_draft_v4.md` |
 | Technical report v4 PDF | `reports/12_technical_report_draft_v4.pdf` |
 | Technical report v5 (Stage 6) | `reports/12_technical_report_draft_v5.md` |
+| Technical report v6 (Stage 7) | `reports/12_technical_report_draft_v6.md` |
 | Stage 6 results CSV | `reports/16_structure_uncertainty_results.csv` |
 | Stage 6 figures | `reports/figures/16_structure_enhanced_performance.png`, `17_reliability_calibration.png`, `18_conformal_coverage.png`, `19_low_confidence_review.png`, `20_sider_toxicity.png` |
 | Stage 6 pipeline script | `github_repo/05_structure_uncertainty_pipeline.py` |
+| Stage 7 results CSV | `reports/17_deep_representation_results.csv` |
+| Stage 7 figures | `reports/figures/22_mlp_training_curves.png`, `23_mlp_confusion.png` |
+| Stage 7 pipeline script | `github_repo/06_deep_representation_pipeline.py` |
 | Target–phenotype correlation figure | `reports/figures/13_target_phenotype_correlation.png` |
 | Baseline comparison figure + CSV | `reports/figures/14_baseline_comparison.png`, `reports/14_baseline_comparison.csv` |
 | Structure–phenotype correlation figure | `reports/figures/15_structure_phenotype_correlation.png` |
@@ -232,6 +236,30 @@ Motivated by the official clarification post (scaffold-aware + uncertainty-aware
 | Approach | `05_structure_uncertainty_pipeline.py` part 3: merge SIDER on 256 compounds (only 46 annotated, 17.7% coverage); has_sider 5-fold CV; burden high-vs-low within annotated set, repeated 3×3-fold CV |
 | Status | **完成** |
 | Evidence | has_sider AUC **0.6359** / AP 0.3673 vs baseline 0.180 — weak signal, reported as exploratory with limitations; burden AUC 0.4537±0.0310 — **null**. Figure 20, report v5 §19 |
+
+---
+
+## Stage 7 — Deep Representation Learning & Transfer Learning Increment (2026-10-02)
+
+Motivated by the need to strengthen the "AI / deep learning" algorithmic content of the submission (in-house trained deep model + transfer-learning embedding check). New items I–J:
+
+### I. In-house deep model on handcrafted features (small MLP)
+
+| Field | Detail |
+|---|---|
+| Target | Train an in-house deep model (small MLP) on the same 904-feature morphology matrix under the same task/CV as the XGBoost baseline (trt vs DMSO, 5-fold stratified OOF); add compound-grouped GroupKFold leakage analysis | 
+| Approach | `github_repo/06_deep_representation_pipeline.py` part 1: MLP `904→256→64→1`, ReLU + dropout 0.3, Adam lr 1e-3 / wd 1e-4, 20 epochs, batch 64, seed 42; GroupKFold grouped by `pert_iname + plate` on trt-vs-all-controls (768 wells) |
+| Status | **完成** |
+| Evidence | trt-vs-DMSO OOF **AUC 0.7746 / AP 0.9361 / ACC 0.7855** (vs XGBoost 0.768 — matches/edges); compound-grouped GroupKFold **AUC 0.5944 / AP 0.7513 / ACC 0.6510** (leak-free estimate). See report v6 §21.2, figures 22–23, results CSV |
+
+### J. Transfer learning embeddings & self-trained CNN
+
+| Field | Detail |
+|---|---|
+| Target | Verify ImageNet-pretrained deep embeddings can be extracted from local JUMP-CP raw images (transfer learning); attempt self-trained single-cell CNN on Cellpose crops with leak-free grouping; honestly skip anything not executable on local assets |
+| Approach | `06_deep_representation_pipeline.py` part 2: torchvision ResNet18 (ImageNet) 512-d embedding extraction from the 8 local TIFFs; asset-gated skip of deep-embedding-vs-handcrafted classifier (needs trt + DMSO images) and single-cell CNN (no DMSO crops) |
+| Status | **完成（含如实跳过）** |
+| Evidence | ResNet18 embeddings OK (512-d, n=2, 0.36 s, seed fixed); fig. 21 **not produced** (treated-only images — no fabricated comparison); single-cell CNN **skipped** (116 treated-only cells, no crop dir, no DMSO). See report v6 §21.3–21.4, results CSV |
 
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*

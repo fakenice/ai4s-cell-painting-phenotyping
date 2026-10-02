@@ -1,0 +1,15 @@
+﻿step,key,value,note
+asset_images,n_tiff,8,raw dir: data\raw\BR00116991 ; sites: ['r01c01f01p0'] (1080x1080 uint16)
+asset_embeddings,official_jumpcp_embeddings,NONE,no .npy/.npz/.parquet/.h5 embedding files under data/
+asset_cellpose,single_cell_crops,NONE,"only reports/05_cellpose_summary.csv (116 cells, all treated); no crop/mask directory"
+asset_labels,well_counts_trt_dmso,520/128,"648-well treated-vs-DMSO matrix (520 trt / 128 DMSO), matching Stage 6 XGBoost setup"
+asset_labels,image_label_coverage,trt_only,8 raw TIFFs belong to a single treated site (BR00116991 r01c01); no DMSO control images on disk -> two-class image classification NOT possible
+mlp,mlp_5fold_trt_vs_dmso_auc_ap_acc,0.7746/0.9361/0.7855,"small MLP 904-256-64-1, Adam lr=1e-3 wd=1e-4, dropout 0.3, 20 epochs, seed 42; same task/CV as Stage 6 XGBoost (AUC 0.7682)"
+mlp,mlp_trt_vs_dmso_compound_group_cv,NOT_APPLICABLE,single negative control DMSO forms one compound group; GroupKFold would put all 128 DMSO wells in one fold -> no two-class evaluation possible; well-level stratified CV reported instead
+mlp,mlp_groupkfold_trt_vs_all_auc_ap_acc,0.5944/0.7513/0.6510,"GroupKFold by compound identity (pert_iname+plate): same compound never in train and test folds (no leakage); 768 wells, 5 groups x 5 folds"
+figure,21_deep_embedding_comparison,SKIPPED,no two-class image data (no DMSO images / no official JUMP-CP embeddings) -> deep-embedding vs handcrafted AUC comparison not possible; no fabricated numbers
+figure,22_mlp_training_curves.png,OK,reports\figures\22_mlp_training_curves.png
+figure,23_mlp_confusion.png,OK,reports\figures\23_mlp_confusion.png
+transfer,resnet18_embedding_extraction,OK dim=512 n=2 t=0.36s,ResNet18 (ImageNet) 512-d embeddings extracted; no classifier (trt-only images)
+transfer,deep_embedding_vs_handcrafted_classifier,SKIPPED,would require both trt and DMSO images to train same-protocol classifiers; local image subset is trt-only -> honestly skipped
+cnn,self_trained_cnn_singlecell,SKIPPED,"requires two-class (trt vs DMSO) Cellpose single-cell crops grouped by compound/well; local data: 116 segmented cells from a single treated site, no DMSO cells -> train/val/test leak-free CNN not executable"

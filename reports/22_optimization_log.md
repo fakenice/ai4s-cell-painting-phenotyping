@@ -147,16 +147,42 @@ Drivers: official clarification post recognizes scaffold-aware + uncertainty-awa
 - **Writeup sync:** `21_kaggle_writeup_draft.md` — report link v4→v5; Project Summary + Stage 6 sentence; Methods items 9–11; Key Results + 7 Stage-6 rows; Repository Contents (05 script, 12 figures, rdkit in requirements).
 - **Plan/log sync:** `20_improvement_plan.md` — Output Layout rows + items F/G/H; this file — Stage 6 section.
 
+## Stage 7 — Deep representation learning & transfer learning increment (2026-10-02)
+
+Drivers: strengthen the "AI / deep learning" content of the submission with an in-house trained deep model plus a transfer-learning embedding check; every sub-step is asset-gated (data availability is checked first, skipped steps are documented — no fabricated numbers).
+
+### I. In-house deep model on handcrafted features (small MLP)
+
+- **Data:** same 904-feature matrix as Stage 5/6; trt-vs-DMSO 648 wells (520/128) and trt-vs-all-controls 768 wells.
+- **Model:** MLP `904 → 256 → 64 → 1`, ReLU + dropout 0.3, Adam lr 1e-3 / wd 1e-4, 20 epochs, batch 64, seed 42, early stopping on val loss.
+- **Result (same task/CV as Stage 5 XGBoost):** 5-fold stratified OOF **AUC 0.7746 / AP 0.9361 / ACC 0.7855** vs XGBoost AUC 0.768 — in-house deep model matches/edges gradient boosting; handcrafted morphology near separability limit (AUC ≈ 0.77–0.78).
+- **Leakage-controlled GroupKFold (trt-vs-all, 768 wells):** grouped by `pert_iname + plate` → **AUC 0.5944 / AP 0.7513 / ACC 0.6510**; drop from ~0.75 shows well-level CV overestimates generalization via compound identity overlap; leak-free number reported alongside.
+- **Outputs:** `reports/figures/22_mlp_training_curves.png`, `23_mlp_confusion.png`; report v6 §21.2.
+
+### J. Transfer learning embeddings & self-trained CNN — feasibility check + honest limits
+
+- **ResNet18 embedding extraction (torchvision, ImageNet pretrained):** OK — 512-d embeddings from the 8 local TIFFs (n = 2 valid groups, 0.36 s, seed fixed); proves transfer-learning capability on local raw images.
+- **Deep-embedding vs handcrafted classifier comparison (fig. 21):** **skipped** — requires both trt and DMSO images for matched-protocol classifiers; local subset is treated-only (8 TIFFs, single site r01c01, no DMSO images, no official JUMP-CP embedding files under data/). No fabricated comparison.
+- **Self-trained single-cell CNN:** **skipped** — Cellpose crops exist only as a summary CSV (116 cells, all treated, no crop/mask directory, no DMSO cells); a two-class leak-free CNN is not executable on this subset.
+- **Outputs:** `reports/17_deep_representation_results.csv` (asset inventory + metrics + skip reasons), `reports/17_stage7_summary.json`; script `06_deep_representation_pipeline.py`; `requirements.txt` +torch/torchvision (CPU wheels).
+
+### Report v6 assembly
+
+- Copied v5 → `12_technical_report_draft_v6.md`; inserted **§21 Deep Representation Learning & Transfer Learning (Enhancement H)** (21.1 asset inventory; 21.2 in-house MLP + GroupKFold leakage analysis; 21.3 ResNet18 embedding check; 21.4 single-cell CNN limitation; 21.5 reproducibility assets); updated front matter (Status Draft v6), Abstract, TOC, References (+ResNet18/PyTorch), Appendix B (21 not produced + 22/23), and version references.
+- **Writeup sync:** `21_kaggle_writeup_draft.md` — report link v5→v6; Project Summary + Stage 7 sentence; Methods item 12; Key Results + Stage-7 rows; Negative Results + deep-representation limitation; Repository Contents (06 script, 14 figures, torch in requirements).
+- **Plan/log sync:** `20_improvement_plan.md` — Output Layout rows + items I/J; this file — Stage 7 section.
+
 ## Final status
 
 | Item | Status |
 |---|---|
 | H1 Team placeholder | 需用户填写 (blocked on real names) |
-| H2 Writeup draft | 完成 (synced to v5) |
+| H2 Writeup draft | 完成 (synced to v6) |
 | H3 v4 PDF | 完成 |
 | H4 GitHub Pages | 完成 (needs user push + Pages enable) |
 | A–E enhancements | 完成 |
 | Stage 6 (F/G/H: structure-aware, uncertainty-aware, SIDER) | 完成 (script 05, figures 16–20, results CSV, report v5, writeup/plan/log synced) |
+| Stage 7 (I/J: in-house MLP, GroupKFold leakage, ResNet18 embeddings, CNN limitation) | 完成 (script 06, figures 22–23, results CSV, report v6, writeup/plan/log synced) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 6 commit) | see commit/push result below |

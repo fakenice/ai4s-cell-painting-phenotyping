@@ -10,8 +10,9 @@ xgboost>=2.0
 rdkit>=2023.9
 statsmodels>=0.14
 tifffile>=2023.7
+torch>=2.0
+torchvision>=0.15
 
 # Optional — required only for the Cellpose segmentation demo (04_cellpose_demo.py)
 # cellpose>=2.2
-# torch>=2.0
 （内容由AI生成，仅供参考）

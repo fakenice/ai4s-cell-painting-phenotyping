@@ -1,0 +1,11 @@
+{
+  "stage": 7,
+  "mlp_trt_vs_dmso_auc": 0.7746,
+  "mlp_trt_vs_dmso_ap": 0.9361,
+  "mlp_trt_vs_dmso_acc": 0.7855,
+  "mlp_groupkfold_trt_vs_all_auc": 0.5944,
+  "mlp_groupkfold_trt_vs_all_ap": 0.7513,
+  "mlp_groupkfold_trt_vs_all_acc": 0.651,
+  "transfer_embedding": "OK",
+  "cnn_singlecell": "SKIPPED"
+}
