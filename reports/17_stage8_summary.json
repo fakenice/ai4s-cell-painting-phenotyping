@@ -1,0 +1,45 @@
+{
+  "stage": 8,
+  "n_tiff_trt_dmso": [
+    48,
+    48
+  ],
+  "embedding_seconds": 2.8,
+  "embedding_results": [
+    {
+      "name": "deep_resnet18_512_site12_groupkfold",
+      "n": 12,
+      "auc": 0.25,
+      "ap": 0.434553872053872,
+      "acc": 0.25
+    },
+    {
+      "name": "handcrafted_904_well6",
+      "n": 6,
+      "auc": 0.5555555555555556,
+      "ap": 0.5888888888888889,
+      "acc": 0.5
+    },
+    {
+      "name": "deep_resnet18_512_well6",
+      "n": 6,
+      "auc": 0.7777777777777779,
+      "ap": 0.8055555555555556,
+      "acc": 0.5
+    },
+    {
+      "name": "concat_1416_well6",
+      "n": 6,
+      "auc": 0.6666666666666667,
+      "ap": 0.6388888888888888,
+      "acc": 0.6666666666666666
+    }
+  ],
+  "cnn": {
+    "n_crops": 2564,
+    "auc": 0.0955,
+    "ap": 0.2698,
+    "acc": 0.3292
+  },
+  "mlp_trt_vs_dmso_auc": 0.7746
+}

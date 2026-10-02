@@ -172,6 +172,38 @@ Drivers: strengthen the "AI / deep learning" content of the submission with an i
 - **Writeup sync:** `21_kaggle_writeup_draft.md` — report link v5→v6; Project Summary + Stage 7 sentence; Methods item 12; Key Results + Stage-7 rows; Negative Results + deep-representation limitation; Repository Contents (06 script, 14 figures, torch in requirements).
 - **Plan/log sync:** `20_improvement_plan.md` — Output Layout rows + items I/J; this file — Stage 7 section.
 
+
+## Stage 8 — DMSO control images & image-level deep learning (2026-10-02)
+
+Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading matched-plate DMSO control images from the public JUMP-CP registry, then land both previously skipped image-level experiments (deep-embedding classifier comparison and self-trained single-cell CNN) with leak-free splits. Every number is real; negative/unstable results are reported honestly.
+
+### Data download
+
+- **Source:** public AWS `s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/images/BR00116991/` (no sign-in; retry/region fallback handled; failed/delayed keys reported, none fabricated).
+- **Target:** DMSO negative-control wells of the **same plate** `BR00116991` as the existing treated images (matches protocol, minimizes batch effects): wells A02 / A09 / A17, sites r01c01–r02c02, 8 channels each.
+- **Result:** 6 DMSO sites downloaded (48 TIFFs, ~2 GB) into `data/raw/BR00116991_dmso/`; paired with 6 existing treated sites (wells A01 / A03 / A04) → **12 sites / 6 wells / 96 TIFFs** for image-level experiments. Full manifest in `data/raw/BR00116991_dmso/manifest.txt`.
+
+### K. Deep-embedding vs handcrafted vs concatenation classifier comparison
+
+- **Embeddings:** torchvision ResNet18 (ImageNet pretrained), penultimate 512-d, from ch1/ch4/ch2 RGB composites of the 12 site images (224×224 normalized); handcrafted = 904-d well profiles; concat = 1416-d.
+- **Protocol:** LogisticRegression (standardized, C=1.0); **well-grouped LOO** primary (all sites of one held-out well per fold) + site-level GroupKFold stability check.
+- **Results (well-grouped LOO, n=6 wells):** handcrafted 904 AUC 0.5556 / AP 0.5889 / ACC 0.5000; **deep 512-d AUC 0.7778 / AP 0.8056 / ACC 0.5000**; concat 1416 AUC 0.6667 / AP 0.6389 / ACC 0.6667.
+- **Stability check (site-level GroupKFold, n=12 sites):** deep AUC 0.2500 / AP 0.4346 / ACC 0.2500 — unstable at this sample size; reported as a limitation, not hidden.
+- **Outputs:** `reports/figures/24_embedding_comparison.png`.
+
+### L. Self-trained single-cell CNN
+
+- **Crops:** Cellpose `cpsam_v2` segmented all 12 sites → **2,564 single-cell crops** (`data/interim/cellpose_crops/`, 6 wells: A01/A03/A04 trt, A02/A09/A17 DMSO; per-site meta.json + seg_log.jsonl).
+- **Model:** small 64×64 CNN (two conv blocks → global pooling → dense → 1), trt-vs-DMSO binary; **well-grouped GroupKFold(4)** (all cells of a well in the same fold; test folds always contain DMSO wells); 20 epochs, batch 64, Adam lr 1e-3, seed 42.
+- **Result (test):** **AUC 0.0955 / AP 0.2698 / ACC 0.3292** — below chance; honestly reported as a small-sample negative (tiny 6-well cohort, per-cell signal weaker than well-aggregated profiles, single-channel 64×64 inputs). Training curves and confusion matrix are kept as execution evidence, not as positive claims.
+- **Outputs:** `reports/figures/25_cnn_training_curves.png`, `26_cnn_confusion.png`.
+
+### Assets & sync
+
+- **Final results CSV:** `reports/17_deep_representation_results.csv` updated to final version (asset inventory incl. `n_tiff_trt_dmso=48/48`; embedding-comparison metrics; CNN metrics; figure flags 24–26) + `reports/17_stage8_summary.json`.
+- **Report:** `12_technical_report_draft_v6.md` → **v7**: Status Draft v7; Abstract + Stage 7/8 sentences; §21 fully rewritten (21.1 asset inventory incl. DMSO; 21.2 MLP unchanged; 21.3 deep-embedding comparison; 21.4 single-cell CNN; 21.5 reproducibility assets); Appendix B + figures 24–26; Data & reproducibility tail updated.
+- **Writeup/plan:** `21_kaggle_writeup_draft.md` (report link v7, Project Summary, Methods item 13, Key Results + Stage-8 rows, Negative Results update, Repository Contents 17 figures); `20_improvement_plan.md` (deliverables + v7 rows, J evidence updated, Stage 8 items K/L).
+- **Script/deps:** `06_deep_representation_pipeline.py` updated (parts 0–4: download instructions, asset inventory, MLP, deep-embedding comparison, single-cell CNN); `requirements.txt` +`cellpose>=2.2`.
 ## Final status
 
 | Item | Status |
@@ -183,9 +215,11 @@ Drivers: strengthen the "AI / deep learning" content of the submission with an i
 | A–E enhancements | 完成 |
 | Stage 6 (F/G/H: structure-aware, uncertainty-aware, SIDER) | 完成 (script 05, figures 16–20, results CSV, report v5, writeup/plan/log synced) |
 | Stage 7 (I/J: in-house MLP, GroupKFold leakage, ResNet18 embeddings, CNN limitation) | 完成 (script 06, figures 22–23, results CSV, report v6, writeup/plan/log synced) |
+| Stage 8 (K/L: DMSO images, deep-embedding comparison, single-cell CNN) | 完成 (12 sites/6 wells/96 TIFFs, figures 24–26, final results CSV, report v7, writeup/plan/log synced) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
+| Git push (Stage 8 commit) | 待本次推送 |
 
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*

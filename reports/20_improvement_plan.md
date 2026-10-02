@@ -141,12 +141,14 @@ AIGC:
 | Technical report v4 PDF | `reports/12_technical_report_draft_v4.pdf` |
 | Technical report v5 (Stage 6) | `reports/12_technical_report_draft_v5.md` |
 | Technical report v6 (Stage 7) | `reports/12_technical_report_draft_v6.md` |
+| Technical report v7 (Stage 8) | `reports/12_technical_report_draft_v7.md` |
 | Stage 6 results CSV | `reports/16_structure_uncertainty_results.csv` |
 | Stage 6 figures | `reports/figures/16_structure_enhanced_performance.png`, `17_reliability_calibration.png`, `18_conformal_coverage.png`, `19_low_confidence_review.png`, `20_sider_toxicity.png` |
 | Stage 6 pipeline script | `github_repo/05_structure_uncertainty_pipeline.py` |
-| Stage 7 results CSV | `reports/17_deep_representation_results.csv` |
+| Stage 7/8 results CSV (final) | `reports/17_deep_representation_results.csv`, `reports/17_stage8_summary.json` |
 | Stage 7 figures | `reports/figures/22_mlp_training_curves.png`, `23_mlp_confusion.png` |
-| Stage 7 pipeline script | `github_repo/06_deep_representation_pipeline.py` |
+| Stage 8 figures | `reports/figures/24_embedding_comparison.png`, `25_cnn_training_curves.png`, `26_cnn_confusion.png` |
+| Stage 7/8 pipeline script | `github_repo/06_deep_representation_pipeline.py` |
 | Target–phenotype correlation figure | `reports/figures/13_target_phenotype_correlation.png` |
 | Baseline comparison figure + CSV | `reports/figures/14_baseline_comparison.png`, `reports/14_baseline_comparison.csv` |
 | Structure–phenotype correlation figure | `reports/figures/15_structure_phenotype_correlation.png` |
@@ -259,7 +261,29 @@ Motivated by the need to strengthen the "AI / deep learning" algorithmic content
 | Target | Verify ImageNet-pretrained deep embeddings can be extracted from local JUMP-CP raw images (transfer learning); attempt self-trained single-cell CNN on Cellpose crops with leak-free grouping; honestly skip anything not executable on local assets |
 | Approach | `06_deep_representation_pipeline.py` part 2: torchvision ResNet18 (ImageNet) 512-d embedding extraction from the 8 local TIFFs; asset-gated skip of deep-embedding-vs-handcrafted classifier (needs trt + DMSO images) and single-cell CNN (no DMSO crops) |
 | Status | **完成（含如实跳过）** |
-| Evidence | ResNet18 embeddings OK (512-d, n=2, 0.36 s, seed fixed); fig. 21 **not produced** (treated-only images — no fabricated comparison); single-cell CNN **skipped** (116 treated-only cells, no crop dir, no DMSO). See report v6 §21.3–21.4, results CSV |
+| Evidence | ResNet18 embeddings OK (512-d, n=2, 0.36 s, seed fixed); fig. 21 **not produced** (superseded by fig. 24). Deep-embedding comparison and single-cell CNN were **deferred to Stage 8** (original local subset treated-only; no fabricated numbers). See report v6 §21.3–21.4 / v7 §21.3–21.4 |
 
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*
+
+## Stage 8 — DMSO Control Images & Image-Level Deep Learning (2026-10-02)
+
+Resolves the Stage 7 data gap (treated-only images) by downloading matched-plate DMSO control images from the public JUMP-CP registry, then lands both previously skipped image-level experiments with leak-free splits. New items K–L:
+
+### K. Deep-embedding vs handcrafted vs concatenation classifier comparison
+
+| Field | Detail |
+|---|---|
+| Target | Compare handcrafted 904-d profiles vs ImageNet-pretrained ResNet18 512-d embeddings vs 1416-d concat for trt-vs-DMSO image classification on matched plates |
+| Approach | Downloaded 6 DMSO sites (same plate `BR00116991`, source_4, AWS public bucket) to pair with 6 treated sites; torchvision ResNet18 embeddings from ch1/ch4/ch2 RGB composites; LogisticRegression with standardized features; well-grouped LOO primary + site-level GroupKFold stability check; `06_deep_representation_pipeline.py` part 3 |
+| Status | **完成** |
+| Evidence | well-grouped LOO: deep 512-d **AUC 0.7778 / AP 0.8056 / ACC 0.5000**; handcrafted 904 AUC 0.5556 / AP 0.5889 / ACC 0.5000; concat 1416 AUC 0.6667 / AP 0.6389 / ACC 0.6667; site-level GroupKFold AUC 0.2500 (n=12 sites — unstable, reported as limitation). See report v7 §21.3, figure 24, results CSV |
+
+### L. Self-trained single-cell CNN (Cellpose crops)
+
+| Field | Detail |
+|---|---|
+| Target | Self-trained small CNN for trt-vs-DMSO single-cell classification with leak-free well-grouped splits (test must contain DMSO wells) |
+| Approach | Cellpose `cpsam_v2` on all 12 sites → 2,564 crops (6 wells: 3 trt / 3 DMSO); small 64×64 CNN (conv blocks → pooling → dense); well-grouped GroupKFold(4), seed 42, 20 epochs; `06_deep_representation_pipeline.py` part 4 |
+| Status | **完成（如实报告负面结果）** |
+| Evidence | test **AUC 0.0955 / AP 0.2698 / ACC 0.3292** (below chance — small-sample negative reported honestly). See report v7 §21.4, figures 25–26, results CSV |

@@ -13,6 +13,9 @@ tifffile>=2023.7
 torch>=2.0
 torchvision>=0.15
 
-# Optional — required only for the Cellpose segmentation demo (04_cellpose_demo.py)
-# cellpose>=2.2
+# Optional — required for the Cellpose segmentation demo (04_cellpose_demo.py) and
+# the Stage 8 single-cell CNN crops (06_deep_representation_pipeline.py, part 4)
+cellpose>=2.2
+# optional (06 stage8 download helper) — boto3 if using AWS CLI/SDK path; direct S3 HTTP used by default
+# boto3>=1.26
 （内容由AI生成，仅供参考）
