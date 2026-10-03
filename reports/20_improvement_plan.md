@@ -38,7 +38,7 @@ AIGC:
 
 | Field | Detail |
 |---|---|
-| Target | Check report v3 (`reports/12_technical_report_draft_v3.md`) and README for `ShapeToTarget` / `<Member N>` placeholders; keep them visible and flag as "user must fill in"; never fabricate real names |
+| Target | Check report v3 (`reports/12_technical_report_draft_v3.md`) and README for `ShapeToTarget` / `Member N` placeholders; keep them visible and flag as "user must fill in"; never fabricate real names |
 | Approach | grep-style scan of report v3 + README for placeholder tokens; record exact locations; keep placeholders intact; note in checklist |
 | Status | **需用户填写** |
 | Evidence | Placeholders kept in v3 L33/39-41, README L18, checklist L126; team name not fabricated; user must fill before submission |
@@ -187,8 +187,8 @@ AIGC:
 | Field | Detail |
 |---|---|
 | Status | **待处理** |
-| Detail | Report `12_technical_report_draft_v3.md` (L33 Category Declaration / L39-41 Team Information) and `12_technical_report_draft_v4.md`, plus `github_repo/README.md`, contain the placeholders `ShapeToTarget` and `<Member N>` (N = 1..3). Submission requires the real team name and member list (1–5 people). Provide the real values to the main Agent, which will update all files and re-push the repository. |
-| Steps | 1. Decide the official team name and the list of 1–5 member names. 2. Send the values to the main Agent in chat. 3. Main Agent replaces `ShapeToTarget` / `<Member 1>`–`<Member 3>` in `12_technical_report_draft_v3.md`, `12_technical_report_draft_v4.md`, `README.md` (and the checklist row) — no fabricated names are inserted automatically. 4. Main Agent commits and pushes `github_repo` (and reports as needed). 5. Verify on GitHub that the files no longer contain placeholders. |
+| Detail | Report `12_technical_report_draft_v3.md` (L33 Category Declaration / L39-41 Team Information) and `12_technical_report_draft_v4.md`, plus `github_repo/README.md`, contain the placeholders `ShapeToTarget` and `Member N` (N = 1..3). Submission requires the real team name and member list (1–5 people). Provide the real values to the main Agent, which will update all files and re-push the repository. |
+| Steps | 1. Decide the official team name and the list of 1–5 member names. 2. Send the values to the main Agent in chat. 3. Main Agent replaces `ShapeToTarget` / `Member 1`–`Member 3` in `12_technical_report_draft_v3.md`, `12_technical_report_draft_v4.md`, `README.md` (and the checklist row) — no fabricated names are inserted automatically. 4. Main Agent commits and pushes `github_repo` (and reports as needed). 5. Verify on GitHub that the files no longer contain placeholders. |
 
 ### U2. Enable GitHub Pages (docs/ folder)
 

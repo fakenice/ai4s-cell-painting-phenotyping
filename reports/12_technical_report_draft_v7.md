@@ -43,17 +43,15 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 ## Team Information
 
-**Team name:** `ShapeToTarget` *(placeholder — to be completed by the submitting team before final submission)*
+**Team name:** `ShapeToTarget`
 
 **Team composition (1–5 members):**
 
 | # | Role | Name | Affiliation / Note |
 |---|---|---|---|
-| 1 | Lead / Analysis | `<Member 1>` | *(fill in)* |
-| 2 | Modeling | `<Member 2>` | *(fill in)* |
-| 3 | Report / Repo | `<Member 3>` | *(optional — fill in)* |
+| 1 | solo lead / AI modeling + bioinformatics | wu_bigcat | solo team |
 
-> **Action required:** the submitting team must fill in the team name and member names/roles above before submission. The competition requires the technical report to declare the team composition (1–5 persons).
+> **Team composition declared:** ShapeToTarget, solo member wu_bigcat (solo lead / AI modeling + bioinformatics).
 
 **Public repository:** https://github.com/fakenice/ai4s-cell-painting-phenotyping
 **Demo video:** https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4 (42 s, 1280×720, 30 fps; ≤ 5 min requirement satisfied)
@@ -830,7 +828,7 @@ Stage 6 adds `reports/16_structure_uncertainty_results.csv`,
 
 ## Data and reproducibility
 
-All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name/members are placeholders pending user completion.
+All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*

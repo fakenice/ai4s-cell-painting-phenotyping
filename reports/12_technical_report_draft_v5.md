@@ -38,9 +38,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 | # | Role | Name | Affiliation / Note |
 |---|---|---|---|
-| 1 | Lead / Analysis | `<Member 1>` | *(fill in)* |
-| 2 | Modeling | `<Member 2>` | *(fill in)* |
-| 3 | Report / Repo | `<Member 3>` | *(optional — fill in)* |
+| 1 | solo lead / AI modeling + bioinformatics | wu_bigcat | solo team |
 
 > **Action required:** the submitting team must fill in the team name and member names/roles above before submission. The competition requires the technical report to declare the team composition (1–5 persons).
 
