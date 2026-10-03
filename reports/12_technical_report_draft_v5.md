@@ -32,7 +32,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 ## Team Information
 
-**Team name:** `<TEAM_NAME>` *(placeholder — to be completed by the submitting team before final submission)*
+**Team name:** `ShapeToTarget` *(placeholder — to be completed by the submitting team before final submission)*
 
 **Team composition (1–5 members):**
 

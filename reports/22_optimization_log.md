@@ -25,9 +25,9 @@ Executed in order: H1 → H2 → H3 → H4 → A → B → C → D → E → rep
 
 ## H1. Team placeholder handling
 
-- **Action:** grep-style scan of `reports/12_technical_report_draft_v3.md`, `README.md`, `00_submission_checklist.md` for `<TEAM_NAME>` / `<Member N>` / team mentions.
+- **Action:** grep-style scan of `reports/12_technical_report_draft_v3.md`, `README.md`, `00_submission_checklist.md` for `ShapeToTarget` / `<Member N>` / team mentions.
 - **Findings:**
-  - `12_technical_report_draft_v3.md`: L33 (Category Declaration), L39–41 (Team Information: `<TEAM_NAME>`, `<Member 1>`, `<Member 2>`, `<Member 3>`).
+  - `12_technical_report_draft_v3.md`: L33 (Category Declaration), L39–41 (Team Information: `ShapeToTarget`, `<Member 1>`, `<Member 2>`, `<Member 3>`).
   - `github_repo/README.md`: L18 ("AI4S Hackathon Team").
   - `00_submission_checklist.md`: L126 (checklist row).
 - **Decision:** keep all placeholders intact; flag as "user must fill in"; no fabricated names. Recorded in plan H1 as `需用户填写`.

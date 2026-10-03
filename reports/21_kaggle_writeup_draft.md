@@ -25,7 +25,7 @@ AIGC:
 
 This submission is declared under the **Model & Algorithm** category of the AI4S Open Innovation: AI for Life Science competition. It delivers a reproducible machine-learning pipeline — dimensionality reduction, clustering, classification, enrichment, and phenotypic-strength scoring — applied to public Cell Painting morphological profiling data. The main intellectual contribution is algorithmic and methodological.
 
-**Team:** `<TEAM_NAME>` *(placeholder — to be completed by the submitting team)*
+**Team:** `ShapeToTarget` *(placeholder — to be completed by the submitting team)*
 
 ---
 
