@@ -237,6 +237,6 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
-| Git push (Stage 8 commit) | 待本次推送 |
-| Git push (Stage 9 commit) | 待本次推送 |
+| Git push (Stage 8 commit) | 成功推送 origin/master（随 Stage 9 commit 一起） |
+| Git push (Stage 9 commit 0a0363b) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 
