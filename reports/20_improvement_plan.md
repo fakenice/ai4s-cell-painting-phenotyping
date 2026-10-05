@@ -322,3 +322,37 @@ a regenerated PDF. New items M–O:
 | Approach | New figure 27 (phenotype → target/toxicity → OoC validation → drug decision, with confidence gate + human-review loop); requirements.txt pinned to the environment that produced the submitted results (2026-10-05); PDF rebuilt from the v7 md (pandoc → HTML → Chrome headless) |
 | Status | **完成** |
 | Evidence | `reports/figures/27_ooc_decision_chain.png` + `figures/27_ooc_decision_chain.png`; report v7 §22.5; PDF 20 pages, MD5 in optimization log |
+
+## Stage 10 — Self-Supervised Representations, Well-Position Batch Correction & Retrieval Validation (2026-10-05)
+
+Three complementary validation experiments before the 2026-10-10 deadline:
+contrastive self-supervised representations (DINOv2 / OpenPhenom) vs the
+ResNet18 baseline, harmonypy well-position batch correction, and phenotypic
+retrieval / known-target enrichment. New items P–R:
+
+### P. Self-supervised representation comparison (DINOv2 / OpenPhenom)
+
+| Field | Detail |
+|---|---|
+| Target | Benchmark DINOv2 and OpenPhenom embeddings vs the ResNet18 deep embedding (AUC 0.7778) on the 12-site treated/DMSO image set, well-grouped LOO (6 wells) |
+| Approach | timm DINOv2 vit_small/base (lvd142m weights) + HuggingFace OpenPhenom vit_small16 (RGB-3 and 8-channel Cell Painting), LR C=1.0 standardized, LeaveOneGroupOut by well; OpenPhenom loaded via hf-mirror (official endpoint unreachable) |
+| Status | **完成** |
+| Evidence | ResNet18 0.7778/0.8056/0.5000; DINOv2 vit_small 0.3333/0.5000/0.3333; vit_base 0.4444/0.5333/0.5000; OpenPhenom RGB 0.3333/0.4778/0.1667; OpenPhenom 8-ch 0.6667/0.6389/0.6667. No self-supervised embedding beats the baseline; OpenPhenom 8-ch closest. Report v7 §23.1, fig. 28a |
+
+### Q. Harmony well-position batch correction
+
+| Field | Detail |
+|---|---|
+| Target | Correct 904-feature profiles for plate / well-position covariates with harmonypy; re-run main pheno+fp (5-fold OOF) and scaffold-grouped CV; compare before/after AUC |
+| Approach | harmonypy 0.0.9 (categorical Plate + Row/Col covariates; pandas 2.x describe patch); maskA (trt vs DMSO, 648 wells) OOF + maskB (trt vs ctrl, 768 wells) scaffold GroupKFold (Tanimoto > 0.5) |
+| Status | **完成** |
+| Evidence | maskA before/after AUC **1.0000/1.0000** (no change; fp dominates); maskB scaffold-group CV AUC 0.4679 → **0.4136** (Δ −0.054; correction removes informative plate/position structure). Negative result recorded; Harmony not recommended by default. Report v7 §23.2, fig. 28b |
+
+### R. Phenotype retrieval & known-target enrichment
+
+| Field | Detail |
+|---|---|
+| Target | Validate the 904-feature profiles as a retrieval/enrichment substrate: replicate-retrieval AP (same-compound wells) and known-target enrichment (Fisher / AUROC) |
+| Approach | Well-level cosine-similarity retrieval AP on maskA (648 wells / 257 compounds) before/after Harmony; compound-level pair cosine similarity vs shared-target annotation (JUMP-Target-1 compound_metadata_targets.tsv); per-target AUROC + Fisher on top-10% similar pairs, BH-corrected |
+| Status | **完成** |
+| Evidence | Replicate-retrieval mean AP 0.2451 vs chance 0.0401 (pair AUC 0.6335); after Harmony 0.0766. Shared-target pair AUROC 0.5611 (p = 2.76e-07, 569/32,640 pairs); 162 targets tested → 12 BH-significant by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), 90 by Fisher on top-10% pairs. Report v7 §23.3, figs. 28c–28d |

@@ -1,0 +1,17 @@
+{
+  "retrieval_before": {
+    "mean_replicate_AP": 0.2451283877651553,
+    "chance_AP": 0.040090064304386816,
+    "pair_AUC": 0.6334883221727294
+  },
+  "retrieval_after": {
+    "mean_replicate_AP": 0.07655459601604474,
+    "chance_AP": 0.040090064304386816,
+    "pair_AUC": 0.6382916985932812
+  },
+  "target_pair_AUROC_shared_any": 0.561131308012281,
+  "target_pair_mw_p": 2.763057974628176e-07,
+  "targets_tested": 162,
+  "targets_sig_mw_bh": 12,
+  "targets_sig_fisher_bh": 90
+}

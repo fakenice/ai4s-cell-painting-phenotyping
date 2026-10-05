@@ -1,0 +1,5 @@
+name,auc,ap,acc,n_pos,n,folds_skipped,valid_n
+A_before_harmony_pheno+fp,1.0,1.0,1.0,520.0,648.0,,
+A_after_harmony_pheno+fp,1.0,1.0,1.0,520.0,648.0,,
+B_before_harmony_pheno+fp_groupCV,0.46785049627791564,0.624430059402599,0.6653645833333334,,,0.0,768.0
+B_after_harmony_pheno+fp_groupCV,0.4136011166253102,0.5899495923510044,0.66015625,,,0.0,768.0

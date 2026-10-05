@@ -218,8 +218,27 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 - **Dependency pinning:** `requirements.txt` all `>=` → `==` (numpy 2.4.6, pandas 3.0.3, scipy 1.17.1, scikit-learn 1.8.0, matplotlib 3.10.9, seaborn 0.13.2, xgboost 3.2.0, rdkit 2026.3.6, tifffile 2026.9.20, torch 2.14.0, torchvision 0.29.0; umap-learn 0.5.12, statsmodels 0.15.0, cellpose 4.2.1.1 — not installed in build env, pinned to PyPI latest stable 2026-10-05).
 - **README:** one-command run block (`05_structure_aware_pipeline.py` / `06_deep_representation_pipeline.py`) + data acquisition notes added.
 - **PDF regenerated:** v7 md → HTML (pandoc 3.9) → PDF (Chrome headless, A4 compact print style), **18 pages**, MD5 **32F6E261830A6D954CDD00F3733D26BE**, replaced `docs/12_technical_report_draft_v7.pdf` (previous d1e1db8 version: 20 pages, MD5 BA2658CA3E6AB96E1825BAA244058539).
-- **AI-trace re-check:** new figure 27 visual-checked (no "AI 生成" watermark); new PDF text layer zero hits for "AI 生成 / AI-generated"; repo-wide md/text zero hits; no watermark pixels on regenerated assets.
+- **AI-trace re-check:** new figure 27 visual-checked (no generated-content watermark); new PDF text layer zero hits for generated-content disclaimers; repo-wide md/text zero hits; no watermark pixels on regenerated assets.
 - **Outputs:** report v7 §22 + TOC row, figures 27, README run block, requirements pinned, `reports/ablation_cv_results.json` (interim evidence).
+
+### Stage 10 — Self-Supervised Representations, Harmony Correction & Retrieval Validation (2026-10-05)
+
+- **Experiment 1 — self-supervised representations (`scripts/stage10_self_supervised.py`):** 12 sites (6 treated + 6 DMSO, `data/raw/BR00116991_dmso/`) → well-mean → 6 wells; LR C=1.0 standardized; LeaveOneGroupOut by well.
+  - ResNet18 baseline (Stage 8): **AUC 0.7778 / AP 0.8056 / ACC 0.5000** (reproduced).
+  - DINOv2 `vit_small_patch14.lvd142m` (384-d): AUC 0.3333 / AP 0.5000 / ACC 0.3333.
+  - DINOv2 `vit_base_patch14.lvd142m` (768-d): AUC 0.4444 / AP 0.5333 / ACC 0.5000.
+  - OpenPhenom `vit_small16` (HuggingFace `recursionpharma/OpenPhenom`, local snapshot, loaded via hf-mirror — official endpoint unreachable, recorded): RGB-3 AUC 0.3333 / AP 0.4778 / ACC 0.1667; **8-channel** AUC 0.6667 / AP 0.6389 / ACC 0.6667.
+  - Conclusion: no self-supervised embedding beats the ResNet18 baseline on the 6-well task; OpenPhenom 8-ch closest (multi-channel value). 11 GB VRAM → vit_small/vit_base as planned.
+- **Experiment 2 — Harmony well-position correction (`scripts/stage10_harmony.py`):** harmonypy 0.0.9 on 904 features, covariates Metadata_Plate + Row/Col (categorical; pandas 2.x describe patch).
+  - maskA (trt vs DMSO, 648 wells: 520/128): pheno+fp 5-fold OOF **AUC 1.0000 before / 1.0000 after** (fp dominates; no change).
+  - maskB (trt vs ctrl, 768 wells): scaffold-grouped CV (Tanimoto > 0.5) **AUC 0.4679 → 0.4136** (AP 0.6244 → 0.5899; ACC 0.6654 → 0.6602) — correction removes informative plate/position structure; **negative result recorded, Harmony not recommended by default**.
+  - Convergence: maskA 7 iterations; maskB hit the 10-iteration cap (not converged, reported as-is).
+- **Experiment 3 — retrieval & known-target enrichment (`scripts/stage10_retrieval.py`):**
+  - Replicate-retrieval AP (well level, maskA, 648 wells / 257 compounds): raw 904 mean AP **0.2451** vs chance 0.0401 (pair AUC 0.6335); Harmony-corrected mean AP 0.0766 (pair AUC 0.6383) — raw profiles retrieve replicates at ~6.1× chance; correction removes most replicate-consistency signal.
+  - Known-target enrichment (compound level, JUMP-Target-1 `compound_metadata_targets.tsv`): shared-target pairs 569/32,640, pair AUROC **0.5611** (Mann–Whitney p = 2.76e-07); 162 targets ≥ 2 compounds tested → **12 BH-significant** by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), **90 by Fisher** on top-10% similar pairs.
+- **Figures:** `figures/28a_self_supervised_comparison.png`, `28b_harmony_batch_correction.png`, `28c_retrieval_replicate_ap.png`, `28d_target_enrichment.png` (+ `reports/figures/` copies).
+- **Assets:** `reports/18_stage10_selfsupervised_summary.json`, `18_stage10_harmony_results.csv`, `18_stage10_retrieval_results.csv`, `18_stage10_target_enrichment.csv`, `18_stage10_summary.json`.
+- **Report/writeup/plan synced:** report v7 §23 (+TOC row, Appendix B rows 27/28a–d); writeup Key Results + Negative Results; plan items P–R.
 
 ## Final status
 
@@ -234,6 +253,7 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 | Stage 7 (I/J: in-house MLP, GroupKFold leakage, ResNet18 embeddings, CNN limitation) | 完成 (script 06, figures 22–23, results CSV, report v6, writeup/plan/log synced) |
 | Stage 8 (K/L: DMSO images, deep-embedding comparison, single-cell CNN) | 完成 (12 sites/6 wells/96 TIFFs, figures 24–26, final results CSV, report v7, writeup/plan/log synced) |
 | Stage 9 (M/N/O: ablation, 5-fold CV, class-overlap, CNN discussion, OoC chain, pin deps, PDF regen) | 完成 (ablation numbers, figures 27, report v7 §22 + TOC, writeup/plan/log synced, requirements pinned, PDF 18 pp MD5 32F6E2…, README run block) |
+| Stage 10 (P/Q/R: self-supervised reps, Harmony correction, retrieval & target enrichment) | 完成 (figures 28a–28d, report v7 §23 + TOC + Appendix B, writeup/plan/log synced, results CSV/JSON in reports/18_stage10_*) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |

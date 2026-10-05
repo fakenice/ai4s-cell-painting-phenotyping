@@ -80,6 +80,7 @@ Phenotypic profiling with Cell Painting provides an unbiased, image-based readou
 Appendix A. Supplementary Negative Analyses
 21. Deep Representation Learning & Transfer Learning
 22. Ablation Study, Generalization Analysis & Organ-on-a-Chip Decision Chain
+23. Self-Supervised Representations, Well-Position Batch Correction & Phenotype-Retrieval Validation
 References
 
 ---
@@ -881,6 +882,146 @@ decision; low-confidence compounds loop back to human review.*
 
 ---
 
+## 23. Self-Supervised Representations, Well-Position Batch Correction and Phenotype-Retrieval Validation (Stage 10, 2026-10-05)
+
+Stage 10 adds three complementary experiments on top of the Stage 9 decision
+chain: (1) contrastive self-supervised representations (DINOv2, OpenPhenom)
+are benchmarked against the Stage 8 ResNet18 deep embedding under the same
+well-grouped leave-one-out protocol; (2) harmonypy batch correction using
+plate / well-position covariates is applied to the 904-dimensional profiles
+and the main pheno+fp model is re-evaluated; (3) the 904-dimensional
+phenotypic features are validated as a retrieval and enrichment substrate
+(replicate retrieval AP and known-target enrichment). All numbers are real
+outputs of the Stage 10 scripts in `scripts/`; failed components are reported
+explicitly rather than imputed.
+
+### 23.1 Contrastive Self-Supervised Representations vs ResNet18 Baseline
+
+Protocol (identical to the Stage 8 deep-embedding experiment): 12 image sites
+(6 treated + 6 DMSO, `data/raw/BR00116991_dmso/`) are aggregated by well mean
+to 6 well-level profiles; features are standardized and a logistic-regression
+classifier (C = 1.0) is evaluated with LeaveOneGroupOut by well
+(treated vs DMSO).
+
+Representations compared:
+
+| Representation | Source / weights | Dim | AUC | AP | ACC |
+|---|---|---|---|---|---|
+| ResNet18 deep embedding (Stage 8 baseline) | in-house, 512-d | 512 | 0.7778 | 0.8056 | 0.5000 |
+| DINOv2 `vit_small_patch14` | timm `lvd142m` | 384 | 0.3333 | 0.5000 | 0.3333 |
+| DINOv2 `vit_base_patch14` | timm `lvd142m` | 768 | 0.4444 | 0.5333 | 0.5000 |
+| OpenPhenom `vit_small16` (RGB 3-ch) | HuggingFace `recursionpharma/OpenPhenom` (local snapshot) | 384 | 0.3333 | 0.4778 | 0.1667 |
+| OpenPhenom `vit_small16` (8-ch Cell Painting) | HuggingFace `recursionpharma/OpenPhenom` (local snapshot) | 384 | 0.6667 | 0.6389 | 0.6667 |
+
+Notes on reproducibility and failures: the official HuggingFace endpoint was
+unreachable from the execution environment, so OpenPhenom weights were loaded
+through the `hf-mirror.com` mirror with the pinned local snapshot
+(`0f92333…`); with 11 GB VRAM the smaller `vit_small` / `vit_base` DINOv2
+variants were used as planned. None of the self-supervised embeddings
+outperformed the ResNet18 baseline on this 6-well task; OpenPhenom fed with
+all 8 Cell Painting channels came closest (AUC 0.6667), consistent with the
+value of multi-channel input. DINOv2, pre-trained on natural images, does not
+transfer to this Cell-Painting separation under a 6-sample well-grouped LOO
+regime (AUC ≤ 0.44).
+
+![Self-supervised representation comparison](figures/28a_self_supervised_comparison.png)
+
+*Figure 28a: AUC / AP / ACC of ResNet18, DINOv2 (vit-small/base) and
+OpenPhenom (RGB-3 and 8-channel) embeddings under well-grouped LOO.*
+
+### 23.2 Harmony Batch Correction with Plate / Well-Position Covariates
+
+harmonypy (0.0.9) was run on the 904-dimensional well-level profiles with
+`Metadata_Plate` and well row/column (as categorical covariates) on two masks:
+maskA (treated vs DMSO, 648 wells: 520 treated + 128 DMSO) for the main 5-fold
+OOF pheno+fp model, and maskB (treated vs all controls, 768 wells) for the
+scaffold-grouped (Tanimoto > 0.5) group CV. Harmony converged in 7 iterations
+on maskA (maskB stopped at the 10-iteration cap; convergence not reached,
+reported as-is).
+
+| Setup | AUC | AP | ACC | n_pos | n |
+|---|---|---|---|---|---|
+| maskA before Harmony — pheno+fp 5-fold OOF | 1.0000 | 1.0000 | 1.0000 | 520 | 648 |
+| maskA after Harmony — pheno+fp 5-fold OOF | 1.0000 | 1.0000 | 1.0000 | 520 | 648 |
+| maskB before Harmony — pheno+fp scaffold-group CV | 0.4679 | 0.6244 | 0.6654 | — | 768 |
+| maskB after Harmony — pheno+fp scaffold-group CV | 0.4136 | 0.5899 | 0.6602 | — | 768 |
+
+Harmony correction does not change the treated-vs-DMSO OOF performance
+(AUC = 1.0000 before and after), because the ECFP4 fingerprint block already
+separates treated from DMSO and the 904-feature phenotypic block adds no
+incremental discriminative signal there. On the harder scaffold-grouped CV,
+correction slightly *decreases* AUC (0.4679 → 0.4136, Δ = −0.054), indicating
+that in this dataset a portion of the well-position / plate structure is
+informative for unseen-structure generalization; removing it hurts slightly.
+We therefore do **not** recommend default Harmony correction for this
+pipeline, and record the negative result explicitly.
+
+![Harmony batch correction PCA](figures/28b_harmony_batch_correction.png)
+
+*Figure 28b: PCA of the 904 features before/after Harmony (maskA), colored by
+plate (top) and well row (bottom).*
+
+### 23.3 Phenotype Retrieval and Known-Target Enrichment
+
+**(a) Replicate retrieval AP (well level).** On maskA (648 wells, 257
+compounds), each well was used as a query against all other wells ranked by
+cosine similarity (L2-normalized 904 features); average precision was computed
+against same-compound wells, with chance AP defined as the mean positive
+fraction (expected AP under random ordering).
+
+| Feature set | Mean replicate AP | Chance AP | Pair AUC (same vs different compound) |
+|---|---|---|---|
+| 904 features (raw) | 0.2451 | 0.0401 | 0.6335 |
+| 904 features (Harmony-corrected, maskA) | 0.0766 | 0.0401 | 0.6383 |
+
+Raw 904-feature profiles retrieve same-compound replicates at ~6.1× chance
+AP; Harmony correction removes most of the replicate-consistency signal
+(0.2451 → 0.0766), corroborating the §23.2 finding that plate/position
+components carry reproducible biological signal in this dataset.
+
+**(b) Known-target enrichment (compound level).** Compound-level profiles
+(mean of replicate wells) of the 257 treated compounds were compared pairwise
+by cosine similarity; a pair was labelled positive if the two compounds share
+≥ 1 target gene in `JUMP-Target-1_compound_metadata_targets.tsv`.
+
+- Global: shared-target pairs (569 / 32,640) separate from others with pair
+  AUROC = 0.5611 (Mann–Whitney U, p = 2.76 × 10⁻⁷).
+- Per-target: 162 targets with ≥ 2 compounds were tested; after Benjamini–
+  Hochberg correction, **12 targets** are significant by per-target AUROC
+  (Mann–Whitney), and **90 targets** are significant by Fisher's exact test on
+  the top-10% most similar pairs.
+- Strongest entries: TUBB / TUBB4B (AUROC 0.9998; tubulin-targeting
+  compounds are phenotypically very consistent), TUBB1 and the TUBA family
+  (0.9997), CACNA2D3 (0.9843), CFTR (0.8528, Fisher BH p = 3.8 × 10⁻⁵).
+
+![Replicate retrieval AP and similarity distributions](figures/28c_retrieval_replicate_ap.png)
+
+*Figure 28c: Per-well replicate-retrieval AP before/after Harmony, and cosine
+similarity distributions of same-compound vs different-compound well pairs.*
+
+![Target enrichment AUROC](figures/28d_target_enrichment.png)
+
+*Figure 28d: Per-target pair AUROC for known targets with ≥ 2 compounds;
+green bars are BH-significant, red bars non-significant.*
+
+### 23.4 Stage 10 Summary
+
+All three Stage 10 experiments produce honest, runnable numbers: (1)
+self-supervised representations did not beat the ResNet18 baseline on the
+6-well well-grouped LOO task (OpenPhenom 8-ch closest at AUC 0.6667 vs 0.7778);
+(2) Harmony correction with plate/well-position covariates leaves OOF
+performance unchanged and slightly reduces scaffold-grouped CV AUC
+(0.4679 → 0.4136), a recorded negative result; (3) 904-feature profiles are a
+valid retrieval/enrichment substrate (replicate-retrieval mean AP 0.2451 vs
+chance 0.0401; shared-target pair AUROC 0.5611, p = 2.76 × 10⁻⁷; 12 targets
+BH-significant by per-target AUROC and 90 by Fisher on the top-10% pairs).
+Artifacts: `reports/18_stage10_selfsupervised_summary.json`,
+`reports/18_stage10_harmony_results.csv`,
+`reports/18_stage10_retrieval_results.csv`,
+`reports/18_stage10_target_enrichment.csv`, figures `28a`–`28d`.
+
+---
+
 ## References
 
 1. Bray M-A, et al. Cell Painting, a high-content image-based assay for morphological profiling using multiplexed fluorescent dyes. Nat Protoc 11, 1757–1774 (2016).
@@ -926,6 +1067,11 @@ reproduced.
 | `24_embedding_comparison.png` | Deep-embedding vs handcrafted vs concat classifier comparison (Stage 8) | §21.3 |
 | `25_cnn_training_curves.png` | Self-trained single-cell CNN training curves (Stage 8) | §21.4 |
 | `26_cnn_confusion.png` | Self-trained single-cell CNN test confusion matrix (Stage 8) | §21.4 |
+| `27_ooc_decision_chain.png` | Organ-on-a-Chip drug-screening decision chain (Stage 9) | §22 |
+| `28a_self_supervised_comparison.png` | Self-supervised representation comparison: ResNet18 / DINOv2 / OpenPhenom (Stage 10) | §23.1 |
+| `28b_harmony_batch_correction.png` | PCA of 904 features before/after Harmony, plate and well-row coloring (Stage 10) | §23.2 |
+| `28c_retrieval_replicate_ap.png` | Replicate-retrieval AP and cosine-similarity distributions (Stage 10) | §23.3 |
+| `28d_target_enrichment.png` | Per-target pair AUROC for known targets (Stage 10) | §23.3 |
 
 Result CSVs are stored in `reports/` with numbered names (`01_`–`16_`); the
 full naming convention is described in §10.3 and in the repository README.
