@@ -829,6 +829,3 @@ Stage 6 adds `reports/16_structure_uncertainty_results.csv`,
 ## Data and reproducibility
 
 All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
-*（内容由AI生成，仅供参考）*
-*（内容由AI生成，仅供参考）*
-*（内容由AI生成，仅供参考）*

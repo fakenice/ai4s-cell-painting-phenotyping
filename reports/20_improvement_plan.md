@@ -263,8 +263,6 @@ Motivated by the need to strengthen the "AI / deep learning" algorithmic content
 | Status | **完成（含如实跳过）** |
 | Evidence | ResNet18 embeddings OK (512-d, n=2, 0.36 s, seed fixed); fig. 21 **not produced** (superseded by fig. 24). Deep-embedding comparison and single-cell CNN were **deferred to Stage 8** (original local subset treated-only; no fabricated numbers). See report v6 §21.3–21.4 / v7 §21.3–21.4 |
 
-*（内容由AI生成，仅供参考）*
-*（内容由AI生成，仅供参考）*
 
 ## Stage 8 — DMSO Control Images & Image-Level Deep Learning (2026-10-02)
 

@@ -752,5 +752,3 @@ Stage 6 adds `reports/16_structure_uncertainty_results.csv`,
 ## Data and reproducibility
 
 All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `16_structure_uncertainty_results.csv`; `figures/` contains 12 PNG figures, including Stage-6 figures 16–20). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py`. This report is the consolidated technical write-up (Draft v5); the Kaggle Writeup narrative is derived from it. Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name/members are placeholders pending user completion.
-*（内容由AI生成，仅供参考）*
-*（内容由AI生成，仅供参考）*
