@@ -60,7 +60,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 ## Abstract
 
-Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative).
+Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative). A final optimization stage (Section 22) adds an **ablation study** across feature sets (morphology-only AUC 0.7682 vs fingerprint-only 1.0000 vs fused pheno+fp 1.0000 vs deep ResNet18 embedding 0.7778), **5-fold cross-validation** of the main pheno+fp model (per-fold AUC 1.0000 ± 0.0000), an explicit **compound-level class-overlap (leakage) analysis** of the well-level CV protocol, a mechanistic discussion of the below-chance single-cell CNN negative, and an **Organ-on-a-Chip drug-screening decision chain** figure (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision).
 
 ---
 
@@ -79,6 +79,7 @@ Phenotypic profiling with Cell Painting provides an unbiased, image-based readou
 11. External Resources and Licenses
 Appendix A. Supplementary Negative Analyses
 21. Deep Representation Learning & Transfer Learning
+22. Ablation Study, Generalization Analysis & Organ-on-a-Chip Decision Chain
 References
 
 ---
@@ -771,7 +772,114 @@ Interpretation: the self-trained single-cell CNN does **not** separate trt vs DM
 - `requirements.txt` updated with `torch` / `torchvision` (Stage 7) and `cellpose>=2.2` (Stage 8, CPU-compatible).
 
 
---
+## 22. Ablation Study, Generalization Analysis & Organ-on-a-Chip Decision Chain (Optimization Stage 9, 2026-10-05)
+
+> All numbers below are real and reproducible. Where a number reuses an existing
+> stage result (05/06 pipelines, 16/17 CSVs) it is explicitly marked; newly
+> computed numbers come from `scripts/ablation_cv_repro.py` (same
+> hyperparameters and splits as 05, seed 42, run 2026-10-05).
+
+### 22.1 Ablation study: feature-set contribution
+
+To quantify each feature family, four models were evaluated on the identical
+treated-vs-DMSO task (648 wells, 520 treated / 128 DMSO, 257 unique compounds):
+
+| Model | Feature set | Protocol | AUC | AP | ACC | Source |
+|---|---|---|---|---|---|---|
+| pheno-only | 904-d morphology | well-level 5-fold CV (OOF) | 0.7682 | 0.9359 | 0.7917 | reused 05 CSV (`16_structure_uncertainty_results.csv`); per-fold rerun 0.7688 ± 0.0261 |
+| fp-only | ECFP4 1024-b | well-level 5-fold CV (OOF) | 1.0000 | 1.0000 | 1.0000 | rerun this stage |
+| pheno+fp (main) | 904-d + ECFP4 | well-level 5-fold CV (OOF) | 1.0000 | 1.0000 | 1.0000 | rerun this stage (matches 05) |
+| deep embedding | ResNet18 512-d | well-grouped LOO (n = 6 wells) | 0.7778 | 0.8056 | 0.5000 | reused Stage 8 summary (`17_stage8_summary.json`) |
+
+Reading: fingerprint features alone already separate treated from DMSO perfectly
+(AUC 1.0000), so fusing morphology does not change the trt-vs-DMSO number; the
+morphology channel's contribution surfaces under the harder scaffold-grouped
+evaluation (§22.3), where pheno+fp (0.4679) clearly beats fp-only (0.3593) and
+pheno-only (0.2809).
+
+### 22.2 Five-fold cross-validation of the main model (pheno+fp)
+
+Well-level stratified 5-fold CV, seed 42, rerun this stage
+(`scripts/ablation_cv_repro.py`):
+
+| Model | Per-fold AUC | Mean ± std |
+|---|---|---|
+| pheno-only | 0.7729 / 0.7929 / 0.7685 / 0.7896 / 0.7200 | 0.7688 ± 0.0261 |
+| pheno+fp (main) | 1.0000 / 1.0000 / 1.0000 / 1.0000 / 1.0000 | 1.0000 ± 0.0000 |
+
+The 5-fold mean of pheno+fp is 1.0000 with zero variance on this task.
+
+### 22.3 Class-overlap (leakage) analysis
+
+The well-level random CV above is **compound-leaky by construction**: replicate
+wells of the same compound are spread across folds. Measured per fold, **84.6–91.4%
+of test compounds already appear in the training folds** (78.5–87.6% of test wells
+are compound-overlapping). The reported well-level numbers are therefore
+optimistic upper bounds for unseen-compound generalization.
+
+Two controls bound the effect:
+
+- **Compound-level split (trt by compound GroupKFold, DMSO 80/20 per fold):**
+  zero trt compounds shared across train/test; pheno+fp OOF AUC **1.0000**
+  (mean ± std = 1.0000 ± 0.0000). The trt-vs-DMSO separation is so large that
+  even fully leak-free splitting keeps AUC at ceiling — driven by DMSO, the only
+  negative class, being chemically unique and far from every treated compound.
+- **Scaffold-grouped CV (05, trt vs all controls):** the honest generalization
+  bottleneck appears here — pheno+fp AUC **0.4679** vs pheno-only 0.2809 /
+  fp-only 0.3593. New-scaffold generalization is limited; morphology contributes
+  most under this regime.
+
+For Organ-on-a-Chip screening we therefore recommend evaluating on
+scaffold-grouped splits rather than well-level CV.
+
+### 22.4 Single-cell CNN negative (AUC 0.0955): mechanistic discussion
+
+The self-trained single-cell CNN (Stage 8, n = 2,564 crops from 6 wells,
+well-grouped GroupKFold(4)) returned test AUC 0.0955 / AP 0.2698 / ACC 0.3292 —
+below chance. We interpret this as a sample/representation limitation, not
+evidence that single-cell morphology lacks signal:
+
+- **Effective sample size:** only 6 wells (3 treated / 3 DMSO) are the true
+  experimental units; well-grouped folds leave ~5 wells for training each fold,
+  and crops from the same well are highly correlated, so the effective n is
+  orders of magnitude smaller than the 2,564 crop count.
+- **Class imbalance & batch structure:** 1,121 treated (43.7%) vs 1,443 DMSO
+  (56.3%) crops; site/well-specific staining and segmentation artifacts create
+  paired structure that a 64×64 single-channel input cannot disentangle from
+  treatment effect.
+- **Representation granularity:** well-level aggregated 904-d profiles carry
+  8-channel population statistics and reach AUC 0.768–0.775 (0.778 as deep
+  embeddings), whereas per-cell 64×64 single-channel crops discard channel and
+  population context; under grouped splits the CNN learns unstable, near-random
+  decision boundaries (AUC well below 0.5).
+
+The negative is retained transparently as execution evidence and as a caution
+for under-powered image-level modeling.
+
+### 22.5 Organ-on-a-Chip drug-screening decision chain
+
+The submission's algorithmic core maps directly onto a decision chain for
+Organ-on-a-Chip drug screening:
+
+**single-cell phenotype (Cell Painting 8-channel, 904-d profile + ECFP4) →
+target/toxicity prediction (pheno+fp classifier; calibration + conformal
+confidence) → OoC validation (orthogonal microfluidic chip dose–response /
+mechanism confirmation) → drug decision (advance / dose-optimize /
+deprioritize)**
+
+with a low-confidence gate (|p − 0.5| < 0.15) routing ambiguous compounds to
+human review before OoC commitment, and scaffold-grouped evaluation bounding
+unseen-structure generalization.
+
+Figure 27 shows the complete chain:
+
+![Organ-on-a-Chip drug-screening decision chain](figures/27_ooc_decision_chain.png)
+
+*Figure 27: OoC decision chain — single-cell phenotype profiling →
+target/toxicity prediction with confidence gate → OoC validation → drug
+decision; low-confidence compounds loop back to human review.*
+
+---
 
 ## References
 

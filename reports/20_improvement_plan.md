@@ -285,3 +285,40 @@ Resolves the Stage 7 data gap (treated-only images) by downloading matched-plate
 | Approach | Cellpose `cpsam_v2` on all 12 sites → 2,564 crops (6 wells: 3 trt / 3 DMSO); small 64×64 CNN (conv blocks → pooling → dense); well-grouped GroupKFold(4), seed 42, 20 epochs; `06_deep_representation_pipeline.py` part 4 |
 | Status | **完成（如实报告负面结果）** |
 | Evidence | test **AUC 0.0955 / AP 0.2698 / ACC 0.3292** (below chance — small-sample negative reported honestly). See report v7 §21.4, figures 25–26, results CSV |
+
+---
+
+## Stage 9 — Ablation, Generalization & OoC Decision Chain (2026-10-05)
+
+Final optimization pass before the 2026-10-10 deadline: real ablation numbers for
+the four feature sets, 5-fold CV of the main model, an explicit compound-level
+class-overlap (leakage) analysis, a mechanistic discussion of the single-cell CNN
+negative, an Organ-on-a-Chip decision-chain figure, pinned dependency versions and
+a regenerated PDF. New items M–O:
+
+### M. Ablation study & 5-fold CV of the main model
+
+| Field | Detail |
+|---|---|
+| Target | Real, reproducible ablation table (pheno-only / fp-only / pheno+fp / deep embedding) and 5-fold CV mean±std of the main pheno+fp model |
+| Approach | `scripts/ablation_cv_repro.py` mirrors 05 hyperparameters/splits (seed 42, XGB n_est 200, depth 3, lr 0.05, subsample 0.8, colsample 0.6) on trt-vs-DMSO (648 wells / 257 compounds); deep-embedding and CNN rows reuse existing Stage 7/8 outputs |
+| Status | **完成** |
+| Evidence | pheno-only OOF AUC 0.7682 (reused 05 CSV; per-fold rerun 0.7688 ± 0.0261), fp-only AUC 1.0000, pheno+fp AUC 1.0000, deep 512-d (well-grouped LOO) AUC 0.7778 (reused Stage 8); pheno+fp 5-fold 1.0000 ± 0.0000. See report v7 §22.1–22.2 |
+
+### N. Class-overlap (leakage) analysis
+
+| Field | Detail |
+|---|---|
+| Target | Quantify compound sharing across folds of the well-level CV; re-evaluate the main model under a compound-level split |
+| Approach | Per-fold compound overlap computed on the 05-scheme folds; compound-split control (trt by compound GroupKFold, DMSO 80/20 per fold) rerun this stage |
+| Status | **完成** |
+| Evidence | well-level folds share 84.6–91.4% of test compounds with training (78.5–87.6% of wells); compound-split pheno+fp OOF AUC **1.0000** (zero trt sharing across folds) — DMSO's structural uniqueness drives trt-vs-DMSO; true generalization bottleneck at scaffold-grouped CV AUC 0.4679. See report v7 §22.3 |
+
+### O. OoC decision chain, dependency pinning & PDF regeneration
+
+| Field | Detail |
+|---|---|
+| Target | Add the Organ-on-a-Chip drug-screening decision-chain section + figure; pin requirements.txt to verified versions; regenerate PDF; sync writeup/plan/log |
+| Approach | New figure 27 (phenotype → target/toxicity → OoC validation → drug decision, with confidence gate + human-review loop); requirements.txt pinned to the environment that produced the submitted results (2026-10-05); PDF rebuilt from the v7 md (pandoc → HTML → Chrome headless) |
+| Status | **完成** |
+| Evidence | `reports/figures/27_ooc_decision_chain.png` + `figures/27_ooc_decision_chain.png`; report v7 §22.5; PDF 20 pages, MD5 in optimization log |

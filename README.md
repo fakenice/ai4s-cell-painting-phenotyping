@@ -117,6 +117,21 @@ Cellpose (cyto2) segmentation of the DNA channel.
    Scripts read/write relative to the repository root and will create
    `reports/figures/` and result CSVs automatically.
 
+   Stage 5–6 extension scripts (structure-aware modeling, uncertainty-aware
+   modeling, exploratory SIDER screen, in-house deep model, deep-embedding
+   comparison, single-cell CNN) run on the same data and are asset-gated
+   (each sub-step checks data availability first and prints a download hint
+   if a file is missing):
+
+   ```bash
+   python 05_structure_uncertainty_pipeline.py   # Stage 6: ECFP4 fusion, calibration, conformal, SIDER
+   python 06_deep_representation_pipeline.py     # Stage 7/8: in-house MLP, DMSO images, deep embeddings, CNN
+   ```
+
+   `06_deep_representation_pipeline.py` additionally needs the matched-plate
+   DMSO control images; the script contains the exact public S3 download
+   instructions and will print them when the assets are absent.
+
 5. (Optional) Rebuild the **live run** demo video — it actually executes the
    stage scripts, runs a real Cellpose inference and renders charts from the
    result CSVs (no fictional footage; every frame comes from real execution):

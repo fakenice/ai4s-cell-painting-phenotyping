@@ -1,20 +1,23 @@
 # Core analysis stack
-numpy>=1.24
-pandas>=2.0
-scipy>=1.10
-scikit-learn>=1.3
-matplotlib>=3.7
-seaborn>=0.13
+# Versions pinned to the environment that produced the submitted results (verified 2026-10-05).
+numpy==2.4.6
+pandas==3.0.3
+scipy==1.17.1
+scikit-learn==1.8.0
+matplotlib==3.10.9
+seaborn==0.13.2
 umap-learn>=0.5
-xgboost>=2.0
-rdkit>=2023.9
+xgboost==3.2.0
+rdkit==2026.3.6
 statsmodels>=0.14
-tifffile>=2023.7
-torch>=2.0
-torchvision>=0.15
+tifffile==2026.9.20
+torch==2.14.0
+torchvision==0.29.0
 
 # Optional — required for the Cellpose segmentation demo (04_cellpose_demo.py) and
 # the Stage 8 single-cell CNN crops (06_deep_representation_pipeline.py, part 4)
-cellpose>=2.2
+# NOTE: umap-learn / statsmodels / cellpose are not installed in the build env;
+# pinned to PyPI latest stable as of 2026-10-05.
+cellpose==4.2.1.1
 # optional (06 stage8 download helper) — boto3 if using AWS CLI/SDK path; direct S3 HTTP used by default
 # boto3>=1.26

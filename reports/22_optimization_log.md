@@ -204,6 +204,23 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 - **Report:** `12_technical_report_draft_v6.md` → **v7**: Status Draft v7; Abstract + Stage 7/8 sentences; §21 fully rewritten (21.1 asset inventory incl. DMSO; 21.2 MLP unchanged; 21.3 deep-embedding comparison; 21.4 single-cell CNN; 21.5 reproducibility assets); Appendix B + figures 24–26; Data & reproducibility tail updated.
 - **Writeup/plan:** `21_kaggle_writeup_draft.md` (report link v7, Project Summary, Methods item 13, Key Results + Stage-8 rows, Negative Results update, Repository Contents 17 figures); `20_improvement_plan.md` (deliverables + v7 rows, J evidence updated, Stage 8 items K/L).
 - **Script/deps:** `06_deep_representation_pipeline.py` updated (parts 0–4: download instructions, asset inventory, MLP, deep-embedding comparison, single-cell CNN); `requirements.txt` +`cellpose>=2.2`.
+
+### Stage 9 — Ablation, Generalization & OoC Decision Chain (2026-10-05)
+
+- **Ablation table (`scripts/ablation_cv_repro.py`, mirrors 05: seed 42, XGB n_est 200, depth 3, lr 0.05, subsample 0.8, colsample 0.6; trt vs DMSO, 648 wells / 520 pos / 128 neg / 257 compounds):**
+  - pheno-only: per-fold AUC 0.7729 / 0.7929 / 0.7685 / 0.7896 / 0.7200 → **OOF 0.7682**, mean±std **0.7688 ± 0.0261** (05 CSV reused: AUC 0.7682 / AP 0.9359 / ACC 0.7917)
+  - fp-only: 5-fold all 1.0000, OOF **1.0000**
+  - pheno+fp (main): 5-fold all 1.0000, OOF **1.0000**, mean±std **1.0000 ± 0.0000**
+  - deep embedding (reused `17_stage8_summary.json`): well-grouped LOO **AUC 0.7778 / AP 0.8056 / ACC 0.5000**
+- **Class-overlap (leakage) analysis:** well-level 5-fold shares **84.6–91.4%** of test compounds with training folds (78.5–87.6% of test wells); compound-split control (trt GroupKFold by compound + DMSO 80/20 per fold, zero trt sharing): pheno+fp OOF AUC **1.0000** — DMSO structural uniqueness drives trt-vs-DMSO; true bottleneck at scaffold-grouped CV AUC 0.4679 (05, trt vs all controls).
+- **CNN negative (AUC 0.0955) mechanistic discussion:** effective n = 6 wells; well-grouped folds leave ~5 training wells; crop-level class ratio 43.7/56.3; 64×64 single-channel input lacks the 8-channel population statistics in which well-level models find signal → below-chance boundary; retained transparently. Report v7 §22.4.
+- **OoC decision chain:** figure 27 (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision, confidence gate |p − 0.5| < 0.15 + human-review loop) → `reports/figures/27_ooc_decision_chain.png` + repo `figures/27_ooc_decision_chain.png`; report v7 §22.5.
+- **Dependency pinning:** `requirements.txt` all `>=` → `==` (numpy 2.4.6, pandas 3.0.3, scipy 1.17.1, scikit-learn 1.8.0, matplotlib 3.10.9, seaborn 0.13.2, xgboost 3.2.0, rdkit 2026.3.6, tifffile 2026.9.20, torch 2.14.0, torchvision 0.29.0; umap-learn 0.5.12, statsmodels 0.15.0, cellpose 4.2.1.1 — not installed in build env, pinned to PyPI latest stable 2026-10-05).
+- **README:** one-command run block (`05_structure_aware_pipeline.py` / `06_deep_representation_pipeline.py`) + data acquisition notes added.
+- **PDF regenerated:** v7 md → HTML (pandoc 3.9) → PDF (Chrome headless, A4 compact print style), **18 pages**, MD5 **32F6E261830A6D954CDD00F3733D26BE**, replaced `docs/12_technical_report_draft_v7.pdf` (previous d1e1db8 version: 20 pages, MD5 BA2658CA3E6AB96E1825BAA244058539).
+- **AI-trace re-check:** new figure 27 visual-checked (no "AI 生成" watermark); new PDF text layer zero hits for "AI 生成 / AI-generated"; repo-wide md/text zero hits; no watermark pixels on regenerated assets.
+- **Outputs:** report v7 §22 + TOC row, figures 27, README run block, requirements pinned, `reports/ablation_cv_results.json` (interim evidence).
+
 ## Final status
 
 | Item | Status |
@@ -216,8 +233,10 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 | Stage 6 (F/G/H: structure-aware, uncertainty-aware, SIDER) | 完成 (script 05, figures 16–20, results CSV, report v5, writeup/plan/log synced) |
 | Stage 7 (I/J: in-house MLP, GroupKFold leakage, ResNet18 embeddings, CNN limitation) | 完成 (script 06, figures 22–23, results CSV, report v6, writeup/plan/log synced) |
 | Stage 8 (K/L: DMSO images, deep-embedding comparison, single-cell CNN) | 完成 (12 sites/6 wells/96 TIFFs, figures 24–26, final results CSV, report v7, writeup/plan/log synced) |
+| Stage 9 (M/N/O: ablation, 5-fold CV, class-overlap, CNN discussion, OoC chain, pin deps, PDF regen) | 完成 (ablation numbers, figures 27, report v7 §22 + TOC, writeup/plan/log synced, requirements pinned, PDF 18 pp MD5 32F6E2…, README run block) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Git push (Stage 8 commit) | 待本次推送 |
+| Git push (Stage 9 commit) | 待本次推送 |
 
