@@ -160,9 +160,10 @@ Full details: `README.md` in the repository and the technical report (§10).
 - **One-command entry script:** `python demo.py` (see Reproduction Steps above)
 - **Single-cell segmentation demo:** `04_cellpose_demo.py` (Cellpose cyto2 on a real 8-channel JUMP-CP TIFF site)
 
-## Stage 11 P3/P4 Supplementary Results (2026-10-06)
+## Stage 11 P3/P4/P4b Supplementary Results (2026-10-06)
 
-Two follow-up experiments were added to the technical report (Draft v7 §26–27):
+Three follow-up experiments were added to the technical report (Draft v7 §3.13
+/ §4.9–4.10):
 
 - **Cross-plate generalization (P3, zero new downloads)** — training on plate
   BR00116991 and testing on BR00116992: trt-vs-DMSO AUC 0.6825 (strict DMSO,
@@ -175,6 +176,15 @@ Two follow-up experiments were added to the technical report (Draft v7 §26–27
   multi-seed bagging, SelectKBest feature selection and XGB+LR integration do
   **not** improve the baseline LR(904) AUC 0.7619 (XGB stacks degrade to
   0.57 / 0.48); no model-side upgrade replaces the 904 backbone.
+- **Prototype-discrimination re-run (P4b, A+B+C)** — replaces pairwise LR
+  with LOOCV cosine nearest-prototype on compound-mean prototypes, expands
+  evaluation to the full plate1 × plate2 32,640-pair grid, and adds per-plate
+  z-score / mean-centering correction controls: reference-21 mean AUC raw
+  0.7292 (negative vs M0 LR 0.7619), per-plate z-score 0.8274 (+0.066),
+  mean-centering 0.7768 (+0.015); full-grid mean AUC 0.9244 / 0.9171 / 0.8762
+  — internally stable and the cross-plate expansion resolves the 0.167
+  small-sample bottleneck, but only the per-plate correction beats M0 on the
+  reference set, so the harder-task conclusion stands.
 
 ## License
 
