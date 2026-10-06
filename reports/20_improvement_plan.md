@@ -219,7 +219,7 @@ Motivated by the official clarification post (scaffold-aware + uncertainty-aware
 | Target | Generate RDKit ECFP4 fingerprints from the 303 JUMP-CP SMILES, fuse them into the existing phenotype classifier (XGBoost), compare against morphology-only baseline (AUC/AP + feature importance); reproducible script |
 | Approach | `github_repo/05_structure_uncertainty_pipeline.py` part 1: RDKit Morgan r=2 / 1024 bits; three XGBoost models (pheno-only / fp-only / pheno+fp) on identical stratified 5-fold CV; scaffold grouping (single-linkage Tanimoto > 0.5) → 5-fold GroupKFold new-scaffold generalization |
 | Status | **完成** |
-| Evidence | trt-vs-DMSO AUC 0.7682 → **1.0000** (AP 0.9359 → 1.0000) on pheno+fp; fingerprint importance **87.7%**; scaffold GroupKFold on trt-vs-all-controls: pheno+fp **0.4679** > fp 0.3593 > pheno 0.2809. See report v5 §18.1, figure 16, results CSV |
+| Evidence | trt-vs-DMSO AUC 0.7682 → **1.0000** (AP 0.9359 → 1.0000) on pheno+fp; fingerprint importance **87.7%**; scaffold GroupKFold on trt-vs-all-controls: pheno+fp **0.4679** > fp 0.3593 > pheno 0.2809. See report v5 §18.1, figure 16, results CSV. **Stage 11 P1 update:** the trt-vs-DMSO AUC 1.0 is labeled a *structural control* (ECFP4 distance evidence, P0-3; report v7 §18.1/§24.3), and the default generalization protocol is now the soft scaffold-grouped CV τ = 0.6: pheno+fp AUC **0.5222** / AP 0.6545, pheno-only AUC **0.3349** / AP 0.5559 (report v7 §24.2; the 0.4679 hard-scaffold number is superseded as headline) |
 
 ### G. Uncertainty-aware modeling
 
@@ -303,7 +303,7 @@ a regenerated PDF. New items M–O:
 | Target | Real, reproducible ablation table (pheno-only / fp-only / pheno+fp / deep embedding) and 5-fold CV mean±std of the main pheno+fp model |
 | Approach | `scripts/ablation_cv_repro.py` mirrors 05 hyperparameters/splits (seed 42, XGB n_est 200, depth 3, lr 0.05, subsample 0.8, colsample 0.6) on trt-vs-DMSO (648 wells / 257 compounds); deep-embedding and CNN rows reuse existing Stage 7/8 outputs |
 | Status | **完成** |
-| Evidence | pheno-only OOF AUC 0.7682 (reused 05 CSV; per-fold rerun 0.7688 ± 0.0261), fp-only AUC 1.0000, pheno+fp AUC 1.0000, deep 512-d (well-grouped LOO) AUC 0.7778 (reused Stage 8); pheno+fp 5-fold 1.0000 ± 0.0000. See report v7 §22.1–22.2 |
+| Evidence | pheno-only OOF AUC 0.7682 (reused 05 CSV; per-fold rerun 0.7688 ± 0.0261), fp-only AUC 1.0000, pheno+fp AUC 1.0000, deep 512-d (well-grouped LOO) AUC 0.7778 (reused Stage 8); pheno+fp 5-fold 1.0000 ± 0.0000. See report v7 §22.1–22.2. **Stage 11 P1 update:** the well-level 5-fold OOF is retained as an in-fold sanity check only; the default evaluation protocol is the soft scaffold-grouped CV τ = 0.6 (pheno+fp AUC 0.5222 / AP 0.6545; pheno-only 0.3349 / AP 0.5559; report v7 §22.2/§24.2) |
 
 ### N. Class-overlap (leakage) analysis
 
@@ -312,7 +312,7 @@ a regenerated PDF. New items M–O:
 | Target | Quantify compound sharing across folds of the well-level CV; re-evaluate the main model under a compound-level split |
 | Approach | Per-fold compound overlap computed on the 05-scheme folds; compound-split control (trt by compound GroupKFold, DMSO 80/20 per fold) rerun this stage |
 | Status | **完成** |
-| Evidence | well-level folds share 84.6–91.4% of test compounds with training (78.5–87.6% of wells); compound-split pheno+fp OOF AUC **1.0000** (zero trt sharing across folds) — DMSO's structural uniqueness drives trt-vs-DMSO; true generalization bottleneck at scaffold-grouped CV AUC 0.4679. See report v7 §22.3 |
+| Evidence | well-level folds share 84.6–91.4% of test compounds with training (78.5–87.6% of wells); compound-split pheno+fp OOF AUC **1.0000** (zero trt sharing across folds) — DMSO's structural uniqueness drives trt-vs-DMSO; the generalization bottleneck is quantified at soft scaffold-grouped CV τ = 0.6: pheno+fp AUC **0.5222** / pheno-only 0.3349 (hard scaffold 0.5258, fp-cluster 0.4775; report v7 §22.3/§24.2). See report v7 §22.3 |
 
 ### O. OoC decision chain, dependency pinning & PDF regeneration
 
@@ -346,7 +346,7 @@ retrieval / known-target enrichment. New items P–R:
 | Target | Correct 904-feature profiles for plate / well-position covariates with harmonypy; re-run main pheno+fp (5-fold OOF) and scaffold-grouped CV; compare before/after AUC |
 | Approach | harmonypy 0.0.9 (categorical Plate + Row/Col covariates; pandas 2.x describe patch); maskA (trt vs DMSO, 648 wells) OOF + maskB (trt vs ctrl, 768 wells) scaffold GroupKFold (Tanimoto > 0.5) |
 | Status | **完成** |
-| Evidence | maskA before/after AUC **1.0000/1.0000** (no change; fp dominates); maskB scaffold-group CV AUC 0.4679 → **0.4136** (Δ −0.054; correction removes informative plate/position structure). Negative result recorded; Harmony not recommended by default. Report v7 §23.2, fig. 28b |
+| Evidence | maskA before/after AUC **1.0000/1.0000** (no change; fp dominates); maskB scaffold-group CV (hard scaffold, Tanimoto > 0.5) AUC 0.4679 → **0.4136** (Δ −0.054; correction removes informative plate/position structure). Negative result recorded; Harmony not recommended by default. Report v7 §23.2, fig. 28b. **Stage 11 P1 note:** the maskB Harmony reference uses the *hard* scaffold grouping; the default protocol is the soft τ = 0.6 CV (pre-Harmony pheno+fp AUC 0.5222, Table 24.2) |
 
 ### R. Phenotype retrieval & known-target enrichment
 
@@ -355,4 +355,18 @@ retrieval / known-target enrichment. New items P–R:
 | Target | Validate the 904-feature profiles as a retrieval/enrichment substrate: replicate-retrieval AP (same-compound wells) and known-target enrichment (Fisher / AUROC) |
 | Approach | Well-level cosine-similarity retrieval AP on maskA (648 wells / 257 compounds) before/after Harmony; compound-level pair cosine similarity vs shared-target annotation (JUMP-Target-1 compound_metadata_targets.tsv); per-target AUROC + Fisher on top-10% similar pairs, BH-corrected |
 | Status | **完成** |
-| Evidence | Replicate-retrieval mean AP 0.2451 vs chance 0.0401 (pair AUC 0.6335); after Harmony 0.0766. Shared-target pair AUROC 0.5611 (p = 2.76e-07, 569/32,640 pairs); 162 targets tested → 12 BH-significant by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), 90 by Fisher on top-10% pairs. Report v7 §23.3, figs. 28c–28d |
+| Evidence | Replicate-retrieval mean AP 0.2451 vs chance 0.0401 (pair AUC 0.6335); after Harmony 0.0766. Shared-target pair AUROC 0.5611 (p = 2.76e-07, 569/32,640 pairs); 162 targets tested → 12 BH-significant by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), 90 by Fisher on top-10% pairs. Report v7 §23.3, figs. 28c–28d. **Stage 11 P1 update (full-scope):** 648-well 904 rank metrics — MRR 0.3004, median rank 10, R@1 0.202 / R@5 0.406 / R@10 0.503; deep-image embeddings limited to 6 wells (coverage limitation): on the shared scope ResNet18 512-d AP 0.7333 / MRR 1.0 vs 904 AP 0.5083 (report v7 §24.1, fig. 29d) |
+
+---
+
+## Stage 11 — P0 Shortboard Closure & P1 Protocol Fixes (2026-10-06)
+
+Shortboard plan `reports/23_shortboard_plan_p0-p2.md` closed P0 (4/4) in commit
+`418f726` and P1 operationalizes the recommendations:
+
+| Item | P1 result | Evidence / report |
+|---|---|---|
+| P1-1 Full-scope retrieval validation | 648-well 904 baseline AP 0.2451 (chance 0.0401), MRR 0.3004, median rank 10, R@1/5/10 = 0.202/0.406/0.503; deep embeddings only verifiable on 6 wells (ResNet18 AP 0.7333 vs 904 0.5083) | report v7 §24.1, `19_stage11_p1_retrieval_full_results.csv`, `19_stage11_p1_retrieval_summary.json` |
+| P1-2 Soft scaffold-grouped CV (τ = 0.6) as default | pheno+fp AUC **0.5222** / AP 0.6545; pheno-only AUC **0.3349** / AP 0.5559 (hard 0.5258 / fp-cluster 0.4775) | report v7 §22.1–22.3, §24.2, fig. 29b |
+| P1-3 trt-vs-DMSO AUC 1.0 → structural control | Label added with P0-3 ECFP4 distance evidence (DMSO–compound mean 0.9683, MWU p = 5.95e-148; nearest neighbor sim 0.15) | report v7 §18.1, §22.1, §24.3, fig. 29c |
+| P1-4 Descaffolded ECFP4 → ablation control | maskA descaffolded fp 0.9302 / pheno+fp 0.9237; maskB soft-CV descaffolded pheno+fp 0.3166 (vs 0.4775 intact) | report v7 §24.4, `19_stage11_p0_summary.json` |

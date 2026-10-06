@@ -92,7 +92,7 @@ Importantly, we build on the official competition-recommended dataset: the **JUM
 | Phenotypic strength distribution | n = 256; mean 0.877, median 0.938, IQR [0.805, 0.984] |
 | Cellpose segmentation demo | 116 cells detected on a 1080×1080 site |
 | Structure-enhanced model (trt vs DMSO) | AUC 0.7682 → **1.0000**; AP 0.9359 → 1.0000; fingerprint importance **87.7%** (Stage 6) |
-| Scaffold GroupKFold (trt vs all controls) | pheno+fp **AUC 0.4679** > fp 0.3593 > pheno 0.2809 (Stage 6) |
+| Scaffold GroupKFold (trt vs all controls) | pheno+fp **AUC 0.4679** > fp 0.3593 > pheno 0.2809 (Stage 6, hard scaffold); **default protocol updated in Stage 11 to soft scaffold-grouped CV τ = 0.6: pheno+fp AUC 0.5222 / AP 0.6545, pheno-only 0.3349 / AP 0.5559** |
 | Probability calibration (test n = 98) | ECE 0.1461 → 0.1160 (Platt) → **0.0930** (isotonic); Brier 0.1833 → **0.1623** (Stage 6) |
 | Split conformal (α = 0.1) | q_hat 0.5600; empirical coverage **0.847** (nominal 90%); mean width 0.7809 (Stage 6) |
 | Low-confidence → human review | **27/98 (27.6%)** test wells below |p − 0.5| = 0.15 (Stage 6) |
@@ -105,12 +105,15 @@ Importantly, we build on the official competition-recommended dataset: the **JUM
 | Deep-embedding vs handcrafted vs concat (trt vs DMSO, well-grouped LOO) | deep 512-d **AUC 0.7778** / AP 0.8056 / ACC 0.5000; handcrafted 904 AUC 0.5556 / AP 0.5889 / ACC 0.5000; concat 1416 AUC 0.6667 / AP 0.6389 / ACC 0.6667; site-level GroupKFold AUC 0.2500 (n = 12 sites, unstable — reported as limitation) (Stage 8) |
 | Self-trained single-cell CNN (Cellpose crops, well-grouped GroupKFold(4)) | n = 2,564 crops / 6 wells; test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as small-sample negative (Stage 8) |
 | Ablation (Stage 9): pheno-only / fp-only / pheno+fp (5-fold OOF) | **0.7682 / 1.0000 / 1.0000**; 5-fold mean±std 0.7688±0.0261 / 1.0000±0.0000 / 1.0000±0.0000; deep embedding 0.7778 (LOO, Stage 8) |
-| Leakage analysis (Stage 9) | well-level folds share 84.6–91.4% compounds train/test (leak); compound-disjoint control (0 shared treated) still AUC 1.0000 → DMSO structural uniqueness; **scaffold-grouped CV AUC 0.4679 = true generalization bottleneck** |
+| Leakage analysis (Stage 9) | well-level folds share 84.6–91.4% compounds train/test (leak); compound-disjoint control (0 shared treated) still AUC 1.0000 → DMSO structural uniqueness; **generalization bottleneck quantified by soft scaffold-grouped CV τ = 0.6 (Stage 11 default): pheno+fp AUC 0.5222 / pheno-only 0.3349** (hard-scaffold 0.4679 superseded as headline) |
 | OoC decision chain (Stage 9) | single-cell phenotype → target/toxicity prediction → OoC validation → drug decision workflow |
 | Self-supervised representations (Stage 10) | ResNet18 baseline AUC **0.7778** (well-grouped LOO); DINOv2 vit_small 0.3333 / vit_base 0.4444; OpenPhenom RGB 0.3333 / 8-ch 0.6667 — no self-supervised embedding beats the baseline on the 6-well task; OpenPhenom 8-ch closest, consistent with multi-channel value |
 | Harmony well-position correction (Stage 10) | trt-vs-DMSO OOF AUC 1.0000 before/after (fp dominates); scaffold-group CV AUC **0.4679 → 0.4136** (Δ −0.054) — correction removes informative plate/position structure, negative result reported |
 | Replicate retrieval AP (Stage 10) | 904-feature cosine retrieval: mean AP **0.2451** vs chance 0.0401 (pair AUC 0.6335); after Harmony 0.0766 — raw profiles retrieve replicates at ~6.1× chance |
 | Known-target enrichment (Stage 10) | shared-target pair AUROC **0.5611** (p = 2.76e-07, 569/32,640 pairs); 162 targets tested → **12** BH-significant by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), **90** by Fisher on top-10% pairs |
+| Full-scope replicate retrieval (Stage 11, P1) | 648-well manual 904 baseline: mean AP **0.2451** (chance 0.0401), MRR 0.3004, median rank 10, R@1/5/10 = 0.202/0.406/0.503; deep-image embeddings limited to 6 wells (no local images for the other 642) — shared-scope ResNet18 AP **0.7333** vs 904 0.5083 |
+| Structural-control labeling (Stage 11, P1) | trt-vs-DMSO AUC 1.0000 is labeled a **structural control** (DMSO chemically isolated: ECFP4 distance DMSO–compound mean 0.9683, MWU p = 5.95e-148, nearest-neighbor Tanimoto sim 0.15) |
+| Descaffolded fingerprint (Stage 11, P1) | descaffolded ECFP4 downgraded to **ablation control**: soft-CV maskB pheno+fp 0.3166 (intact 0.4775), maskA 0.9237 — never a headline feature |
 
 ## Negative Results (reported transparently)
 

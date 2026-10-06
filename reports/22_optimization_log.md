@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_30897d9ebda811f197eb525400393706
-    ReservedCode1: TZXyrTyJYS8oQ0CgVgkvVZxyehfoOHscKhiVwv4ZdBN1P2UnzB0SUw/HYEyz8xmH8LrdOdRAu9rT9DeNiySP0BdTy+P1hs3NULyr2Rz7zQP9AYheeIMaBRztFVDD2+34FM5yLXAEJBIGYG7OZf9qDFMTlkRFywlhzEz6VfeGV1Y3jW5FqHGgl3J22SY=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_2bbd159ac12111f197eb525400393706
+    ReservedCode1: s7ccDZvaTtPRp3FaSlOk4MY65llMJbnXeNSKSyNEoOVtYfbdz336+3c6YGuM0m+DjqpTVWAvGz9pouLapiFDqSmY3TkxlAlRwfs2guKwiLxcMpZsMBqq/xh+wZTdlFpTHl37viKMduf/dy2NCxrW+RhQ5tFtmI5nmYpWqMugjip7s+APMCvK2Vs8qNA=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_30897d9ebda811f197eb525400393706
-    ReservedCode2: TZXyrTyJYS8oQ0CgVgkvVZxyehfoOHscKhiVwv4ZdBN1P2UnzB0SUw/HYEyz8xmH8LrdOdRAu9rT9DeNiySP0BdTy+P1hs3NULyr2Rz7zQP9AYheeIMaBRztFVDD2+34FM5yLXAEJBIGYG7OZf9qDFMTlkRFywlhzEz6VfeGV1Y3jW5FqHGgl3J22SY=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_2bbd159ac12111f197eb525400393706
+    ReservedCode2: s7ccDZvaTtPRp3FaSlOk4MY65llMJbnXeNSKSyNEoOVtYfbdz336+3c6YGuM0m+DjqpTVWAvGz9pouLapiFDqSmY3TkxlAlRwfs2guKwiLxcMpZsMBqq/xh+wZTdlFpTHl37viKMduf/dy2NCxrW+RhQ5tFtmI5nmYpWqMugjip7s+APMCvK2Vs8qNA=
 ---
+
+
 
 
 
@@ -258,7 +260,17 @@ Plan: `reports/23_shortboard_plan_p0-p2.md` (P0 executed 4/4; P1/P2 scoped). Scr
   - site-level AP (12 sites): 0.3425 (ResNet18), 0.1471/0.1559 (DINOv2), 0.1992/0.2249 (OpenPhenom) — site noise large; all deep embeddings except OpenPhenom-rgb3 beat 904 at well level.
   - OpenPhenom initially failed (pos-embed shape mismatch, remote-code cache drift); rebuilt transformers module cache → ran correctly.
 - **Figures:** `figures/29a_eval_disaggregation.png`, `29b_soft_grouped_cv.png`, `29c_fp_distance_distribution.png`, `29d_retrieval_track_switch.png` (+ `reports/figures/` copies).
-- **Decision for P1:** soft-group CV τ=0.5 default; trt-vs-DMSO AUC 1.0 labeled as structural control; ResNet18/DINOv2 embeddings promoted as retrieval features (validate on 648-well scope); descaffolded fp kept as ablation control only.
+- **Decision for P1:** soft-group CV τ=0.6 default (see P0-2: τ=0.6 recommended as stable, closest to hard-scaffold semantics); trt-vs-DMSO AUC 1.0 labeled as structural control; ResNet18/DINOv2 embeddings promoted as retrieval features (validate on 648-well scope); descaffolded fp kept as ablation control only.
+
+### Stage 11 — P1 Protocol Fixes: Full-Scope Retrieval Validation, Soft-Group Default CV, Structural-Control Labeling, Descaffold-Ablation Downgrade (2026-10-06)
+
+Script `scripts/stage11_p1_retrieval_full.py`; summaries `reports/19_stage11_p1_retrieval_full_results.csv`, `19_stage11_p1_retrieval_summary.json`. Report v7 updated in place (§18.1, §22.1–22.3, §23.2, new §24); PDF regenerated.
+
+- **P1-1 — full-scope (648-well) retrieval validation:** manual 904 features under the Stage 10 cosine protocol over all 648 maskA wells — mean replicate AP **0.2451** (chance 0.0401), pair AUC 0.6335, **MRR 0.3004, median rank of first hit 10, R@1 0.202 / R@5 0.406 / R@10 0.503** (rank metrics newly computed in P1). Deep-image embeddings exist for only 6 wells (plate BR00116991; no local images for the other 642) → full-scope deep retrieval **not feasible, reported as a coverage limitation**; on the 6-well shared scope ResNet18 512-d AP **0.7333 / MRR 1.0** vs manual 904 AP 0.5083 / MRR 0.5833 (deep embeddings retain their advantage where image data exists).
+- **P1-2 — soft scaffold-grouped CV (τ = 0.6) as default protocol:** report v7 now fixes the default CV numbers at pheno+fp **AUC 0.5222 / AP 0.6545** and pheno-only **AUC 0.3349 / AP 0.5559** (§22.2 Protocol note, §23.2, §24.2 Table 24.2); well-level 5-fold OOF (1.0000) demoted to in-fold sanity check; hard-scaffold 0.4679/0.5258 and fp-cluster 0.4775 kept as sensitivity references.
+- **P1-3 — trt-vs-DMSO AUC 1.0 labeled structural control:** §18.1 caveat rewritten to cite P0-3 ECFP4-distance evidence (DMSO–compound mean distance 0.9683, MWU p = 5.95e-148, nearest-neighbor Tanimoto sim 0.15, min distance 0.85); §22.1 reading note updated; full evidence table in §24.3 Table 24.3.
+- **P1-4 — descaffolded ECFP4 downgraded to ablation control:** report v7 no longer presents descaffolded fingerprints as a feature track; §24.4 Table 24.4 lists maskA descaffolded fp 0.9302 / pheno+fp 0.9237 and maskB soft-CV descaffolded pheno+fp **0.3166** (vs intact 0.4775) as ablation references only.
+- **Doc sync:** `20_improvement_plan.md` (F/M/N/Q/R evidence rows + new Stage 11 table), `21_kaggle_writeup_draft.md` (local-only sync; bottleneck number updated, Stage 11 rows added), this log; PDF regenerated to replace `docs/12_technical_report_draft_v7.pdf` (same filename, links stable).
 
 ## Final status
 
@@ -281,3 +293,4 @@ Plan: `reports/23_shortboard_plan_p0-p2.md` (P0 executed 4/4; P1/P2 scoped). Scr
 | Git push (Stage 8 commit) | 成功推送 origin/master（随 Stage 9 commit 一起） |
 | Git push (Stage 9 commit 0a0363b) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 
+*（内容由AI生成，仅供参考）*

@@ -1,0 +1,112 @@
+{
+  "p1_1_retrieval_full": {
+    "coverage_limitation": "Deep image embeddings exist for only 12 sites / 6 wells (plate BR00116991: treated A01/A03/A04, DMSO A02/A09/A17). The remaining 642 wells of maskA have no local images, so full-scope (648-well) deep-embedding retrieval is NOT feasible; reported as a limitation. Full-scope retrieval uses manual 904 profiles under the same cosine protocol as Stage 10.",
+    "rows": [
+      {
+        "scope": "full_648_wells",
+        "feature": "manual_904_features",
+        "mean_replicate_AP": 0.2451283877651553,
+        "chance_AP": 0.040090064304386816,
+        "pair_AUC": 0.6334883221727294,
+        "MRR": 0.300432319441755,
+        "median_rank_first_hit": 10.0,
+        "recall_at_1": 0.2021604938271605,
+        "recall_at_5": 0.4058641975308642,
+        "recall_at_10": 0.5030864197530864,
+        "n_queries_valid": 648,
+        "n": 648
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "manual_904_features",
+        "mean_replicate_AP": 0.5083333333333333,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.3055555555555556,
+        "MRR": 0.5833333333333334,
+        "median_rank_first_hit": 2.0,
+        "recall_at_1": 0.3333333333333333,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "deep_resnet18_512",
+        "mean_replicate_AP": 0.7333333333333334,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.5555555555555556,
+        "MRR": 1.0,
+        "median_rank_first_hit": 1.0,
+        "recall_at_1": 1.0,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "deep_dinov2_vits14_384",
+        "mean_replicate_AP": 0.6777777777777777,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.5833333333333334,
+        "MRR": 0.8333333333333334,
+        "median_rank_first_hit": 1.0,
+        "recall_at_1": 0.6666666666666666,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "deep_dinov2_vitb14_768",
+        "mean_replicate_AP": 0.6222222222222222,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.5,
+        "MRR": 0.7777777777777778,
+        "median_rank_first_hit": 1.0,
+        "recall_at_1": 0.6666666666666666,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "deep_openphenom_vits16_384_rgb3",
+        "mean_replicate_AP": 0.46388888888888885,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.19444444444444445,
+        "MRR": 0.5277777777777778,
+        "median_rank_first_hit": 3.0,
+        "recall_at_1": 0.3333333333333333,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      },
+      {
+        "scope": "6_wells_shared",
+        "feature": "deep_openphenom_vits16_384_ch8",
+        "mean_replicate_AP": 0.6083333333333333,
+        "chance_AP": 0.4000000000000001,
+        "pair_AUC": 0.3888888888888889,
+        "MRR": 0.75,
+        "median_rank_first_hit": 1.0,
+        "recall_at_1": 0.6666666666666666,
+        "recall_at_5": 1.0,
+        "recall_at_10": 1.0,
+        "n_queries_valid": 3,
+        "n": 6
+      }
+    ],
+    "stage10_reference": {
+      "scope": "full_648_wells",
+      "mean_replicate_AP": 0.2451,
+      "chance_AP": 0.0401,
+      "pair_AUC": 0.6335,
+      "note": "Stage 10 retrieval (18_stage10_retrieval_results.csv), no rank metrics reported then"
+    }
+  }
+}

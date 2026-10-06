@@ -29,7 +29,7 @@ AIGC:
 **Competition:** AI4S Open Innovation: AI for Life Science (Hackathon — Kaggle Writeup, technical report component)
 **Direction:** Single-cell phenotypic analysis (Cell Painting morphology)
 **Date:** 2026-10-01
-**Status:** Draft v7 — consolidates analyses 01–12 and v4/v5 enhancements (13–20); adds Stage 7 deep representation learning & transfer learning (Section 21: in-house MLP on 904-feature morphology, compound-grouped leak-free GroupKFold, ImageNet-pretrained ResNet18 embedding extraction) and Stage 8 (Section 21: downloaded matched-plate DMSO control images, full deep-embedding vs handcrafted vs concatenation classifier comparison, self-trained single-cell CNN with leak-free well-grouped splits), version-7 summary, and reproduction updates
+**Status:** Draft v7 — consolidates analyses 01–12 and v4/v5 enhancements (13–20); adds Stage 7 deep representation learning & transfer learning (Section 21: in-house MLP on 904-feature morphology, compound-grouped leak-free GroupKFold, ImageNet-pretrained ResNet18 embedding extraction) and Stage 8 (Section 21: downloaded matched-plate DMSO control images, full deep-embedding vs handcrafted vs concatenation classifier comparison, self-trained single-cell CNN with leak-free well-grouped splits), version-7 summary, and reproduction updates; adds Stage 11 P1 (Section 24): full-scope retrieval validation, soft scaffold-grouped default CV (τ = 0.6), structural-control labeling of trt-vs-DMSO AUC 1.0, and descaffolded-fingerprint ablation control
 
 ---
 
@@ -60,7 +60,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 ## Abstract
 
-Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative). A final optimization stage (Section 22) adds an **ablation study** across feature sets (morphology-only AUC 0.7682 vs fingerprint-only 1.0000 vs fused pheno+fp 1.0000 vs deep ResNet18 embedding 0.7778), **5-fold cross-validation** of the main pheno+fp model (per-fold AUC 1.0000 ± 0.0000), an explicit **compound-level class-overlap (leakage) analysis** of the well-level CV protocol, a mechanistic discussion of the below-chance single-cell CNN negative, and an **Organ-on-a-Chip drug-screening decision chain** figure (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision).
+Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative). A final optimization stage (Section 22) adds an **ablation study** across feature sets (morphology-only AUC 0.7682 vs fingerprint-only 1.0000 vs fused pheno+fp 1.0000 vs deep ResNet18 embedding 0.7778), **5-fold cross-validation** of the main pheno+fp model (per-fold AUC 1.0000 ± 0.0000), an explicit **compound-level class-overlap (leakage) analysis** of the well-level CV protocol, a mechanistic discussion of the below-chance single-cell CNN negative, and an **Organ-on-a-Chip drug-screening decision chain** figure (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision). A final **Stage 11 P1** adds: a **full-scope retrieval validation** (648-well manual-904 replicate-retrieval baseline with rank metrics; deep-image embeddings limited to 6 wells and reported as a coverage limitation — on the shared 6-well scope ResNet18 512-d AP 0.7333 clearly beats 904 AP 0.5083), the **soft scaffold-grouped CV (τ = 0.6) adopted as the default evaluation protocol** (pheno+fp AUC 0.5222 / AP 0.6545; pheno-only AUC 0.3349 / AP 0.5559 on treated-vs-all-controls), an explicit **structural-control label** on the trt-vs-DMSO AUC 1.0 (supported by ECFP4 distance evidence: DMSO–compound mean distance 0.9683, Mann–Whitney U p = 5.95 × 10⁻¹⁴⁸), and the **descaffolded ECFP4 fingerprint demoted to an ablation control**.
 
 ---
 
@@ -81,6 +81,7 @@ Appendix A. Supplementary Negative Analyses
 21. Deep Representation Learning & Transfer Learning
 22. Ablation Study, Generalization Analysis & Organ-on-a-Chip Decision Chain
 23. Self-Supervised Representations, Well-Position Batch Correction & Phenotype-Retrieval Validation
+24. Stage 11 P1: Full-Scope Retrieval Validation, Soft-Group Default CV & Structural-Control Labeling
 References
 
 ---
@@ -654,7 +655,7 @@ The dashboard reuses only local CSVs (`02_phenotype_results.csv`, `03_pred_trt_v
 
 Structure fusion raises AUC by **+0.2318** and AP by **+0.0641** over the morphology baseline. In the combined model, feature importance splits **pheno 0.123 vs fp 0.877** (fingerprints carry 87.7% of the discriminative signal) (`figures/16_structure_enhanced_performance.png`).
 
-**Honest caveat.** The trt-vs-DMSO task is *too easy* for chemical structure: the single negative control, DMSO, is a unique small molecule (SMILES `CS(=O)C`) that fingerprints separate perfectly from 303 diverse compounds. The AUC = 1.000 of fp-only reflects memorization of this one control rather than generalizable scaffold recognition. The meaningful test is scaffold-level generalization, below.
+**Honest caveat (structural control).** The trt-vs-DMSO task is *too easy* for chemical structure: the single negative control, DMSO, is a unique small molecule (SMILES `CS(=O)C`) that fingerprints separate perfectly from 303 diverse compounds. The AUC = 1.000 of fp-only reflects memorization of this one control rather than generalizable scaffold recognition. **We therefore label the trt-vs-DMSO AUC 1.0 as a *structural control*, not a phenotype result.** Stage 11 P0-3 quantified why: in ECFP4 Tanimoto space, DMSO is structurally isolated from every one of the 303 compounds (n = 302 DMSO–compound pairs, mean distance **0.9683**, median 0.9695, min 0.85; compound–compound mean 0.9013; Mann–Whitney U p = **5.95 × 10⁻¹⁴⁸**), and its nearest neighbor 2,5-furandimethanol has similarity only 0.15. Perfect fingerprint separation is therefore guaranteed by construction and carries no statement about morphological generalization. The meaningful test is scaffold-level generalization, below.
 
 **Scaffold-aware group-CV.** We defined scaffold groups by single-linkage clustering of compound ECFP4 Tanimoto similarities (distance < 0.5 ⇒ Tanimoto similarity > 0.5 ⇒ same scaffold), giving **282 scaffold groups from 303 unique compounds** — this library is extremely scaffold-diverse. A 5-fold **GroupKFold** evaluation on the treated-vs-all-controls task (768 wells) keeps all replicates of a scaffold in the same fold, testing generalization to *new scaffolds*:
 
@@ -793,10 +794,15 @@ treated-vs-DMSO task (648 wells, 520 treated / 128 DMSO, 257 unique compounds):
 | deep embedding | ResNet18 512-d | well-grouped LOO (n = 6 wells) | 0.7778 | 0.8056 | 0.5000 | reused Stage 8 summary (`17_stage8_summary.json`) |
 
 Reading: fingerprint features alone already separate treated from DMSO perfectly
-(AUC 1.0000), so fusing morphology does not change the trt-vs-DMSO number; the
-morphology channel's contribution surfaces under the harder scaffold-grouped
-evaluation (§22.3), where pheno+fp (0.4679) clearly beats fp-only (0.3593) and
-pheno-only (0.2809).
+(AUC 1.0000) — a **structural control** rather than a phenotype result, because
+DMSO is structurally isolated from all 303 compounds in ECFP4 space (Stage 11
+P0-3: DMSO–compound mean distance 0.9683, Mann–Whitney U p = 5.95 × 10⁻¹⁴⁸;
+nearest-neighbor similarity 0.15; §18.1, §24.3). Fusing morphology therefore does
+not change the trt-vs-DMSO number; the morphology channel's contribution surfaces
+under the harder soft scaffold-grouped evaluation (§24.2, adopted as the default
+protocol), where pheno+fp (0.5222 at τ = 0.6) clearly beats pheno-only (0.3349)
+and stays in line with the hard-scaffold (0.5258) and fp-cluster (0.4775)
+variants.
 
 ### 22.2 Five-fold cross-validation of the main model (pheno+fp)
 
@@ -809,6 +815,12 @@ Well-level stratified 5-fold CV, seed 42, rerun this stage
 | pheno+fp (main) | 1.0000 / 1.0000 / 1.0000 / 1.0000 / 1.0000 | 1.0000 ± 0.0000 |
 
 The 5-fold mean of pheno+fp is 1.0000 with zero variance on this task.
+
+**Protocol note (Stage 11 P1):** this well-level 5-fold OOF is retained only as
+an in-fold sanity check of the fused classifier. The **default evaluation
+protocol for the main models is now the soft scaffold-grouped CV (τ = 0.6)** on
+the treated-vs-all-controls task (pheno+fp AUC **0.5222** / AP 0.6545; pheno-only
+AUC **0.3349** / AP 0.5559; robustness bounds and protocol rationale in §24.2).
 
 ### 22.3 Class-overlap (leakage) analysis
 
@@ -825,13 +837,18 @@ Two controls bound the effect:
   (mean ± std = 1.0000 ± 0.0000). The trt-vs-DMSO separation is so large that
   even fully leak-free splitting keeps AUC at ceiling — driven by DMSO, the only
   negative class, being chemically unique and far from every treated compound.
-- **Scaffold-grouped CV (05, trt vs all controls):** the honest generalization
-  bottleneck appears here — pheno+fp AUC **0.4679** vs pheno-only 0.2809 /
-  fp-only 0.3593. New-scaffold generalization is limited; morphology contributes
-  most under this regime.
+- **Soft scaffold-grouped CV (Stage 11 P1, default protocol; trt vs all
+  controls):** the honest generalization bottleneck appears here. Soft grouping
+  (scaffold membership at ECFP4 Tanimoto τ = 0.6) gives pheno+fp AUC **0.5222** /
+  AP 0.6545 vs pheno-only AUC **0.3349** / AP 0.5559; hard-scaffold
+  (Tanimoto > 0.5) 0.5258 / 0.3153 and fp-cluster-0.5 0.4775 / 0.2854 bound the
+  grouping-choice sensitivity (≤ 0.007 AUC across soft/hard definitions).
+  New-structure generalization is limited; morphology contributes most under
+  this regime.
 
 For Organ-on-a-Chip screening we therefore recommend evaluating on
-scaffold-grouped splits rather than well-level CV.
+**soft scaffold-grouped splits (τ = 0.6)** as the default protocol rather than
+well-level CV (rationale and full table in §24.2).
 
 ### 22.4 Single-cell CNN negative (AUC 0.0955): mechanistic discussion
 
@@ -943,8 +960,8 @@ reported as-is).
 |---|---|---|---|---|---|
 | maskA before Harmony — pheno+fp 5-fold OOF | 1.0000 | 1.0000 | 1.0000 | 520 | 648 |
 | maskA after Harmony — pheno+fp 5-fold OOF | 1.0000 | 1.0000 | 1.0000 | 520 | 648 |
-| maskB before Harmony — pheno+fp scaffold-group CV | 0.4679 | 0.6244 | 0.6654 | — | 768 |
-| maskB after Harmony — pheno+fp scaffold-group CV | 0.4136 | 0.5899 | 0.6602 | — | 768 |
+| maskB before Harmony — pheno+fp scaffold-group CV (hard scaffold, Tanimoto > 0.5) | 0.4679 | 0.6244 | 0.6654 | — | 768 |
+| maskB after Harmony — pheno+fp scaffold-group CV (hard scaffold, Tanimoto > 0.5) | 0.4136 | 0.5899 | 0.6602 | — | 768 |
 
 Harmony correction does not change the treated-vs-DMSO OOF performance
 (AUC = 1.0000 before and after), because the ECFP4 fingerprint block already
@@ -954,7 +971,10 @@ correction slightly *decreases* AUC (0.4679 → 0.4136, Δ = −0.054), indicati
 that in this dataset a portion of the well-position / plate structure is
 informative for unseen-structure generalization; removing it hurts slightly.
 We therefore do **not** recommend default Harmony correction for this
-pipeline, and record the negative result explicitly.
+pipeline, and record the negative result explicitly. Note that the maskB
+Harmony comparison above used the *hard* scaffold grouping (Tanimoto > 0.5);
+the Stage 11 default protocol is the soft scaffold-grouped CV (τ = 0.6),
+for which the pre-Harmony pheno+fp reference is AUC 0.5222 (Table 24.2).
 
 ![Harmony batch correction PCA](figures/28b_harmony_batch_correction.png)
 
@@ -1018,7 +1038,158 @@ BH-significant by per-target AUROC and 90 by Fisher on the top-10% pairs).
 Artifacts: `reports/18_stage10_selfsupervised_summary.json`,
 `reports/18_stage10_harmony_results.csv`,
 `reports/18_stage10_retrieval_results.csv`,
-`reports/18_stage10_target_enrichment.csv`, figures `28a`–`28d`.
+`reports/18_stage10_target_enrichment.csv`, figures `28a`–`28d`. Stage 11
+P0/P1 results, scripts and artifacts are detailed in Section 24 (figures
+`29a`–`29d`; `reports/19_stage11_p0_summary.json`,
+`reports/19_stage11_p0_retrieval_summary.json`,
+`reports/19_stage11_p1_retrieval_full_results.csv`,
+`reports/19_stage11_p1_retrieval_summary.json`).
+
+## 24. Stage 11 P1: Full-Scope Retrieval Validation, Soft-Group Default CV & Structural-Control Labeling (2026-10-06)
+
+Stage 11 P0 (plan `reports/23_shortboard_plan_p0-p2.md`) closed four open
+questions with real numbers: within/cross-scaffold CV decomposition (Fig.
+29a), soft scaffold-grouped CV (Fig. 29b), task-attribute quantification of
+trt-vs-DMSO via ECFP4 distances (Fig. 29c), and a retrieval track switch from
+manual features to deep embeddings on the 6-well image scope (Fig. 29d).
+P1 operationalizes the P0 recommendations into the default evaluation
+protocol, the report wording, and the full-scope retrieval baseline. All P1
+figures `29a`–`29d` are copied to `reports/figures/`; P0 numbers are archived
+in `reports/19_stage11_p0_summary.json` and
+`reports/19_stage11_p0_retrieval_summary.json`.
+
+### 24.1 Full-scope retrieval validation (P1-1)
+
+**Protocol.** Identical to Stage 10 §23.3(a): each well is a query against all
+other wells, ranked by cosine similarity on L2-normalized features; average
+precision is computed against same-compound (replicate) wells; chance AP is the
+mean positive fraction. Scope: maskA (648 wells, 257 compounds).
+
+**Coverage limitation (reported as-is).** Deep image embeddings exist for only
+12 sites / 6 wells of plate BR00116991 (treated A01/A03/A04, DMSO A02/A09/A17;
+Stage 8). The remaining 642 maskA wells have no local images, so **full-scope
+648-well deep-embedding retrieval is not feasible** with the current local
+data. The full-scope retrieval therefore uses the manual 904 features under
+the Stage 10 protocol; deep embeddings are compared on the shared 6-well
+scope, which is the only population where both feature families exist.
+
+| Scope | Features | Mean replicate AP | Chance AP | Pair AUC | MRR | Median rank | R@1 | R@5 | R@10 |
+|---|---|---|---|---|---|---|---|---|---|
+| 648 wells | manual 904 | 0.2451 | 0.0401 | 0.6335 | 0.3004 | 10 | 0.202 | 0.406 | 0.503 |
+| 6 wells | manual 904 | 0.5083 | 0.4000 | 0.3056 | 0.5833 | 2 | 0.333 | 1.000 | 1.000 |
+| 6 wells | ResNet18 512-d | 0.7333 | 0.4000 | 0.5556 | 1.0000 | 1 | 1.000 | 1.000 | 1.000 |
+| 6 wells | DINOv2 vits14 384-d | 0.6778 | 0.4000 | 0.5833 | 0.8333 | 1 | 0.667 | 1.000 | 1.000 |
+| 6 wells | DINOv2 vitb14 768-d | 0.6222 | 0.4000 | 0.5000 | 0.7778 | 1 | 0.667 | 1.000 | 1.000 |
+| 6 wells | OpenPhenom vits16 8-ch | 0.6083 | 0.4000 | 0.3889 | 0.7500 | 1 | 0.667 | 1.000 | 1.000 |
+| 6 wells | OpenPhenom vits16 rgb3 | 0.4639 | 0.4000 | 0.1944 | 0.5278 | 3 | 0.333 | 1.000 | 1.000 |
+
+*Table 24.1: P1-1 replicate-retrieval numbers (`reports/19_stage11_p1_retrieval_full_results.csv`, `19_stage11_p1_retrieval_summary.json`). The 648-well 904 row reproduces the Stage 10 §23.3 reference and adds rank metrics; the 6-well rows re-run the same protocol on the shared scope for a fair deep-vs-manual comparison.*
+
+**Reading.** On the full 648-well scope, the manual 904 baseline retrieves
+replicates at ~6.1× chance AP (0.2451 vs 0.0401; R@10 = 0.503, median rank 10),
+so rank-based retrieval is valid but weak. On the shared 6-well scope, every
+deep embedding except OpenPhenom-rgb3 beats the 904 features at the same
+protocol: ResNet18 512-d AP 0.7333 vs 0.5083 with MRR 1.0 (all replicate
+queries rank first). This confirms the P0-4 conclusion — deep embeddings are
+the better retrieval substrate — but the gain is **unverifiable at full scope**
+until images are available for the remaining 642 wells; the full-scope default
+remains the 904-feature cosine baseline.
+
+![Retrieval track switch](figures/29d_retrieval_track_switch.png)
+
+*Figure 29d: well-level replicate-retrieval AP by feature family and scope
+(Stage 10 904 baseline, P0 6-well deep-vs-manual, P1 full-scope rank metrics).*
+
+### 24.2 Soft scaffold-grouped CV as default protocol (P1-2)
+
+maskB (treated vs all controls, 768 wells), GroupKFold by grouping definition,
+5-fold. Stage 11 P0-2 recomputed the scaffold-grouped CV under four grouping
+definitions (`reports/19_stage11_p0_summary.json`):
+
+| Grouping definition | pheno+fp AUC | pheno+fp AP | pheno-only AUC | pheno-only AP |
+|---|---|---|---|---|
+| Hard scaffold (Tanimoto > 0.5) | 0.5258 | 0.6563 | 0.3153 | 0.5486 |
+| **Soft scaffold, τ = 0.6 (default)** | **0.5222** | **0.6545** | **0.3349** | **0.5559** |
+| Soft scaffold, τ = 0.4 | 0.5192 | 0.6558 | 0.3170 | 0.5497 |
+| ECFP4 cluster, Tanimoto 0.5 | 0.4775 | 0.6299 | 0.2854 | 0.5374 |
+
+*Table 24.2: soft scaffold-grouped CV numbers (pheno+fp and pheno-only, maskB). Grouping-choice sensitivity is ≤ 0.007 AUC across the soft τ = 0.6 / 0.4 / hard definitions; the ECFP4-cluster variant is the most pessimistic (0.4775).*
+
+**Decision (fixed).** The **default evaluation protocol for the main models is
+soft scaffold-grouped CV with τ = 0.6**: pheno+fp **AUC 0.5222 / AP 0.6545**,
+pheno-only **AUC 0.3349 / AP 0.5559**. Sections 22.1–22.3 now report these as
+the headline generalization numbers; the well-level 5-fold OOF (AUC 1.0000)
+is retained only as an in-fold sanity check, and the hard-scaffold 0.4679
+(05, Stage 6) is superseded as the headline by the recomputed 0.5222 under the
+same task with the grouping redefined (the Stage 6 number remains cited in
+§18/§23 as historical context).
+
+![Soft-grouped CV](figures/29b_soft_grouped_cv.png)
+
+*Figure 29b: AUC / AP of pheno+fp and pheno-only under hard, soft (τ = 0.6/0.4)
+and fp-cluster groupings.*
+
+### 24.3 Structural-control labeling of trt-vs-DMSO AUC 1.0 (P1-3)
+
+Section 18.1 and §22.1 now label the trt-vs-DMSO AUC 1.0 as a **structural
+control**, not a phenotype result, citing the Stage 11 P0-3 ECFP4 distance
+evidence:
+
+| Quantity | Value |
+|---|---|
+| DMSO–compound pairs | n = 302 |
+| DMSO–compound distance, mean / median / min | 0.9683 / 0.9695 / 0.85 |
+| DMSO–compound distance, q10 / q90 | 0.9488 / 1.0000 |
+| compound–compound distance, mean / median | 0.9013 / 0.9048 (n = 45,451) |
+| Mann–Whitney U, DMSO–compound vs compound–compound | **p = 5.95 × 10⁻¹⁴⁸** |
+| DMSO nearest neighbor | 2,5-furandimethanol, Tanimoto similarity 0.15 |
+
+*Table 24.3: P0-3 structural isolation of DMSO (`reports/19_stage11_p0_summary.json`).*
+
+DMSO is structurally isolated from every treated compound by construction;
+perfect fingerprint separation (fp-only AUC 1.0000) is therefore guaranteed
+regardless of morphology, and carries no claim about phenotype. The
+generalization evidence lives in Table 24.2 (§24.2).
+
+![FP distance distribution](figures/29c_fp_distance_distribution.png)
+
+*Figure 29c: ECFP4 Tanimoto distance distributions — DMSO-vs-compound (n = 302)
+vs compound–compound (n = 45,451).*
+
+### 24.4 Descaffolded ECFP4 as ablation control (P1-4)
+
+Stage 11 P0-1b removed the Bemis–Murcko scaffold from the ECFP4 fingerprints
+(270 / 303 compounds descaffolded, 282 scaffold groups at Tanimoto 0.5;
+`reports/19_stage11_p0_summary.json`):
+
+| Task | Feature set | AUC (orig → descaffolded) | AP (orig → descaffolded) |
+|---|---|---|---|
+| maskA trt-vs-DMSO | fp | 1.0000 → 0.9302 | 1.0000 → 0.9823 |
+| maskA trt-vs-DMSO | pheno+fp | 1.0000 → 0.9237 | 1.0000 → 0.9818 |
+| maskB soft-group CV (τ = 0.6) | pheno+fp | 0.4775 → 0.3166 | 0.6299 → 0.5515 |
+
+*Table 24.4: descaffolded-fingerprint ablation (P0-1b).*
+
+**Wording (fixed).** The descaffolded fingerprint is **demoted from a feature
+variant to an ablation control**: it is no longer presented as an alternative
+input to the main models. Its two readings are: (1) on trt-vs-DMSO, removing
+the scaffold leaves near-saturation (0.93), so the structural separation
+operates at substituent level, not scaffold identity; (2) under scaffold-group
+CV, descaffolding drops pheno+fp AUC from 0.4775 to 0.3166, so cross-structure
+generalization depends on scaffold information. Report wording in §18.1/§22.3
+reflects the ablation-only role.
+
+![Eval disaggregation](figures/29a_eval_disaggregation.png)
+
+*Figure 29a: within- vs cross-scaffold CV decomposition (P0-1a) underlying the
+protocol decision in §24.2.*
+
+### Assets
+
+- Script: `scripts/stage11_p1_retrieval_full.py` (P1-1 full-scope + 6-well shared comparison).
+- Data: `reports/19_stage11_p1_retrieval_full_results.csv`, `reports/19_stage11_p1_retrieval_summary.json`; P0 archives `reports/19_stage11_p0_summary.json`, `reports/19_stage11_p0_retrieval_summary.json`, `reports/19_stage11_p0_retrieval_results.csv`.
+- Figures: `figures/29a_eval_disaggregation.png` … `29d_retrieval_track_switch.png` (+ `reports/figures/` copies).
+- Plan/log: `reports/23_shortboard_plan_p0-p2.md`, `reports/22_optimization_log.md`.
 
 ---
 
@@ -1072,14 +1243,23 @@ reproduced.
 | `28b_harmony_batch_correction.png` | PCA of 904 features before/after Harmony, plate and well-row coloring (Stage 10) | §23.2 |
 | `28c_retrieval_replicate_ap.png` | Replicate-retrieval AP and cosine-similarity distributions (Stage 10) | §23.3 |
 | `28d_target_enrichment.png` | Per-target pair AUROC for known targets (Stage 10) | §23.3 |
+| `29a_eval_disaggregation.png` | Within/cross-scaffold CV decomposition (Stage 11 P0) | §24.2 |
+| `29b_soft_grouped_cv.png` | Soft scaffold-grouped CV under hard / soft τ = 0.6 / 0.4 / fp-cluster groupings (Stage 11 P0) | §24.2 |
+| `29c_fp_distance_distribution.png` | ECFP4 distance distributions, DMSO vs compound pairs (Stage 11 P0) | §24.3 |
+| `29d_retrieval_track_switch.png` | Replicate-retrieval AP by feature family and scope (Stage 11 P0/P1) | §24.1 |
 
 Result CSVs are stored in `reports/` with numbered names (`01_`–`16_`); the
 full naming convention is described in §10.3 and in the repository README.
 Stage 6 adds `reports/16_structure_uncertainty_results.csv`,
 `reports/16_sider_prediction.csv`, and `reports/16_low_confidence_samples.csv`.
+Stage 11 adds `reports/19_stage11_p0_summary.json`,
+`reports/19_stage11_p0_retrieval_summary.json`,
+`reports/19_stage11_p0_retrieval_results.csv`,
+`reports/19_stage11_p1_retrieval_full_results.csv`, and
+`reports/19_stage11_p1_retrieval_summary.json`.
 
 ---
 
 ## Data and reproducibility
 
-All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
+All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Stage 11 P0/P1 adds the shortboard plan `reports/23_shortboard_plan_p0-p2.md`, the P1 full-scope retrieval script `scripts/stage11_p1_retrieval_full.py`, and the summary artifacts listed in Appendix B; the default evaluation protocol is the soft scaffold-grouped CV (τ = 0.6, Table 24.2). Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
