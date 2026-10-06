@@ -1,0 +1,84 @@
+{
+  "p2_1_coverage": {
+    "plate": "BR00116992",
+    "new_wells_downloaded": 18,
+    "new_sites": 18,
+    "total_sites": 30,
+    "total_wells": 24,
+    "image_dir": "E:\\Desktop\\Kaggle_2026\\2026-10-10 AI4S Open Innovation：AI for Life Science\\data\\raw\\BR00116992",
+    "n_tiff": 144,
+    "embedding_npz": "E:\\Desktop\\Kaggle_2026\\2026-10-10 AI4S Open Innovation：AI for Life Science\\github_repo\\reports\\19_stage11_p2_embeddings.npz"
+  },
+  "p2_2_retrieval_extended": [
+    {
+      "task": "replicate_retrieval_24wells",
+      "feature": "manual_904_features",
+      "mean_replicate_AP": 0.39450597814739136,
+      "chance_AP": 0.051150895140664954,
+      "pair_AUC": 0.6398496240601504,
+      "MRR": 0.4085417273998589,
+      "median_rank_first_hit": 4.0,
+      "recall_at_1": 0.23529411764705882,
+      "recall_at_5": 0.6470588235294118,
+      "recall_at_10": 0.7647058823529411,
+      "n_queries_valid": 17,
+      "n": 24
+    },
+    {
+      "task": "replicate_retrieval_24wells",
+      "feature": "deep_resnet18_512",
+      "mean_replicate_AP": 0.1417691292600234,
+      "chance_AP": 0.051150895140664954,
+      "pair_AUC": 0.4492481203007519,
+      "MRR": 0.17875009811815493,
+      "median_rank_first_hit": 15.0,
+      "recall_at_1": 0.058823529411764705,
+      "recall_at_5": 0.23529411764705882,
+      "recall_at_10": 0.4117647058823529,
+      "n_queries_valid": 17,
+      "n": 24
+    },
+    {
+      "task": "harder_pairwise_trt_trt",
+      "feature": "manual_904_features",
+      "n_pairs": 21,
+      "pairwise_trt_trt_auc_mean": 0.7619047619047619,
+      "pairwise_trt_trt_auc_min": 0.0,
+      "pairwise_trt_trt_auc_max": 1.0
+    },
+    {
+      "task": "harder_pairwise_trt_trt",
+      "feature": "deep_resnet18_512",
+      "n_pairs": 21,
+      "pairwise_trt_trt_auc_mean": 0.27380952380952384,
+      "pairwise_trt_trt_auc_min": 0.0,
+      "pairwise_trt_trt_auc_max": 1.0
+    },
+    {
+      "task": "harder_compound_identity_topk",
+      "feature": "manual_904_features",
+      "n": 14,
+      "n_compounds": 7,
+      "identity_top1_acc": 0.42857142857142855,
+      "identity_top5_acc": 0.9285714285714286
+    },
+    {
+      "task": "harder_compound_identity_topk",
+      "feature": "deep_resnet18_512",
+      "n": 14,
+      "n_compounds": 7,
+      "identity_top1_acc": 0.0,
+      "identity_top5_acc": 0.5714285714285714
+    },
+    {
+      "task": "full904_knn_compound_identity_260trt",
+      "feature": "manual_904_features",
+      "n": 260,
+      "n_compounds": 256,
+      "identity_top1_acc": 0.0,
+      "identity_top5_acc": 0.011538461538461539
+    }
+  ],
+  "p1_6well_reference": "deep_resnet18_512 well6 mean_replicate_AP 0.7333 (P0-4); 904 well6 0.5083 (recomputed P1)",
+  "harder_task_definition": "trt-vs-trt pairwise compound discrimination (LOOCV LR AUC over 7 compounds x 2 wells) + compound identity top-1/5 (same wells) + full-scope 904 kNN identity"
+}

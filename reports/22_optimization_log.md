@@ -272,6 +272,18 @@ Script `scripts/stage11_p1_retrieval_full.py`; summaries `reports/19_stage11_p1_
 - **P1-4 — descaffolded ECFP4 downgraded to ablation control:** report v7 no longer presents descaffolded fingerprints as a feature track; §24.4 Table 24.4 lists maskA descaffolded fp 0.9302 / pheno+fp 0.9237 and maskB soft-CV descaffolded pheno+fp **0.3166** (vs intact 0.4775) as ablation references only.
 - **Doc sync:** `20_improvement_plan.md` (F/M/N/Q/R evidence rows + new Stage 11 table), `21_kaggle_writeup_draft.md` (local-only sync; bottleneck number updated, Stage 11 rows added), this log; PDF regenerated to replace `docs/12_technical_report_draft_v7.pdf` (same filename, links stable).
 
+### Stage 11 — P2 Deep-Coverage Extension, Harder-Task Evaluation & Retrieval-Feature Upgrade (2026-10-06)
+
+Script `scripts/stage11_p2_retrieval_extended.py` (+ `stage11_p0_embeddings.npz`-family `19_stage11_p2_embeddings.npz` cache); summaries `reports/19_stage11_p2_retrieval_extended_results.csv`, `19_stage11_p2_retrieval_summary.json`, `19_stage11_p2_retrieval_breakdown.json`. Report v7 extended in place (§25.1–25.5, Tables 25.1–25.4); PDF regenerated.
+
+- **P2-A — deep-embedding coverage extension (BR00116992):** downloaded **18 treated wells** of plate BR00116992 (8 channels each, 144 TIFFs, 351.1 MB, public AWS cellpainting-gallery bucket, 0 failures, plate-map trt check 18/18) → deep coverage grows from 6 wells / 12 sites to **24 wells / 30 sites** (ResNet18 512-d embeddings in `19_stage11_p2_embeddings.npz`). Download script `scripts/stage11_p2_download_br00116992.py` (aws s3 cp --no-sign-request, resumable per-well).
+- **P2-B — extended replicate retrieval (24 wells, 17 queries):** manual 904 mean AP **0.3945** / MRR 0.4085 / R@1 0.235; deep 512-d mean AP **0.1418** / MRR 0.1788 / R@1 0.059. On the original 6 wells the P0-4 numbers reproduce exactly (deep 0.7333 vs 904 0.5083), validating the pipeline; at larger coverage the deep embedding no longer beats 904 (0.1418 vs 0.3945).
+- **P2-C — harder task: trt-vs-trt pairwise AUC:** 14 wells / 7 compounds / 21 pairs, leave-one-pair-out LR on (904, ECFP4) and deep-512-d features: 904 mean AUC **0.7619** (min 0 / max 1), deep mean **0.2738** (below chance, honestly reported) — replaces trt-vs-DMSO as the model-capability probe.
+- **P2-D — harder task: compound-identity top-k:** 14-well scope identity top-1/top-5: 904 **0.429 / 0.929**, deep **0.000 / 0.571**; full-scope 260-treated-well (256 compounds) 904 identity top-1 **0.000** / top-5 **0.0115** — near-chance at full scope, reported as a task-difficulty limitation.
+- **P2-E — deep embedding promoted to retrieval feature:** report v7 §25.4 now frames deep embeddings as **evaluated retrieval features** (not a classification branch); cross-plate/in-plate/DMSO AP breakdown: 904 0.128 / 0.669 / 0.196 vs deep 0.096 / 0.108 / 0.324 — the single-plate advantage (P0-4) does not transfer across plates; 904 cosine baseline remains the default retrieval substrate with deep embeddings as a secondary feature track.
+- **P2-F — protocol unification:** soft scaffold-grouped CV (τ = 0.6) remains the default evaluation; trt-vs-DMSO AUC 1.0 labeled structural control; descaffolded ECFP4 kept as ablation control only — consistent across 12/20/21/22/23.
+- **Doc sync:** 12 v7 (§25 + Abstract + §24.1 reading), 20 (P2 table), 21 (local-only; summary + Key Results rows + reproduction note), 23 (P2 execution record), this log; PDF regenerated to replace `docs/12_technical_report_draft_v7.pdf` (same filename, links stable); full-repo AI-trace re-scan zero hits.
+
 ## Final status
 
 | Item | Status |
@@ -292,5 +304,3 @@ Script `scripts/stage11_p1_retrieval_full.py`; summaries `reports/19_stage11_p1_
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Git push (Stage 8 commit) | 成功推送 origin/master（随 Stage 9 commit 一起） |
 | Git push (Stage 9 commit 0a0363b) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
-
-*（内容由AI生成，仅供参考）*

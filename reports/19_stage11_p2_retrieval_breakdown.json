@@ -1,0 +1,119 @@
+{
+  "protocol": "deep well = site f01p01 only (identical to stage11_p2_retrieval_extended.py); 904 = raw well mean of site profiles",
+  "query_type_breakdown": {
+    "manual_904": {
+      "cross_plate": {
+        "n_queries": 6,
+        "mean_AP": 0.128,
+        "aps": [
+          0.2,
+          0.0769,
+          0.1111,
+          0.25,
+          0.0714,
+          0.0588
+        ]
+      },
+      "DMSO": {
+        "n_queries": 3,
+        "mean_AP": 0.1961,
+        "aps": [
+          0.1776,
+          0.3167,
+          0.094
+        ]
+      },
+      "in_plate": {
+        "n_queries": 8,
+        "mean_AP": 0.6687,
+        "aps": [
+          1.0,
+          1.0,
+          1.0,
+          0.1,
+          0.5,
+          1.0,
+          0.5,
+          0.25
+        ]
+      }
+    },
+    "deep_resnet18_512": {
+      "cross_plate": {
+        "n_queries": 6,
+        "mean_AP": 0.096,
+        "aps": [
+          0.0556,
+          0.0526,
+          0.25,
+          0.1,
+          0.0588,
+          0.0588
+        ]
+      },
+      "DMSO": {
+        "n_queries": 3,
+        "mean_AP": 0.3238,
+        "aps": [
+          0.3,
+          0.5625,
+          0.1088
+        ]
+      },
+      "in_plate": {
+        "n_queries": 8,
+        "mean_AP": 0.1079,
+        "aps": [
+          0.0667,
+          0.0588,
+          0.0588,
+          0.0667,
+          0.3333,
+          0.0769,
+          0.1429,
+          0.0588
+        ]
+      }
+    }
+  },
+  "same_compound_cosine": {
+    "manual_904": {
+      "cross_gabapentin": 0.6652,
+      "cross_amlodipine": 0.2702,
+      "cross_hexestrol": 0.2362,
+      "in_dexamethasone": 0.5806,
+      "in_thiostrepton": 0.6338,
+      "in_BVT-948": 0.2092,
+      "in_ME-0328": 0.146
+    },
+    "deep_resnet18_512": {
+      "cross_gabapentin": 0.8388,
+      "cross_amlodipine": 0.8211,
+      "cross_hexestrol": 0.8684,
+      "in_dexamethasone": 0.8553,
+      "in_thiostrepton": 0.7895,
+      "in_BVT-948": 0.8371,
+      "in_ME-0328": 0.8557
+    }
+  },
+  "dmso_within_group_cosine": {
+    "manual_904": {
+      "min": -0.0264,
+      "max": 0.8422,
+      "values": [
+        0.8422,
+        -0.0264,
+        0.2694
+      ]
+    },
+    "deep_resnet18_512": {
+      "min": 0.8076,
+      "max": 0.9176,
+      "values": [
+        0.9176,
+        0.8076,
+        0.8441
+      ]
+    }
+  }
+}

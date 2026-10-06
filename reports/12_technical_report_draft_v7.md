@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_69a407bfbe3911f18019525400248c00
-    ReservedCode1: w84DxoZGCxO08fd1C8q35W6+IfRJULOU51n6zt9N8zupoV2Su8MQiXcXxt8JXoW7YynvmB5OFJcZ5aZ2wnHI1/Iiisoh5z+mig/BZBbvwfsYhNhJQIuFvCLlmnnF00z/LK2Xa9bm9GhPDMGHwDXPL4ApKuzYce/XaGAMRB9C/Fi/We0kzqXYoopc9Bw=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_e88eaf41c13111f197eb525400393706
+    ReservedCode1: M2nLjXwUi2ZRBjztwi4TcNYAm98NyXWJW3y7K6UiUf8so3sSfH8dXoBSCvLwC3S/XoISWbQuXG0Vy0O7IoN71V/y0CEwS0Gkp/2gh8oStTVpI+aAnr1oUanNYK2v8bOqZxnDPhu0ezwdfLU7YATlgJOialAjgJAMJqVdvp9AZy2YGThzkvp2dC8uB+s=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_69a407bfbe3911f18019525400248c00
-    ReservedCode2: w84DxoZGCxO08fd1C8q35W6+IfRJULOU51n6zt9N8zupoV2Su8MQiXcXxt8JXoW7YynvmB5OFJcZ5aZ2wnHI1/Iiisoh5z+mig/BZBbvwfsYhNhJQIuFvCLlmnnF00z/LK2Xa9bm9GhPDMGHwDXPL4ApKuzYce/XaGAMRB9C/Fi/We0kzqXYoopc9Bw=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_e88eaf41c13111f197eb525400393706
+    ReservedCode2: M2nLjXwUi2ZRBjztwi4TcNYAm98NyXWJW3y7K6UiUf8so3sSfH8dXoBSCvLwC3S/XoISWbQuXG0Vy0O7IoN71V/y0CEwS0Gkp/2gh8oStTVpI+aAnr1oUanNYK2v8bOqZxnDPhu0ezwdfLU7YATlgJOialAjgJAMJqVdvp9AZy2YGThzkvp2dC8uB+s=
 ---
+
+
 
 ---
 AIGC:
@@ -60,7 +62,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 ## Abstract
 
-Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative). A final optimization stage (Section 22) adds an **ablation study** across feature sets (morphology-only AUC 0.7682 vs fingerprint-only 1.0000 vs fused pheno+fp 1.0000 vs deep ResNet18 embedding 0.7778), **5-fold cross-validation** of the main pheno+fp model (per-fold AUC 1.0000 ± 0.0000), an explicit **compound-level class-overlap (leakage) analysis** of the well-level CV protocol, a mechanistic discussion of the below-chance single-cell CNN negative, and an **Organ-on-a-Chip drug-screening decision chain** figure (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision). A final **Stage 11 P1** adds: a **full-scope retrieval validation** (648-well manual-904 replicate-retrieval baseline with rank metrics; deep-image embeddings limited to 6 wells and reported as a coverage limitation — on the shared 6-well scope ResNet18 512-d AP 0.7333 clearly beats 904 AP 0.5083), the **soft scaffold-grouped CV (τ = 0.6) adopted as the default evaluation protocol** (pheno+fp AUC 0.5222 / AP 0.6545; pheno-only AUC 0.3349 / AP 0.5559 on treated-vs-all-controls), an explicit **structural-control label** on the trt-vs-DMSO AUC 1.0 (supported by ECFP4 distance evidence: DMSO–compound mean distance 0.9683, Mann–Whitney U p = 5.95 × 10⁻¹⁴⁸), and the **descaffolded ECFP4 fingerprint demoted to an ablation control**.
+Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state and is increasingly used to connect chemical perturbations to biological mechanism. In this work, we built an end-to-end morphological profiling pipeline on the JUMP-Cell Painting pilot (JUMP-CP) `source_4` dataset, covering 303 compounds measured in 1,536 wells with 904 precomputed morphological features. Our pipeline comprises (i) dimensionality reduction and clustering of compound-level fingerprints (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline that separates treated wells from DMSO negative controls (XGBoost, 5-fold CV, AUC = 0.768, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters against annotated target genes (36 significant cluster–target pairs at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score derived from classifier probabilities, and (v) integration of external annotations from ChEMBL (mechanism of action, MOA) and SIDER (side effects). A supervised target-class analysis further showed that compounds annotated to the microtubule/tubulin (median 0.9958 vs 0.9368, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019) and CDK (p = 0.018) families elicit significantly stronger phenotypic responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. Two follow-up association analyses — MOA enrichment at cluster level and strength–toxicity association — returned **negative results** after multiple-testing correction, which we report transparently and interpret in terms of annotation coverage, cluster resolution, and statistical power. A dedicated reliability analysis (Section 6) addresses cross-validation stability, error structure, and the robustness of the main conclusions. The work demonstrates that a compact, interpretable Cell Painting pipeline can recover known pharmacology while also exposing the limits of small-scale, sparsely annotated datasets for downstream mechanistic inference. A final incremental stage (Sections 18–19) adds **scaffold-aware structure modeling** (ECFP4 fingerprint fusion with morphological features), **uncertainty-aware prediction** (Platt/isotonic calibration, split conformal prediction, low-confidence → human-review workflow), and an **exploratory SIDER toxicity screen** with honest reporting of small-sample, imbalanced-data limitations. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 is unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative). A final optimization stage (Section 22) adds an **ablation study** across feature sets (morphology-only AUC 0.7682 vs fingerprint-only 1.0000 vs fused pheno+fp 1.0000 vs deep ResNet18 embedding 0.7778), **5-fold cross-validation** of the main pheno+fp model (per-fold AUC 1.0000 ± 0.0000), an explicit **compound-level class-overlap (leakage) analysis** of the well-level CV protocol, a mechanistic discussion of the below-chance single-cell CNN negative, and an **Organ-on-a-Chip drug-screening decision chain** figure (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision). A final **Stage 11 P1** adds: a **full-scope retrieval validation** (648-well manual-904 replicate-retrieval baseline with rank metrics; deep-image embeddings limited to 6 wells and reported as a coverage limitation — on the shared 6-well scope ResNet18 512-d AP 0.7333 clearly beats 904 AP 0.5083), the **soft scaffold-grouped CV (τ = 0.6) adopted as the default evaluation protocol** (pheno+fp AUC 0.5222 / AP 0.6545; pheno-only AUC 0.3349 / AP 0.5559 on treated-vs-all-controls), an explicit **structural-control label** on the trt-vs-DMSO AUC 1.0 (supported by ECFP4 distance evidence: DMSO–compound mean distance 0.9683, Mann–Whitney U p = 5.95 × 10⁻¹⁴⁸), and the **descaffolded ECFP4 fingerprint demoted to an ablation control**. A final **Stage 11 P2** closes the coverage gap and the harder-task requirement: it downloads **18 treated wells (8 channels each) of plate BR00116992** from the public AWS cellpainting-gallery bucket (144 TIFFs, 351.1 MB, zero download failures), recomputes ResNet18-512 embeddings for all 30 sites (24 wells: 6 BR00116991 + 18 BR00116992), and reruns the replicate-retrieval protocol on the **extended 24-well shared scope**: manual 904 **AP 0.3945** vs ResNet18 512-d **AP 0.1418** (MRR 0.4085 vs 0.1788; pair AUC 0.6398 vs 0.4492). The **6-well deep advantage does not transfer across plates** — deep embeddings lose to 904 on both cross-plate (AP 0.096 vs 0.128) and in-plate BR00116992 replicates (0.108 vs 0.669) while keeping an edge only on the single-plate DMSO replicates (0.324 vs 0.196); the cause is a compressed global similarity distribution (same-compound cosines 0.79–0.87 but negatives also high) and weak cross-plate invariance. Two **harder tasks** quantify this: **trt-vs-trt pairwise compound discrimination** (7 compounds × 2 wells, LOOCV LR over 21 compound pairs: mean pair AUC **0.762** manual 904 vs **0.274** deep) and **compound-identity top-k** (identity top-1 **0.429** vs **0.000**, top-5 **0.929** vs **0.571**). Deep embeddings are therefore recorded as a **retrieval-feature candidate whose single-plate advantage is real but does not generalize to cross-plate coverage**; the 904-feature cosine baseline remains the default retrieval substrate (§25).
 
 ---
 
@@ -82,6 +84,7 @@ Appendix A. Supplementary Negative Analyses
 22. Ablation Study, Generalization Analysis & Organ-on-a-Chip Decision Chain
 23. Self-Supervised Representations, Well-Position Batch Correction & Phenotype-Retrieval Validation
 24. Stage 11 P1: Full-Scope Retrieval Validation, Soft-Group Default CV & Structural-Control Labeling
+25. Stage 11 P2: Deep-Coverage Extension, Harder-Task Evaluation & Retrieval-Feature Upgrade
 References
 
 ---
@@ -720,7 +723,7 @@ Draft v5 adds the Stage 6 incremental engineering on top of the complete v4 repo
 
 ## 21. Deep Representation Learning & Transfer Learning (Enhancement H)
 
-Draft v7 adds the Stage 8 incremental engineering on top of the complete v6 report (v1–v6 content unchanged). Stage 7 (Draft v6) had established an in-house deep model on the handcrafted morphology matrix and verified that ImageNet-pretrained deep embeddings can be extracted from local raw images, but the two-class **image-level** experiments (deep-embedding classifier comparison and self-trained single-cell CNN) were honestly skipped because the local image subset was treated-only (no DMSO control images). **Stage 8 resolves that data gap**: it downloads matched-plate DMSO control images from the public JUMP-CP registry (same plate `BR00116991`, same `source_4`, same 8-channel imaging protocol — minimizing batch effects), then executes both previously skipped experiments with leak-free splits. Where the small sample makes image-level classifiers unstable or below chance, we report those numbers honestly as limitations — **no fabricated AUC/curves**.
+Draft v7 adds the Stage 8 incremental engineering on top of the complete v6 report (v1–v6 content unchanged). Stage 7 (Draft v6) had established an in-house deep model on the handcrafted morphology matrix and verified that ImageNet-pretrained deep embeddings can be extracted from local raw images, but the two-class **image-level** experiments (deep-embedding classifier comparison and self-trained single-cell CNN) were honestly skipped because the local image subset was treated-only (no DMSO control images). **Stage 8 resolves that data gap**: it downloads matched-plate DMSO control images from the public JUMP-CP registry (same plate `BR00116991`, same `source_4`, same 8-channel imaging protocol — minimizing batch effects), then executes both previously skipped experiments with leak-free splits. Where the small sample makes image-level classifiers unstable or below chance, we report those numbers honestly as limitations — **no fabricated AUC/curves**. The deep embeddings produced here are additionally evaluated as **retrieval features** (not a classification branch) under the Stage 11 P2 extended coverage in §25.
 
 ### 21.1 Asset inventory for deep representation (Stage 8)
 
@@ -1065,13 +1068,17 @@ other wells, ranked by cosine similarity on L2-normalized features; average
 precision is computed against same-compound (replicate) wells; chance AP is the
 mean positive fraction. Scope: maskA (648 wells, 257 compounds).
 
-**Coverage limitation (reported as-is).** Deep image embeddings exist for only
-12 sites / 6 wells of plate BR00116991 (treated A01/A03/A04, DMSO A02/A09/A17;
-Stage 8). The remaining 642 maskA wells have no local images, so **full-scope
-648-well deep-embedding retrieval is not feasible** with the current local
-data. The full-scope retrieval therefore uses the manual 904 features under
-the Stage 10 protocol; deep embeddings are compared on the shared 6-well
-scope, which is the only population where both feature families exist.
+**Coverage limitation (updated by Stage 11 P2).** At P1, deep image
+embeddings existed for only 12 sites / 6 wells of plate BR00116991 (treated
+A01/A03/A04, DMSO A02/A09/A17; Stage 8), so full-scope 648-well deep-embedding
+retrieval was not feasible and deep-vs-manual was compared on that shared
+6-well scope only. **Stage 11 P2 (§25) extends image coverage to 18 additional
+treated wells of plate BR00116992 (144 TIFFs downloaded from the public AWS
+cellpainting-gallery bucket), giving 30 sites / 24 wells (6 BR00116991 +
+18 BR00116992) with ResNet18-512 embeddings and reruns the same retrieval
+protocol on the extended shared scope.** The remaining 624 maskA wells still
+have no local images, so the 648-well full-scope default remains the manual
+904-feature cosine baseline.
 
 | Scope | Features | Mean replicate AP | Chance AP | Pair AUC | MRR | Median rank | R@1 | R@5 | R@10 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -1090,10 +1097,15 @@ replicates at ~6.1× chance AP (0.2451 vs 0.0401; R@10 = 0.503, median rank 10),
 so rank-based retrieval is valid but weak. On the shared 6-well scope, every
 deep embedding except OpenPhenom-rgb3 beats the 904 features at the same
 protocol: ResNet18 512-d AP 0.7333 vs 0.5083 with MRR 1.0 (all replicate
-queries rank first). This confirms the P0-4 conclusion — deep embeddings are
-the better retrieval substrate — but the gain is **unverifiable at full scope**
-until images are available for the remaining 642 wells; the full-scope default
-remains the 904-feature cosine baseline.
+queries rank first). This confirmed the P0-4 conclusion at the time, but
+**Stage 11 P2 (§25) shows the deep advantage does not generalize when coverage
+is extended across plates: on the 24-well shared scope (6 + 18 wells),
+ResNet18 512-d AP drops to 0.1418 vs manual 904 AP 0.3945 (pair AUC 0.4492 vs
+0.6398; MRR 0.1788 vs 0.4085), and the harder trt-vs-trt and compound-identity
+tasks are likewise won by 904 (pair AUC 0.762 vs 0.274; identity top-1 0.429
+vs 0.000). The 904-feature cosine baseline therefore remains the default
+retrieval substrate; deep embeddings are retained as a single-plate retrieval
+feature whose cross-plate limits are reported transparently in §25.**
 
 ![Retrieval track switch](figures/29d_retrieval_track_switch.png)
 
@@ -1193,6 +1205,148 @@ protocol decision in §24.2.*
 
 ---
 
+## 25. Stage 11 P2: Deep-Coverage Extension, Harder-Task Evaluation & Retrieval-Feature Upgrade
+
+Stage 11 P2 closes the deep-embedding coverage gap identified in §24.1 and
+upgrades the deep representation from a classification branch to an explicitly
+evaluated retrieval feature, alongside a harder task battery that replaces
+"trt-vs-DMSO AUC" as the model-capability headline.
+
+### 25.1 Data coverage extension: 18 additional treated wells (BR00116992)
+
+The deep ResNet18 pipeline (§21) previously covered only the 6 imaged wells of
+BR00116991. P2 downloads raw 8-channel images for 18 treated wells of the
+compound plate **BR00116992** from the public AWS cellpainting-gallery bucket
+(`cpg0000-jump-pilot`, CC BY 4.0): 144 TIFFs (18 wells × 8 channels), 351.1 MB,
+stored under `data/raw/BR00116992/`, zero failed downloads. The plate map was
+verified against `Metadata_WellType == "trt"` before download (18/18 treated,
+no DMSO).
+
+| Quantity | BR00116991 | BR00116992 | Total |
+|---|---|---|---|
+| imaged wells | 6 | 18 | **24** |
+| sites embedded | 12 | 18 | **30** |
+| treated wells | 3 | 18 | 21 |
+| DMSO wells | 3 | 0 | 3 |
+| TIFFs | — | 144 | 144 |
+
+*Table 25.1: P2 coverage extension. 7 compounds are represented by two wells
+(gabapentin-enacarbil, amlodipine, hexestrol span both plates; dexamethasone,
+thiostrepton, BVT-948, ME-0328 are in-plate duplicates), and 12 compounds by a
+single well.*
+
+Embeddings were extracted with the existing ResNet18 (ImageNet-pretrained,
+ch1/ch4/ch2 RGB, 512-d, well = mean over its sites) pipeline and saved to
+`reports/19_stage11_p2_embeddings.npz` (30 sites). Coverage is still partial:
+624 of the 648 full-scope wells (260 treated) remain without images.
+
+### 25.2 Extended replicate retrieval on 24 wells (17 valid queries)
+
+Re-running the P1 replicate-retrieval protocol (§24.2) on the same 24-well set
+with both feature families:
+
+| Feature | mean AP | chance AP | pair AUC | MRR | median rank | R@1 | R@5 | R@10 |
+|---|---|---|---|---|---|---|---|---|
+| manual 904 | **0.3945** | 0.0512 | 0.6398 | **0.4085** | 4 | **0.235** | **0.647** | **0.765** |
+| deep ResNet18 512-d | 0.1418 | 0.0512 | 0.4492 | 0.1788 | 15 | 0.059 | 0.235 | 0.412 |
+
+*Table 25.2: replicate retrieval on the extended 24-well set (17 valid
+queries). The deep embedding loses to the 904 profile by a wide margin
+(AP 0.1418 vs 0.3945).*
+
+The P0-4 6-well numbers remain exactly reproducible with the P2 extraction
+(deep AP 0.7333, 904 AP 0.5083), so the comparison is protocol-consistent. The
+24-well margin is explained by a per-query-type decomposition:
+
+| Query type (n) | 904 mean AP | deep mean AP |
+|---|---|---|
+| cross-plate compound (6) | 0.128 | 0.096 |
+| in-plate compound (8) | **0.669** | 0.108 |
+| DMSO (3) | 0.196 | **0.324** |
+
+*Table 25.3: query-type decomposition. The 904 feature recovers in-plate
+duplicates well but generalizes poorly across plates; the deep embedding
+recovers neither.*
+
+Cosine diagnostics (Table 25.4) explain the failure mode: deep same-compound
+similarities are uniformly high both cross-plate (0.82–0.87) and in-plate
+(0.79–0.86), but DMSO–DMSO similarities are equally high (0.81–0.92), i.e. the
+embedding is dominated by plate/assay-wide signal rather than compound
+identity. The 904 profile separates these regimes (in-plate 0.15–0.63; DMSO
+within-group −0.03–0.84).
+
+| Pair | 904 cosine | deep cosine |
+|---|---|---|
+| gabapentin-enacarbil (cross-plate) | 0.665 | 0.839 |
+| amlodipine (cross-plate) | 0.270 | 0.821 |
+| hexestrol (cross-plate) | 0.236 | 0.868 |
+| dexamethasone (in-plate) | 0.581 | 0.855 |
+| thiostrepton (in-plate) | 0.634 | 0.790 |
+| BVT-948 (in-plate) | 0.209 | 0.837 |
+| ME-0328 (in-plate) | 0.146 | 0.856 |
+
+*Table 25.4: same-compound cosine similarity. Deep similarities saturate at
+0.79–0.87 regardless of pair type; 904 similarities spread across 0.15–0.67,
+retaining specificity.*
+
+### 25.3 Harder task battery: trt-vs-trt pairwise discrimination & compound identity
+
+To move away from the saturated trt-vs-DMSO separation (AUC 1.0, structural
+control — §24.3), P2 evaluates two harder tasks on the 14 treated wells with
+≥2 replicates (7 compounds × 2 wells):
+
+1. **Pairwise compound discrimination**: LOOCV logistic-regression AUC for
+   every compound pair (21 pairs), per feature family.
+2. **Compound identity top-k**: nearest-neighbour identity top-1/top-5 over
+   the same 14 wells.
+
+| Task | manual 904 | deep ResNet18 512-d |
+|---|---|---|
+| pairwise trt-vs-trt AUC (21 pairs), mean | **0.7619** (min 0, max 1) | 0.2738 |
+| identity top-1 (14 wells) | **0.429** | 0.000 |
+| identity top-5 (14 wells) | **0.929** | 0.571 |
+
+*Table 25.5: harder-task results. Real numbers are far below the saturated
+trt-vs-DMSO AUC 1.0, confirming that the former is not a meaningful capability
+headline; the 904 feature carries the discriminating signal, the deep
+embedding does not.*
+
+For reference, full-scope compound identity over all 260 treated wells with
+904 features (256 compounds, mostly singletons) reaches top-1 0.000 / top-5
+0.0115 — identity recognition at the single-replicate resolution is beyond the
+current dataset, and is reported as a limitation.
+
+### 25.4 Deep embedding upgraded to a retrieval feature (narrative fix)
+
+The deep embedding is **promoted from a classification branch to an evaluated
+retrieval feature** in the report narrative. Its measured role is now explicit:
+on the extended 24-well set it performs below the 904 profile for replicate
+retrieval (AP 0.1418 vs 0.3945) and below chance-level compound
+discrimination (pairwise AUC 0.2738 vs 0.7619; identity top-1 0.000 vs 0.429),
+because its similarities saturate across wells and plates (§25.2). The 904
+profile remains the default retrieval backbone; the deep embedding is
+documented as a single-plate, transparency-limited auxiliary feature (24/648
+wells covered, no full-scope embedding available).
+
+### 25.5 Unified evaluation protocol (P1 wording carried over)
+
+All Stage 11 protocol decisions remain the default across the report:
+soft-group CV (τ = 0.6) as the default evaluation (§24.2; pheno+fp AUC 0.5222,
+pheno-only 0.3349); the trt-vs-DMSO AUC 1.0 is labelled a structural control
+supported by fingerprint-distance evidence (§24.3, P0-3: ECFP4 DMSO-vs-compound
+mean distance 0.9683, MWU p = 5.95e-148); the descaffolded fingerprint is an
+ablation control (§24.4). Harder-task numbers above are offered as the
+replacement capability metric.
+
+### Assets
+
+- Script: `scripts/stage11_p2_retrieval_extended.py`.
+- Data: `reports/19_stage11_p2_retrieval_summary.json`, `reports/19_stage11_p2_retrieval_extended_results.csv`, `reports/19_stage11_p2_retrieval_breakdown.json`, `reports/19_stage11_p2_embeddings.npz`; raw images `data/raw/BR00116992/`.
+- Figures: none added (tables only); figure numbering continues from §24.
+- Plan/log: `reports/23_shortboard_plan_p0-p2.md`, `reports/22_optimization_log.md`.
+
+---
+
 ## References
 
 1. Bray M-A, et al. Cell Painting, a high-content image-based assay for morphological profiling using multiplexed fluorescent dyes. Nat Protoc 11, 1757–1774 (2016).
@@ -1262,4 +1416,4 @@ Stage 11 adds `reports/19_stage11_p0_summary.json`,
 
 ## Data and reproducibility
 
-All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Stage 11 P0/P1 adds the shortboard plan `reports/23_shortboard_plan_p0-p2.md`, the P1 full-scope retrieval script `scripts/stage11_p1_retrieval_full.py`, and the summary artifacts listed in Appendix B; the default evaluation protocol is the soft scaffold-grouped CV (τ = 0.6, Table 24.2). Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
+All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Stage 11 P0/P1 adds the shortboard plan `reports/23_shortboard_plan_p0-p2.md`, the P1 full-scope retrieval script `scripts/stage11_p1_retrieval_full.py`, and the summary artifacts listed in Appendix B; the default evaluation protocol is the soft scaffold-grouped CV (τ = 0.6, Table 24.2). Stage 11 P2 adds the BR00116992 coverage-extension download script `scripts/stage11_p2_download_br00116992.py`, the extended retrieval script `scripts/stage11_p2_retrieval_extended.py`, the ResNet18 embedding cache `reports/19_stage11_p2_embeddings.npz`, and the P2 summaries `reports/19_stage11_p2_retrieval_extended_results.csv` / `19_stage11_p2_retrieval_summary.json` / `19_stage11_p2_retrieval_breakdown.json` (deep embeddings are evaluated as retrieval features, §25). Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.

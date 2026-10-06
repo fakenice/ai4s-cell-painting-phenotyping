@@ -1,0 +1,8 @@
+task,feature,mean_replicate_AP,chance_AP,pair_AUC,MRR,median_rank_first_hit,recall_at_1,recall_at_5,recall_at_10,n_queries_valid,n,n_pairs,pairwise_trt_trt_auc_mean,pairwise_trt_trt_auc_min,pairwise_trt_trt_auc_max,n_compounds,identity_top1_acc,identity_top5_acc
+replicate_retrieval_24wells,manual_904_features,0.39450597814739136,0.051150895140664954,0.6398496240601504,0.4085417273998589,4.0,0.23529411764705882,0.6470588235294118,0.7647058823529411,17.0,24.0,,,,,,,
+replicate_retrieval_24wells,deep_resnet18_512,0.1417691292600234,0.051150895140664954,0.4492481203007519,0.17875009811815493,15.0,0.058823529411764705,0.23529411764705882,0.4117647058823529,17.0,24.0,,,,,,,
+harder_pairwise_trt_trt,manual_904_features,,,,,,,,,,,21.0,0.7619047619047619,0.0,1.0,,,
+harder_pairwise_trt_trt,deep_resnet18_512,,,,,,,,,,,21.0,0.27380952380952384,0.0,1.0,,,
+harder_compound_identity_topk,manual_904_features,,,,,,,,,,14.0,,,,,7.0,0.42857142857142855,0.9285714285714286
+harder_compound_identity_topk,deep_resnet18_512,,,,,,,,,,14.0,,,,,7.0,0.0,0.5714285714285714
+full904_knn_compound_identity_260trt,manual_904_features,,,,,,,,,,260.0,,,,,256.0,0.0,0.011538461538461539

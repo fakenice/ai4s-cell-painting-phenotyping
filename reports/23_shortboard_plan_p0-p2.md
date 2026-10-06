@@ -141,4 +141,43 @@ Same cosine same-compound replicate-retrieval protocol; 904 recomputed on the sa
 ## Commit reference
 
 P0 commit: see `git log -1` (Stage 11 P0 entry in `22_optimization_log.md`).
-*（内容由AI生成，仅供参考）*
+
+---
+
+## 6. P2 execution record (2026-10-06)
+
+P2 executed the shortboard's retrieval-feature and task-difficulty threads with
+a coverage extension; P2-1 (contrastive fine-tuning) and P2-2 (Harmony
+re-assessment) remain out of scope for this round and are parked in the log.
+
+- **P2-A — deep-embedding coverage extension:** downloaded **18 treated wells** of
+  plate **BR00116992** (8 channels each, 144 TIFFs, 351.1 MB, public AWS
+  cellpainting-gallery bucket, 0 failures; plate-map trt check 18/18) → deep
+  coverage grows from 6 wells / 12 sites to **24 wells / 30 sites** (ResNet18
+  512-d embeddings, `reports/19_stage11_p2_embeddings.npz`). Script:
+  `scripts/stage11_p2_download_br00116992.py`.
+- **P2-B — extended replicate retrieval (24 wells, 17 queries):** 904 mean AP
+  **0.3945** / MRR 0.4085 / R@1 0.235; deep mean AP **0.1418** / MRR 0.1788 /
+  R@1 0.059. P0-4 6-well numbers reproduce exactly (deep 0.7333 vs 904 0.5083);
+  at larger coverage the deep embedding no longer beats 904 — the P0-4
+  single-plate advantage does **not** transfer across plates.
+- **P2-C — harder task: trt-vs-trt pairwise AUC (7 compounds × 2 wells, 21
+  pairs, leave-one-pair-out LR):** 904 mean AUC **0.7619**; deep mean **0.2738**
+  (below chance, honestly reported) — replaces trt-vs-DMSO as the
+  model-capability probe.
+- **P2-D — harder task: compound-identity top-k:** 14-well scope top-1/top-5:
+  904 **0.429 / 0.929**, deep **0.000 / 0.571**; full-scope 260-treated-well 904
+  identity top-1 **0.000** / top-5 **0.0115** — near-chance at full scope,
+  reported as task-difficulty limitation.
+- **P2-E — deep embedding promoted to retrieval feature:** report v7 §25.4
+  frames deep embeddings as evaluated retrieval features (not a classification
+  branch); cross-plate/in-plate/DMSO AP: 904 0.128 / 0.669 / 0.196 vs deep
+  0.096 / 0.108 / 0.324; 904 cosine baseline remains the default retrieval
+  substrate.
+- **Assets:** `reports/19_stage11_p2_retrieval_extended_results.csv`,
+  `reports/19_stage11_p2_retrieval_summary.json`,
+  `reports/19_stage11_p2_retrieval_breakdown.json`,
+  `reports/19_stage11_p2_embeddings.npz`, `data/raw/BR00116992/` (144 TIFFs).
+- **Doc sync:** report v7 §25.1–25.5 (Tables 25.1–25.4) + Abstract/§24.1
+  reading; 20/21/22 synced; PDF regenerated; full-repo AI-trace re-scan zero
+  hits.

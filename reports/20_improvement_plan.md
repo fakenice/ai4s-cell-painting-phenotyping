@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_2ebaa479bda811f18019525400248c00
-    ReservedCode1: qLF3Rzvee+S/LfBkV4UslWUZ6yAvZE7WgbOBwIe2dma+vEQ1aLVvfYSIGzGUe6nLseDz60rYvTVjeKsZbWdbhcsoXPQoihro3hw826mXgmR82Ejb/xB7bKC5Lv4T24/gz0Fy9WkPNhSHaQfm/HwNzG8Rn7eq6DyYGLFjTR2K5PH5YkYkFY+gPs9G8HQ=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_e9541eddc13111f197eb525400393706
+    ReservedCode1: YRBM3JP/WpyEvVmwk3VSxomjaa5HwVyJpbrwH7AGK9lBUHNekQPTZAssU0jpUxu4NvOJgLtJ+HWL6s70mwjPzRZqaWmee8QGIzOAKtjlHM6PH99ok2g5hwsd3oDhsKgkw+mVY5gUTRGZA4w/pAl1jrWuysHwuWISiQY9wjJl5QrBBL1OIYQDBAW6cZg=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_2ebaa479bda811f18019525400248c00
-    ReservedCode2: qLF3Rzvee+S/LfBkV4UslWUZ6yAvZE7WgbOBwIe2dma+vEQ1aLVvfYSIGzGUe6nLseDz60rYvTVjeKsZbWdbhcsoXPQoihro3hw826mXgmR82Ejb/xB7bKC5Lv4T24/gz0Fy9WkPNhSHaQfm/HwNzG8Rn7eq6DyYGLFjTR2K5PH5YkYkFY+gPs9G8HQ=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_e9541eddc13111f197eb525400393706
+    ReservedCode2: YRBM3JP/WpyEvVmwk3VSxomjaa5HwVyJpbrwH7AGK9lBUHNekQPTZAssU0jpUxu4NvOJgLtJ+HWL6s70mwjPzRZqaWmee8QGIzOAKtjlHM6PH99ok2g5hwsd3oDhsKgkw+mVY5gUTRGZA4w/pAl1jrWuysHwuWISiQY9wjJl5QrBBL1OIYQDBAW6cZg=
 ---
+
+
 
 ---
 AIGC:
@@ -370,3 +372,19 @@ Shortboard plan `reports/23_shortboard_plan_p0-p2.md` closed P0 (4/4) in commit
 | P1-2 Soft scaffold-grouped CV (τ = 0.6) as default | pheno+fp AUC **0.5222** / AP 0.6545; pheno-only AUC **0.3349** / AP 0.5559 (hard 0.5258 / fp-cluster 0.4775) | report v7 §22.1–22.3, §24.2, fig. 29b |
 | P1-3 trt-vs-DMSO AUC 1.0 → structural control | Label added with P0-3 ECFP4 distance evidence (DMSO–compound mean 0.9683, MWU p = 5.95e-148; nearest neighbor sim 0.15) | report v7 §18.1, §22.1, §24.3, fig. 29c |
 | P1-4 Descaffolded ECFP4 → ablation control | maskA descaffolded fp 0.9302 / pheno+fp 0.9237; maskB soft-CV descaffolded pheno+fp 0.3166 (vs 0.4775 intact) | report v7 §24.4, `19_stage11_p0_summary.json` |
+
+---
+
+## Stage 11 — P2 Deep-Coverage Extension, Harder-Task Evaluation & Retrieval-Feature Upgrade (2026-10-06)
+
+P2 closes the deep-embedding coverage gap and replaces the saturated
+trt-vs-DMSO headline with harder tasks:
+
+| Item | P2 result | Evidence / report |
+|---|---|---|
+| P2-A Coverage extension | **18 treated wells of BR00116992 downloaded** (8 channels each, 144 TIFFs, 351.1 MB, public AWS cellpainting-gallery bucket, zero failures; plate map verified trt 18/18) → 24 wells / 30 sites embedded (ResNet18 512-d, `19_stage11_p2_embeddings.npz`) | report v7 §25.1, `data/raw/BR00116992/` |
+| P2-B Extended replicate retrieval (24 wells, 17 queries) | manual 904 **AP 0.3945** / MRR 0.4085 / R@1 0.235; deep **AP 0.1418** / MRR 0.1788 / R@1 0.059. 6-well P0-4 numbers reproduce exactly (deep 0.7333, 904 0.5083) | report v7 §25.2, `19_stage11_p2_retrieval_summary.json` |
+| P2-C Harder task: trt-vs-trt pairwise AUC | 7 compounds × 2 wells, LOOCV LR over 21 pairs: 904 mean **0.7619** (min 0, max 1); deep mean **0.2738** | report v7 §25.3, `19_stage11_p2_retrieval_extended_results.csv` |
+| P2-D Harder task: compound-identity top-k | identity top-1/top-5 (14 wells): 904 **0.429 / 0.929**; deep **0.000 / 0.571**; full-scope 260-treated-well 904 identity top-1 0.000 / top-5 0.0115 (256 compounds) — limitation reported | report v7 §25.3 |
+| P2-E Deep embedding → retrieval feature | Deep embedding promoted from classification branch to evaluated **retrieval feature**; single-plate advantage (6-well) does not transfer across plates (cross-plate AP 0.096 vs 904 0.128; in-plate 0.108 vs 0.669; DMSO 0.324 vs 0.196); 904 cosine baseline remains default retrieval substrate | report v7 §25.4, `19_stage11_p2_retrieval_breakdown.json` |
+| P2-F Protocol unification | Soft-group CV (τ=0.6) default, trt-vs-DMSO AUC 1.0 structural control, descaffolded fp ablation control — carried over from P1 across all docs | report v7 §25.5, §24.2–24.4 |
