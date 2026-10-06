@@ -1,0 +1,16 @@
+metric,value
+n_dmso_vs_comp,302
+dmso_dist_mean,0.9682746539683058
+dmso_dist_median,0.9694638694638695
+dmso_dist_min,0.85
+dmso_dist_max,1.0
+dmso_dist_q10,0.948761408083442
+dmso_dist_q90,1.0
+cc_dist_mean,0.901320219039917
+cc_dist_median,0.9047619104385376
+cc_dist_q10,0.8478261232376099
+cc_dist_q90,0.9523809552192688
+mannwhitney_u_p,5.9464288912843094e-148
+dmso_nearest_neighbor,"2,5-furandimethanol"
+dmso_nearest_sim,0.15
+n_pairs_cc,45451

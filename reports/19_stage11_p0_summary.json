@@ -1,0 +1,160 @@
+{
+  "p0_1a_within_cross": {
+    "pheno+fp": {
+      "overall_auc": 0.49319944168734486,
+      "within_auc": 0.30998542274052476,
+      "cross_auc": 0.7515578374583114,
+      "n_within": 238,
+      "n_cross": 530,
+      "overall_ap": 0.6367455676611957
+    },
+    "pheno-only": {
+      "overall_auc": 0.3231699751861042,
+      "within_auc": 0.10036443148688047,
+      "cross_auc": 0.6121423556257679,
+      "n_within": 238,
+      "n_cross": 530,
+      "overall_ap": 0.5492103655272578
+    }
+  },
+  "p0_1b_cv": {
+    "maskA_trt_vs_DMSO|fp-orig": {
+      "auc": 1.0,
+      "ap": 1.0,
+      "acc": 1.0
+    },
+    "maskA_trt_vs_DMSO|fp-descaffolded": {
+      "auc": 0.9301908052884614,
+      "ap": 0.9822669334728356,
+      "acc": 0.8950617283950617
+    },
+    "maskA_trt_vs_DMSO|pheno+fp-orig": {
+      "auc": 1.0,
+      "ap": 1.0,
+      "acc": 1.0
+    },
+    "maskA_trt_vs_DMSO|pheno+fp-descaffolded": {
+      "auc": 0.9237229567307692,
+      "ap": 0.9817577397882853,
+      "acc": 0.8657407407407407
+    },
+    "maskB_scaffold_groupCV|fp-orig": {
+      "auc": 0.3765508684863524,
+      "ap": 0.6165595401619304,
+      "acc": 0.6770833333333334
+    },
+    "maskB_scaffold_groupCV|fp-descaffolded": {
+      "auc": 0.3732009925558313,
+      "ap": 0.6570049313532154,
+      "acc": 0.5625
+    },
+    "maskB_scaffold_groupCV|pheno+fp-orig": {
+      "auc": 0.4774891439205956,
+      "ap": 0.6299418521379051,
+      "acc": 0.65625
+    },
+    "maskB_scaffold_groupCV|pheno+fp-descaffolded": {
+      "auc": 0.3165865384615385,
+      "ap": 0.551490187392909,
+      "acc": 0.6067708333333334
+    },
+    "maskB_groupCV_hard_scaffold|pheno+fp": {
+      "auc": 0.5257831885856079,
+      "ap": 0.6563430820630457,
+      "acc": 0.6809895833333334
+    },
+    "maskB_groupCV_soft_tau0.6|pheno+fp": {
+      "auc": 0.5221774193548387,
+      "ap": 0.6545019347732823,
+      "acc": 0.6783854166666666
+    },
+    "maskB_groupCV_soft_tau0.4|pheno+fp": {
+      "auc": 0.519238523573201,
+      "ap": 0.655758921566213,
+      "acc": 0.6731770833333334
+    },
+    "maskB_groupCV_fpcluster_0.5|pheno+fp": {
+      "auc": 0.4774891439205956,
+      "ap": 0.6299418521379051,
+      "acc": 0.65625
+    },
+    "maskB_groupCV_hard_scaffold|pheno-only": {
+      "auc": 0.3152605459057072,
+      "ap": 0.5486434817510571,
+      "acc": 0.6106770833333334
+    },
+    "maskB_groupCV_soft_tau0.6|pheno-only": {
+      "auc": 0.33494882133995035,
+      "ap": 0.5558708096759368,
+      "acc": 0.6067708333333334
+    },
+    "maskB_groupCV_soft_tau0.4|pheno-only": {
+      "auc": 0.3169897642679901,
+      "ap": 0.5496797804550811,
+      "acc": 0.609375
+    },
+    "maskB_groupCV_fpcluster_0.5|pheno-only": {
+      "auc": 0.28543734491315137,
+      "ap": 0.5374001462325371,
+      "acc": 0.6015625
+    }
+  },
+  "p0_2_soft_group_cv": {
+    "maskB_groupCV_hard_scaffold|pheno+fp": {
+      "auc": 0.5257831885856079,
+      "ap": 0.6563430820630457
+    },
+    "maskB_groupCV_soft_tau0.6|pheno+fp": {
+      "auc": 0.5221774193548387,
+      "ap": 0.6545019347732823
+    },
+    "maskB_groupCV_soft_tau0.4|pheno+fp": {
+      "auc": 0.519238523573201,
+      "ap": 0.655758921566213
+    },
+    "maskB_groupCV_fpcluster_0.5|pheno+fp": {
+      "auc": 0.4774891439205956,
+      "ap": 0.6299418521379051
+    },
+    "maskB_groupCV_hard_scaffold|pheno-only": {
+      "auc": 0.3152605459057072,
+      "ap": 0.5486434817510571
+    },
+    "maskB_groupCV_soft_tau0.6|pheno-only": {
+      "auc": 0.33494882133995035,
+      "ap": 0.5558708096759368
+    },
+    "maskB_groupCV_soft_tau0.4|pheno-only": {
+      "auc": 0.3169897642679901,
+      "ap": 0.5496797804550811
+    },
+    "maskB_groupCV_fpcluster_0.5|pheno-only": {
+      "auc": 0.28543734491315137,
+      "ap": 0.5374001462325371
+    }
+  },
+  "p0_3_fp_distance": {
+    "n_dmso_vs_comp": 302,
+    "dmso_dist_mean": 0.9682746539683058,
+    "dmso_dist_median": 0.9694638694638695,
+    "dmso_dist_min": 0.85,
+    "dmso_dist_max": 1.0,
+    "dmso_dist_q10": 0.948761408083442,
+    "dmso_dist_q90": 1.0,
+    "cc_dist_mean": 0.901320219039917,
+    "cc_dist_median": 0.9047619104385376,
+    "cc_dist_q10": 0.8478261232376099,
+    "cc_dist_q90": 0.9523809552192688,
+    "mannwhitney_u_p": 5.9464288912843094e-148,
+    "dmso_nearest_neighbor": "2,5-furandimethanol",
+    "dmso_nearest_sim": 0.15,
+    "n_pairs_cc": 45451
+  },
+  "descaffold_coverage": {
+    "n_total": 303,
+    "n_fp": 303,
+    "n_scaffold": 303,
+    "n_descaffolded": 270
+  },
+  "scaffold_groups_Tanimoto0.5": 282
+}

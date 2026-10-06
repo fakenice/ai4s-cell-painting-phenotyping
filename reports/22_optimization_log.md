@@ -240,6 +240,26 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 - **Assets:** `reports/18_stage10_selfsupervised_summary.json`, `18_stage10_harmony_results.csv`, `18_stage10_retrieval_results.csv`, `18_stage10_target_enrichment.csv`, `18_stage10_summary.json`.
 - **Report/writeup/plan synced:** report v7 §23 (+TOC row, Appendix B rows 27/28a–d); writeup Key Results + Negative Results; plan items P–R.
 
+### Stage 11 — P0 Shortboard Closure: Eval Disaggregation, Soft-Group CV, Task Quantification, Retrieval Track Switch (2026-10-06)
+
+Plan: `reports/23_shortboard_plan_p0-p2.md` (P0 executed 4/4; P1/P2 scoped). Scripts `scripts/stage11_p0_structural.py` / `stage11_p0_retrieval.py`; summaries `reports/19_stage11_p0_summary.json`, `19_stage11_p0_retrieval_summary.json`, `19_stage11_p0_retrieval_results.csv`, `19_stage11_p0_embeddings.npz`.
+
+- **P0-1a — within vs cross-scaffold CV decomposition (maskB, compound-grouped):**
+  - pheno+fp: overall AUC **0.4932**, within AUC **0.3100** (n=238), cross AUC **0.7516** (n=530), AP 0.6367.
+  - pheno-only: overall AUC **0.3232**, within AUC **0.1004**, cross AUC **0.6121**, AP 0.5492.
+  - Cross-scaffold pairs are easy (structure leaks); within-scaffold phenotype is genuinely hard — headline 0.49–0.52 mixed two regimes.
+- **P0-1b — descaffolded ECFP4 (Bemis-Murcko removed; 270/303 descaffolded, 282 scaffold groups @ Tanimoto 0.5):**
+  - maskA trt-vs-DMSO: fp-orig AUC 1.0000 → fp-descaffolded **0.9302 / AP 0.9823**; pheno+fp-orig 1.0000 → pheno+fp-descaffolded **0.9237 / AP 0.9818** — trt-vs-DMSO stays near-perfect after scaffold removal (substituent-level structure, not scaffold identity).
+  - maskB scaffold-groupCV: pheno+fp-orig 0.4775 → pheno+fp-descaffolded **0.3166** (cross-scaffold generalization depends on scaffold info; descaffolding hurts).
+- **P0-2 — soft group CV (maskB):** hard scaffold AUC 0.5258/AP 0.6563; soft τ=0.6 **0.5222**/0.6545; soft τ=0.4 **0.5192**/0.6558; fp-cluster 0.5 **0.4775**/0.6299 (pheno-only: 0.3153/0.3349/0.3170/0.2854 AUC). Grouping choice is stable (≤0.007 AUC); fp-cluster most pessimistic.
+- **P0-3 — task-attribute quantification (ECFP4 Tanimoto distances):** DMSO-vs-compounds (n=302) mean **0.9683** / median 0.9695 / min 0.85 / q10 0.9488; compound-compound (n=45,451) mean **0.9013** / median 0.9048; MWU p = **5.95e-148**; DMSO nearest neighbor 2,5-furandimethanol (sim 0.15). trt-vs-DMSO is structurally separable by construction → AUC 1.0 is a fingerprint-identity control, not phenotype power.
+- **P0-4 — retrieval track switch (same cosine protocol; 904 recomputed on same 6 wells = 0.5083; chance_AP 0.5):**
+  - well-level AP: ResNet18 **0.7333** > DINOv2-vits14 **0.6778** > DINOv2-vitb14 **0.6222** > OpenPhenom-ch8 **0.6083** > 904 **0.5083** > OpenPhenom-rgb3 **0.4639**; pair AUC 0.5556/0.5833/0.5000/0.3889/0.3056/0.1944.
+  - site-level AP (12 sites): 0.3425 (ResNet18), 0.1471/0.1559 (DINOv2), 0.1992/0.2249 (OpenPhenom) — site noise large; all deep embeddings except OpenPhenom-rgb3 beat 904 at well level.
+  - OpenPhenom initially failed (pos-embed shape mismatch, remote-code cache drift); rebuilt transformers module cache → ran correctly.
+- **Figures:** `figures/29a_eval_disaggregation.png`, `29b_soft_grouped_cv.png`, `29c_fp_distance_distribution.png`, `29d_retrieval_track_switch.png` (+ `reports/figures/` copies).
+- **Decision for P1:** soft-group CV τ=0.5 default; trt-vs-DMSO AUC 1.0 labeled as structural control; ResNet18/DINOv2 embeddings promoted as retrieval features (validate on 648-well scope); descaffolded fp kept as ablation control only.
+
 ## Final status
 
 | Item | Status |
@@ -254,6 +274,7 @@ Drivers: resolve the Stage 7 data gap (treated-only local images) by downloading
 | Stage 8 (K/L: DMSO images, deep-embedding comparison, single-cell CNN) | 完成 (12 sites/6 wells/96 TIFFs, figures 24–26, final results CSV, report v7, writeup/plan/log synced) |
 | Stage 9 (M/N/O: ablation, 5-fold CV, class-overlap, CNN discussion, OoC chain, pin deps, PDF regen) | 完成 (ablation numbers, figures 27, report v7 §22 + TOC, writeup/plan/log synced, requirements pinned, PDF 18 pp MD5 32F6E2…, README run block) |
 | Stage 10 (P/Q/R: self-supervised reps, Harmony correction, retrieval & target enrichment) | 完成 (figures 28a–28d, report v7 §23 + TOC + Appendix B, writeup/plan/log synced, results CSV/JSON in reports/18_stage10_*) |
+| Stage 11 (P0: eval disaggregation, soft-group CV, task quant, retrieval switch) | 完成 (plan 23_shortboard_plan_p0-p2.md, figures 29a–29d, summaries 19_stage11_p0_*, log synced) |
 | Optimization log | 完成 (this file) |
 | Official re-check (R1–R4) | 完成 (R2/U3 待用户) |
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |

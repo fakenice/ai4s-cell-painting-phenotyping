@@ -1,0 +1,85 @@
+{
+ "p0_4_retrieval": {
+  "note": "Same cosine retrieval protocol. Stage-10 904 baseline (0.2451, 648-well scope) recomputed here on the same 6 wells (0.5083) for apples-to-apples well-level comparison; chance_AP=0.5 (only DMSO has 3 replicate wells among 6; A01/A03/A04 single-well, A04 single-site query excluded). n_queries_valid=3 (well6) / 11 (site12).",
+  "rows": [
+   {
+    "embedding": "deep_resnet18_512",
+    "scope": "well6",
+    "mean_replicate_AP": 0.7333333333333334,
+    "pair_AUC": 0.5555555555555556,
+    "n_queries_valid": 3
+   },
+   {
+    "embedding": "deep_resnet18_512",
+    "scope": "site12",
+    "mean_replicate_AP": 0.3425390266299357,
+    "pair_AUC": 0.4552058111380145,
+    "n_queries_valid": 11
+   },
+   {
+    "embedding": "deep_dinov2_vits14_384",
+    "scope": "well6",
+    "mean_replicate_AP": 0.6777777777777777,
+    "pair_AUC": 0.5833333333333334,
+    "n_queries_valid": 3
+   },
+   {
+    "embedding": "deep_dinov2_vits14_384",
+    "scope": "site12",
+    "mean_replicate_AP": 0.1470631641086186,
+    "pair_AUC": 0.2953995157384987,
+    "n_queries_valid": 11
+   },
+   {
+    "embedding": "deep_dinov2_vitb14_768",
+    "scope": "well6",
+    "mean_replicate_AP": 0.6222222222222222,
+    "pair_AUC": 0.5,
+    "n_queries_valid": 3
+   },
+   {
+    "embedding": "deep_dinov2_vitb14_768",
+    "scope": "site12",
+    "mean_replicate_AP": 0.1559048274957366,
+    "pair_AUC": 0.3438256658595641,
+    "n_queries_valid": 11
+   },
+   {
+    "embedding": "deep_openphenom_vits16_384_rgb3",
+    "scope": "well6",
+    "mean_replicate_AP": 0.4638888888888888,
+    "pair_AUC": 0.1944444444444444,
+    "n_queries_valid": 3
+   },
+   {
+    "embedding": "deep_openphenom_vits16_384_rgb3",
+    "scope": "site12",
+    "mean_replicate_AP": 0.1991555162009707,
+    "pair_AUC": 0.3704600484261501,
+    "n_queries_valid": 11
+   },
+   {
+    "embedding": "deep_openphenom_vits16_384_ch8",
+    "scope": "well6",
+    "mean_replicate_AP": 0.6083333333333333,
+    "pair_AUC": 0.3888888888888889,
+    "n_queries_valid": 3
+   },
+   {
+    "embedding": "deep_openphenom_vits16_384_ch8",
+    "scope": "site12",
+    "mean_replicate_AP": 0.2249130919585465,
+    "pair_AUC": 0.3462469733656174,
+    "n_queries_valid": 11
+   },
+   {
+    "embedding": "manual_904_features",
+    "scope": "well6",
+    "mean_replicate_AP": 0.5083333333333333,
+    "pair_AUC": 0.3055555555555556,
+    "n_queries_valid": 3
+   }
+  ],
+  "conclusion": "All deep embeddings except OpenPhenom-rgb3 beat manual 904 on well-level replicate retrieval (0.61-0.73 vs 0.51): ResNet18 0.7333 > DINOv2-vits14 0.6778 > DINOv2-vitb14 0.6222 > OpenPhenom-ch8 0.6083 > 904 0.5083 > OpenPhenom-rgb3 0.4639. Site-level same-well retrieval is weak for all (0.15-0.34), indicating large site-level noise. OpenPhenom required remote-code cache rebuild (pos_embed mismatch) then ran correctly."
+ }
+}
