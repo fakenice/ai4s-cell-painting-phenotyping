@@ -62,7 +62,10 @@ BR00116992 coverage-extension plate). The core pipeline comprises feature
 preprocessing and normalization (904 handcrafted morphology features), clustering,
 treated-vs-DMSO classification, target/MOA enrichment, phenotypic strength
 scoring, structural fingerprinting, structure- and uncertainty-aware modeling,
-deep representation learning, and retrieval-based validation.
+deep representation learning, and retrieval-based validation. Throughout,
+ECFP4 structural fingerprints are positioned as an **SAR control and confound
+check** — used for structure–phenotype ablations and structural confirmation
+in the OoC decision chain, not as a phenotypic-recognition input.
 
 Main results: treated-vs-DMSO classification reaches AUC 0.768 with an
 XGBoost pheno+fp model under leak-free group splits; refined clusters show 36
@@ -211,6 +214,17 @@ Section 3.11 and Section 4.11.
 
 Normalized negative-control-batch profiles were used as provided. Well-level profiles were averaged over the 4 technical replicates to obtain compound-level fingerprints (303 compounds × 904 features), matching the standard JUMP-CP analysis convention. Well-level probabilities were retained for the classification arm.
 
+**Role of structural fingerprints (ECFP4).** Throughout this report, the
+ECFP4 chemical-structure fingerprints (Morgan, radius 2; §3.9, §3.10) are used
+exclusively as an **SAR control and confound check**: they serve
+structure–phenotype ablation comparisons and the structural-confirmation step
+of the OoC decision chain. They are **not** an input to the photo-to-identity
+phenotypic-recognition task — none of the phenotype-driven results in §4
+(classification, clustering, retrieval, target enrichment) derive their answers
+from fingerprint features. Where fingerprint features enter a model (pheno+fp,
+§3.10), they act as a structure-leakage control and structural confirmation
+aid, not as the answer source.
+
 #### Descaffolded ECFP4 as ablation control
 
 Stage 11 P0-1b removed the Bemis–Murcko scaffold from the ECFP4 fingerprints
@@ -315,7 +329,7 @@ Analogous Fisher enrichment was performed at the level of **ChEMBL MOA classes**
 | Tanimoto ≥ 0.50 | 22 pairs → **72.7%** share a target |
 | Shared-target fraction across Tanimoto quintiles | 1.44% → 2.69% |
 
-**Interpretation.** Global linear correlation between structure and phenotype is essentially nil (Spearman ≈ 0), matching the well-known difficulty of structure–activity prediction in Cell Painting: the same morphological phenotype can be reached from chemically distinct scaffolds, and structurally similar analogs often diverge phenotypically. However, **strong structural similarity carries strong target signal**: at Tanimoto ≥ 0.3 the shared-target rate jumps 26× over baseline (44.2% vs 1.7%), and at ≥ 0.5 reaches 72.7%. Structure and phenotype are therefore complementary axes: structure is a sharp prior for target identity at high similarity; phenotype resolves perturbations that structure cannot distinguish.
+**Interpretation.** Global linear correlation between structure and phenotype is essentially nil (Spearman ≈ 0), matching the well-known difficulty of structure–activity prediction in Cell Painting: the same morphological phenotype can be reached from chemically distinct scaffolds, and structurally similar analogs often diverge phenotypically. However, **strong structural similarity carries strong target signal**: at Tanimoto ≥ 0.3 the shared-target rate jumps 26× over baseline (44.2% vs 1.7%), and at ≥ 0.5 reaches 72.7%. Structure and phenotype are therefore complementary axes: structure is a sharp prior for target identity at high similarity; phenotype resolves perturbations that structure cannot distinguish. Throughout the report this comparison is framed as an **SAR control / confound check** (§3.1): ECFP4 fingerprints are not an input to the photo-to-identity phenotypic-recognition task, but a structural prior used to judge when morphological findings are structure-driven.
 
 **Outputs:** `reports/figures/15_structure_phenotype_correlation.png`.
 
@@ -339,7 +353,7 @@ Analogous Fisher enrichment was performed at the level of **ChEMBL MOA classes**
 
 Structure fusion raises AUC by **+0.2318** and AP by **+0.0641** over the morphology baseline. In the combined model, feature importance splits **pheno 0.123 vs fp 0.877** (fingerprints carry 87.7% of the discriminative signal) (`figures/16_structure_enhanced_performance.png`).
 
-**Honest caveat (structural control).** The trt-vs-DMSO task is *too easy* for chemical structure: the single negative control, DMSO, is a unique small molecule (SMILES `CS(=O)C`) that fingerprints separate perfectly from 303 diverse compounds. The AUC = 1.000 of fp-only reflects memorization of this one control rather than generalizable scaffold recognition. **We therefore label the trt-vs-DMSO AUC 1.0 as a *structural control*, not a phenotype result.** Stage 11 P0-3 quantified why: in ECFP4 Tanimoto space, DMSO is structurally isolated from every one of the 303 compounds (n = 302 DMSO–compound pairs, mean distance **0.9683**, median 0.9695, min 0.85; compound–compound mean 0.9013; Mann–Whitney U p = **5.95 × 10⁻¹⁴⁸**), and its nearest neighbor 2,5-furandimethanol has similarity only 0.15. Perfect fingerprint separation is therefore guaranteed by construction and carries no statement about morphological generalization. The meaningful test is scaffold-level generalization, below.
+**Honest caveat (structural control).** The trt-vs-DMSO task is *too easy* for chemical structure: the single negative control, DMSO, is a unique small molecule (SMILES `CS(=O)C`) that fingerprints separate perfectly from 303 diverse compounds. The AUC = 1.000 of fp-only reflects memorization of this one control rather than generalizable scaffold recognition. **We therefore label the trt-vs-DMSO AUC 1.0 as a *structural control*, not a phenotype result and not a phenotypic-recognition input.** Stage 11 P0-3 quantified why: in ECFP4 Tanimoto space, DMSO is structurally isolated from every one of the 303 compounds (n = 302 DMSO–compound pairs, mean distance **0.9683**, median 0.9695, min 0.85; compound–compound mean 0.9013; Mann–Whitney U p = **5.95 × 10⁻¹⁴⁸**), and its nearest neighbor 2,5-furandimethanol has similarity only 0.15. Perfect fingerprint separation is therefore guaranteed by construction and carries no statement about morphological generalization. The meaningful test is scaffold-level generalization, below.
 
 **Scaffold-aware group-CV.** We defined scaffold groups by single-linkage clustering of compound ECFP4 Tanimoto similarities (distance < 0.5 ⇒ Tanimoto similarity > 0.5 ⇒ same scaffold), giving **282 scaffold groups from 303 unique compounds** — this library is extremely scaffold-diverse. A 5-fold **GroupKFold** evaluation on the treated-vs-all-controls task (768 wells) keeps all replicates of a scaffold in the same fold, testing generalization to *new scaffolds*:
 
@@ -586,7 +600,10 @@ evidence:
 
 DMSO is structurally isolated from every treated compound by construction;
 perfect fingerprint separation (fp-only AUC 1.0000) is therefore guaranteed
-regardless of morphology, and carries no claim about phenotype. The
+regardless of morphology, carries no claim about phenotype, and is reported as
+a **fingerprint control** rather than a phenotypic-recognition result: the
+ECFP4 block is an SAR/structural control for this task, not an answer source
+for the photo-to-identity recognition question. The
 generalization evidence lives in Table 24.2 (§4.8).
 
 ![FP distance distribution](figures/29c_fp_distance_distribution.png)
@@ -1160,7 +1177,7 @@ The dashboard reuses only local CSVs (`02_phenotype_results.csv`, `03_pred_trt_v
 
 ### 5.1 Main findings
 
-The core positive results are threefold. First, a standard gradient-boosted classifier separates compound-treated wells from DMSO controls with AUC ≈ 0.77 using only 904 precomputed morphological features, confirming that Cell Painting morphology is a sensitive, low-cost readout of chemical perturbation. Second, unsupervised clustering of compound fingerprints recovers known pharmacology at target-gene resolution: 36 cluster–target pairs survive FDR correction, with the largest module (cluster 13) consisting of 15 microtubule genes. This is a textbook result — microtubule poisons produce among the strongest and most convergent phenotypes in Cell Painting — and it validates the feature pipeline and clustering choices. Third, the supervised target-class analysis (Section 4.5) shows that phenotypic strength is target-specific rather than uniform: compounds annotated to the microtubule/tubulin (median 0.9958, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019), and CDK (p = 0.018) families elicit significantly stronger morphological responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. The convergence between unsupervised clustering and this independent supervised analysis — both pointing to microtubule and cell-cycle kinase biology — strengthens confidence in the approach; additional coherent modules (HSP90, CDK/Aurora, calcium channels, SRC family) further reinforce the same conclusion.
+The core positive results are threefold. First, a standard gradient-boosted classifier separates compound-treated wells from DMSO controls with AUC ≈ 0.77 using only 904 precomputed morphological features, confirming that Cell Painting morphology is a sensitive, low-cost readout of chemical perturbation. Second, unsupervised clustering of compound fingerprints recovers known pharmacology at target-gene resolution: 36 cluster–target pairs survive FDR correction, with the largest module (cluster 13) consisting of 15 microtubule genes. This is a textbook result — microtubule poisons produce among the strongest and most convergent phenotypes in Cell Painting — and it validates the feature pipeline and clustering choices. Third, the supervised target-class analysis (Section 4.5) shows that phenotypic strength is target-specific rather than uniform: compounds annotated to the microtubule/tubulin (median 0.9958, Cliff's delta = 0.827, p = 0.00145), Src-family kinase (p = 0.0019), and CDK (p = 0.018) families elicit significantly stronger morphological responses than the remaining compounds, whereas EGFR-family and calcium-channel compounds do not. The convergence between unsupervised clustering and this independent supervised analysis — both pointing to microtubule and cell-cycle kinase biology — strengthens confidence in the approach; additional coherent modules (HSP90, CDK/Aurora, calcium channels, SRC family) further reinforce the same conclusion. Throughout the report, ECFP4 chemical-structure fingerprints are positioned as an **SAR control and confound check** (§3.1): they support structure–phenotype ablations (§3.9, §3.10) and the structural-confirmation step of the OoC decision chain, and they are **not** an input to the photo-to-identity phenotypic-recognition task; where fingerprint features enter a classifier (pheno+fp), they serve as a structure-leakage control rather than an answer source.
 
 ### 5.2 Comparison with Published Work
 
