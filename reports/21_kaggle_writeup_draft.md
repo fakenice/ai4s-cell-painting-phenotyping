@@ -160,6 +160,22 @@ Full details: `README.md` in the repository and the technical report (§10).
 - **One-command entry script:** `python demo.py` (see Reproduction Steps above)
 - **Single-cell segmentation demo:** `04_cellpose_demo.py` (Cellpose cyto2 on a real 8-channel JUMP-CP TIFF site)
 
+## Stage 11 P3/P4 Supplementary Results (2026-10-06)
+
+Two follow-up experiments were added to the technical report (Draft v7 §26–27):
+
+- **Cross-plate generalization (P3, zero new downloads)** — training on plate
+  BR00116991 and testing on BR00116992: trt-vs-DMSO AUC 0.6825 (strict DMSO,
+  at parity with within-plate 0.68–0.69); cross-plate replicate retrieval
+  AP 0.42–0.45 (above chance, below in-plate 0.958); compound-identity top-1
+  0.331 (vs full-scope baseline 0.0115); prototype discrimination sign
+  accuracy 0.927. Honest split: classification and prototype transfer well;
+  retrieval keeps a large batch-local component.
+- **trt-vs-trt harder-task boost (P4)** — on the 21-pair LOOCV protocol,
+  multi-seed bagging, SelectKBest feature selection and XGB+LR integration do
+  **not** improve the baseline LR(904) AUC 0.7619 (XGB stacks degrade to
+  0.57 / 0.48); no model-side upgrade replaces the 904 backbone.
+
 ## License
 
 Project code: MIT. Data: JUMP-CP CC BY 4.0; ChEMBL CC BY-SA 3.0; SIDER academic use; Cellpose BSD-3-Clause. See technical report §2.5 / §11.

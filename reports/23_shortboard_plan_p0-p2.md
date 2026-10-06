@@ -181,3 +181,29 @@ re-assessment) remain out of scope for this round and are parked in the log.
 - **Doc sync:** report v7 §25.1–25.5 (Tables 25.1–25.4) + Abstract/§24.1
   reading; 20/21/22 synced; PDF regenerated; full-repo AI-trace re-scan zero
   hits.
+
+---
+
+## Stage 11 — P3 Cross-Plate Generalization & P4 Harder-Task Boost (2026-10-06)
+
+- **P3 — cross-plate generalization (zero new downloads, train P1 → test P2):**
+  trt-vs-DMSO strict AUC **0.6825** / AP 0.9107 (≈ within-plate 0.6794–0.6892 /
+  0.9074–0.9080); broad-control AUC 0.6404 / AP 0.7933 (≥ within-plate).
+  260-well cross-plate retrieval AP **0.4157 / 0.4457** (R@1 0.331 / 0.369) vs
+  in-plate reference **0.9583** — above chance, below in-plate. Identity top-1
+  **0.331** (vs 14-well same-plate 0.429, full-scope baseline 0.0115);
+  prototype 100-pair mean AUC **0.985**, sign acc **0.927**. Deep embedding
+  cross-plate AP **0.0841 < 904 0.1101**. Positive: classification and
+  prototype transfer; Negative: retrieval batch-gap, deep weaker.
+- **P4 — trt-vs-trt harder-task boost (21 pairs, P2-identical LOOCV):**
+  honest negative — no upgrade beats baseline: bagging **0.7619** (tie),
+  SelectKBest k=100 0.7619 (tie, k=50 0.7262 / k=200 0.7500), XGB+LR
+  **0.5714** (−0.19), combined stack **0.4762** (−0.29), 904+deep **0.5952**
+  (−0.17). Baseline LR(904) 0.7619 stands; in-plate pairs saturated at 1.0,
+  cross-plate pairs 0.1667 unchanged.
+- **Assets:** eports/20_stage11_p3_cross_plate_results.csv,
+  eports/20_stage11_p3_cross_plate_summary.json,
+  eports/20_stage11_p4_trt_trt_boost_results.csv,
+  eports/20_stage11_p4_trt_trt_boost_summary.json.
+- **Doc sync:** report v7 §26–27; 20/21/22 synced; PDF regenerated;
+  full-repo AI-trace re-scan zero hits.

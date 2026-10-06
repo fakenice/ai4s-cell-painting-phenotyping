@@ -388,3 +388,20 @@ trt-vs-DMSO headline with harder tasks:
 | P2-D Harder task: compound-identity top-k | identity top-1/top-5 (14 wells): 904 **0.429 / 0.929**; deep **0.000 / 0.571**; full-scope 260-treated-well 904 identity top-1 0.000 / top-5 0.0115 (256 compounds) — limitation reported | report v7 §25.3 |
 | P2-E Deep embedding → retrieval feature | Deep embedding promoted from classification branch to evaluated **retrieval feature**; single-plate advantage (6-well) does not transfer across plates (cross-plate AP 0.096 vs 904 0.128; in-plate 0.108 vs 0.669; DMSO 0.324 vs 0.196); 904 cosine baseline remains default retrieval substrate | report v7 §25.4, `19_stage11_p2_retrieval_breakdown.json` |
 | P2-F Protocol unification | Soft-group CV (τ=0.6) default, trt-vs-DMSO AUC 1.0 structural control, descaffolded fp ablation control — carried over from P1 across all docs | report v7 §25.5, §24.2–24.4 |
+
+---
+
+## Stage 11 — P3 Cross-Plate Generalization & P4 Harder-Task Boost (2026-10-06)
+
+P3 validates cross-plate generalization (train BR00116991 → test BR00116992,
+zero new downloads); P4 tests model-side upgrades on the P2 harder task
+(21-pair LOOCV). Honest results — positives and negatives both reported:
+
+| Item | P3/P4 result | Evidence / report |
+|---|---|---|
+| P3-A Cross-plate trt-vs-DMSO | strict DMSO cross AUC/AP **0.6825 / 0.9107** (within P1 0.6794/0.9080, P2 0.6892/0.9074); broad control **0.6404 / 0.7933** (within P1 0.6163/0.7714, P2 0.5563/0.7269) — parity (positive) | report v7 §26.2, `20_stage11_p3_cross_plate_results.csv` |
+| P3-B Cross-plate same-compound retrieval (904, 260 wells) | p2→p1 AP **0.4157** / R@1 0.331; p1→p2 AP **0.4457** / R@1 0.369; in-plate reference AP **0.9583** / R@1 1.0 — above chance (positive), far below in-plate (negative gap) | report v7 §26.3 |
+| P3-C Cross-plate identity & prototype | identity LR/kNN top-1 **0.331 / 0.331**, top-5 0.512 / 0.508 (vs 14-well LOOCV 0.429/0.929; full-scope baseline 0.000/0.0115); prototype 100 pairs mean AUC **0.985**, sign acc **0.927** | report v7 §26.4 |
+| P3-D Deep embedding cross-plate | 24-well full-lib 6 queries: 904 AP **0.1101** vs deep **0.0841** — deep generalizes worse across plates | report v7 §26.3 |
+| P4-A Boost protocol parity | P2-identical 21 pairs, LOOCV LR AUC, fold-internal fitting; M0 reproduces **0.7619** exactly | report v7 §27.1 |
+| P4-B Model-side upgrades | M1 bagging **0.7619** (tie); M2 k=50/100/200 0.7262/0.7619/0.7500; M3 XGB+LR **0.5714** (−0.19); M4 comb **0.4762** (−0.29); M5 904+deep **0.5952** (−0.17) — honest negative: no upgrade beats baseline | report v7 §27.2, `20_stage11_p4_trt_trt_boost_results.csv` |

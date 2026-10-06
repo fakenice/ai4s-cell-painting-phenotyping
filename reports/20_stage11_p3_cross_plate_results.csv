@@ -1,0 +1,13 @@
+task,label_split,train_plate,test_plate,n_train_pos,n_train_neg,n_test_pos,n_test_neg,cross_plate_AUC,cross_plate_AP,within_p1_5fold_AUC,within_p1_5fold_AP,within_p2_5fold_AUC,within_p2_5fold_AP,direction,n_queries,n_valid,mean_AP,pair_AUC,MRR,median_rank_first_hit,recall_at_1,recall_at_5,recall_at_10,n_compounds,feature,method,n_test,top1_acc,top5_acc,n_pairs,mean_AUC,median_AUC,mean_sign_acc
+cross_plate_trt_vs_dmso,strict_DMSO,BR00116991,BR00116992,260.0,64.0,260.0,64.0,0.6825120192307691,0.9106727827503514,0.6793639053254439,0.9079756072823667,0.6891765285996054,0.9074321603829623,,,,,,,,,,,,,,,,,,,,
+cross_plate_trt_vs_dmso,broad_control,BR00116991,BR00116992,260.0,124.0,260.0,124.0,0.6404466501240695,0.7932766098171333,0.6163461538461539,0.7714019803455686,0.5563076923076922,0.7269079751188856,,,,,,,,,,,,,,,,,,,,
+cross_plate_same_compound_retrieval_904_260wells,,,,,,,,,,,,,,p2_query_p1_lib,260.0,260.0,0.41567028243680815,0.8847672061187558,0.42002003136296717,5.0,0.33076923076923076,0.5076923076923077,0.5769230769230769,,,,,,,,,,
+cross_plate_same_compound_retrieval_904_260wells,,,,,,,,,,,,,,p1_query_p2_lib,260.0,260.0,0.4456800029261763,0.8847672061187558,0.45089854391330786,4.0,0.36923076923076925,0.5307692307692308,0.6038461538461538,,,,,,,,,,
+in_plate_same_compound_retrieval_904_8wells,,,,,,,,,,,,,,p2_internal,8.0,8.0,0.9583333333333333,0.9791666666666666,1.0,1.0,1.0,1.0,1.0,4.0,,,,,,,,,
+cross_plate_same_compound_retrieval_24well_full_library,,,,,,,,,,,,,,6_cross_queries_vs_24well_lib,6.0,,0.11005291005291007,,,,,,,,manual_904,,,,,,,,
+cross_plate_same_compound_retrieval_24well_full_library,,,,,,,,,,,,,,6_cross_queries_vs_24well_lib,6.0,,0.08410863016126174,,,,,,,,deep_resnet18_512,,,,,,,,
+cross_plate_same_compound_retrieval_24well_subset,,,,,,,,,,,,,,p2_query_p1_lib_3wells,3.0,3.0,0.611111111111111,0.4444444444444444,0.611111111111111,2.0,0.3333333333333333,1.0,1.0,,manual_904,,,,,,,,
+cross_plate_same_compound_retrieval_24well_subset,,,,,,,,,,,,,,p2_query_p1_lib_3wells,3.0,3.0,0.611111111111111,0.5,0.611111111111111,2.0,0.3333333333333333,1.0,1.0,,deep_resnet18_512,,,,,,,,
+cross_plate_compound_identity_topk,,BR00116991,BR00116992,,,,,,,,,,,,,,,,,,,,,256.0,,LR_256class,260.0,0.33076923076923076,0.5115384615384615,,,,
+cross_plate_compound_identity_topk,,BR00116991,BR00116992,,,,,,,,,,,,,,,,,,,,,256.0,,kNN_cosine,260.0,0.33076923076923076,0.5076923076923077,,,,
+cross_plate_prototype_discrimination,,,,,,,,,,,,,,,,,,,,,,,,,,cosine_prototype_p1_to_p2,,,,100.0,0.985,1.0,0.9266666666666667

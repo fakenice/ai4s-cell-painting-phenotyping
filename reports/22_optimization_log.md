@@ -304,3 +304,6 @@ Script `scripts/stage11_p2_retrieval_extended.py` (+ `stage11_p0_embeddings.npz`
 | Git push (Stage 7 commit 4886f6f) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Git push (Stage 8 commit) | 成功推送 origin/master（随 Stage 9 commit 一起） |
 | Git push (Stage 9 commit 0a0363b) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
+
+| Stage 11 P3 (cross-plate generalization) + P4 (trt-vs-trt harder-task boost) | 完成 (scripts stage11_p3_cross_plate.py / stage11_p4_trt_trt_boost.py; results 20_stage11_p3_* / 20_stage11_p4_*; report v7 §26–27; 20/21/22/23 synced; PDF regenerated; AI-trace rescan zero hits) |
+| Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |

@@ -1,0 +1,397 @@
+{
+  "experiment": "Stage 11 P4 trt-vs-trt harder-task improvement",
+  "protocol": "LOOCV LR pairwise AUC, 7 compounds x 2 wells = 21 pairs (P2-identical)",
+  "baseline": {
+    "P2_reported_904_LR_mean_AUC": 0.7619
+  },
+  "results": [
+    {
+      "method": "M0",
+      "label": "baseline",
+      "all_21": {
+        "mean": 0.7619047619047619,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.16666666666666666,
+        "min": 0.0,
+        "max": 0.25
+      },
+      "mixed_12": {
+        "mean": 0.7916666666666666,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.5238095238095238,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.5,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.5,
+        "amlodipine__hexestrol": 0.25,
+        "amlodipine__thiostrepton": 1.0,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.25,
+        "gabapentin-enacarbil__dexamethasone": 0.75,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.75,
+        "hexestrol__ME-0328": 0.75,
+        "hexestrol__dexamethasone": 0.5,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 1.0,
+        "thiostrepton__ME-0328": 1.0
+      }
+    },
+    {
+      "method": "M1",
+      "label": "bagging",
+      "all_21": {
+        "mean": 0.7619047619047619,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.16666666666666666,
+        "min": 0.0,
+        "max": 0.25
+      },
+      "mixed_12": {
+        "mean": 0.7916666666666666,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.5238095238095238,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.5,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.5,
+        "amlodipine__hexestrol": 0.25,
+        "amlodipine__thiostrepton": 1.0,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.25,
+        "gabapentin-enacarbil__dexamethasone": 0.75,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.75,
+        "hexestrol__ME-0328": 0.75,
+        "hexestrol__dexamethasone": 0.5,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 1.0,
+        "thiostrepton__ME-0328": 1.0
+      }
+    },
+    {
+      "method": "M2_50",
+      "label": "sel",
+      "all_21": {
+        "mean": 0.7261904761904762,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.9166666666666666,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.25,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "mixed_12": {
+        "mean": 0.75,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.42857142857142855,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 0.75,
+        "amlodipine__BVT-948": 1.0,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.0,
+        "amlodipine__hexestrol": 0.5,
+        "amlodipine__thiostrepton": 0.75,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.25,
+        "gabapentin-enacarbil__dexamethasone": 0.75,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.75,
+        "hexestrol__ME-0328": 0.5,
+        "hexestrol__dexamethasone": 0.5,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 0.75,
+        "thiostrepton__ME-0328": 1.0
+      }
+    },
+    {
+      "method": "M2_100",
+      "label": "sel",
+      "all_21": {
+        "mean": 0.7619047619047619,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.9583333333333334,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.08333333333333333,
+        "min": 0.0,
+        "max": 0.25
+      },
+      "mixed_12": {
+        "mean": 0.8333333333333334,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.5238095238095238,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.75,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.5,
+        "amlodipine__hexestrol": 0.25,
+        "amlodipine__thiostrepton": 1.0,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.0,
+        "gabapentin-enacarbil__dexamethasone": 0.75,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.75,
+        "hexestrol__ME-0328": 0.5,
+        "hexestrol__dexamethasone": 0.75,
+        "hexestrol__thiostrepton": 1.0,
+        "thiostrepton__BVT-948": 0.75,
+        "thiostrepton__ME-0328": 1.0
+      }
+    },
+    {
+      "method": "M2_200",
+      "label": "sel",
+      "all_21": {
+        "mean": 0.75,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.9583333333333334,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.08333333333333333,
+        "min": 0.0,
+        "max": 0.25
+      },
+      "mixed_12": {
+        "mean": 0.8125,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.47619047619047616,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 1.0,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.5,
+        "amlodipine__hexestrol": 0.0,
+        "amlodipine__thiostrepton": 0.75,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.25,
+        "gabapentin-enacarbil__dexamethasone": 0.75,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.75,
+        "hexestrol__ME-0328": 0.75,
+        "hexestrol__dexamethasone": 0.5,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 0.75,
+        "thiostrepton__ME-0328": 1.0
+      }
+    },
+    {
+      "method": "M3",
+      "label": "xgb+lr",
+      "all_21": {
+        "mean": 0.5714285714285714,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.8333333333333334,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "mixed_12": {
+        "mean": 0.5833333333333334,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.38095238095238093,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.0,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.25,
+        "amlodipine__hexestrol": 0.0,
+        "amlodipine__thiostrepton": 0.5,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.0,
+        "gabapentin-enacarbil__dexamethasone": 0.5,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.5,
+        "hexestrol__ME-0328": 0.5,
+        "hexestrol__dexamethasone": 0.25,
+        "hexestrol__thiostrepton": 0.5,
+        "thiostrepton__BVT-948": 0.5,
+        "thiostrepton__ME-0328": 0.5
+      }
+    },
+    {
+      "method": "M4",
+      "label": "comb",
+      "all_21": {
+        "mean": 0.47619047619047616,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.6666666666666666,
+        "min": 0.25,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "mixed_12": {
+        "mean": 0.5,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.19047619047619047,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.0,
+        "amlodipine__ME-0328": 0.5,
+        "amlodipine__dexamethasone": 0.25,
+        "amlodipine__hexestrol": 0.0,
+        "amlodipine__thiostrepton": 0.5,
+        "dexamethasone__BVT-948": 0.75,
+        "dexamethasone__ME-0328": 0.5,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 0.75,
+        "gabapentin-enacarbil__amlodipine": 0.0,
+        "gabapentin-enacarbil__dexamethasone": 0.25,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.5,
+        "hexestrol__ME-0328": 0.25,
+        "hexestrol__dexamethasone": 0.25,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 0.25,
+        "thiostrepton__ME-0328": 0.5
+      }
+    },
+    {
+      "method": "M0",
+      "label": "904+deep",
+      "all_21": {
+        "mean": 0.5952380952380952,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "in_plate_6": {
+        "mean": 0.9166666666666666,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "cross_plate_3": {
+        "mean": 0.16666666666666666,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "mixed_12": {
+        "mean": 0.5416666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "pairs_frac_ge_0_8": 0.42857142857142855,
+      "pair_aucs": {
+        "BVT-948__ME-0328": 1.0,
+        "amlodipine__BVT-948": 0.25,
+        "amlodipine__ME-0328": 1.0,
+        "amlodipine__dexamethasone": 0.0,
+        "amlodipine__hexestrol": 0.0,
+        "amlodipine__thiostrepton": 0.25,
+        "dexamethasone__BVT-948": 1.0,
+        "dexamethasone__ME-0328": 1.0,
+        "dexamethasone__thiostrepton": 1.0,
+        "gabapentin-enacarbil__BVT-948": 1.0,
+        "gabapentin-enacarbil__ME-0328": 1.0,
+        "gabapentin-enacarbil__amlodipine": 0.5,
+        "gabapentin-enacarbil__dexamethasone": 0.0,
+        "gabapentin-enacarbil__hexestrol": 0.0,
+        "gabapentin-enacarbil__thiostrepton": 1.0,
+        "hexestrol__BVT-948": 0.5,
+        "hexestrol__ME-0328": 0.25,
+        "hexestrol__dexamethasone": 0.5,
+        "hexestrol__thiostrepton": 0.75,
+        "thiostrepton__BVT-948": 0.5,
+        "thiostrepton__ME-0328": 1.0
+      }
+    }
+  ],
+  "notes": [
+    "all models fit fold-internally (scaler/selector/models on train folds only)",
+    "in-plate subset: dexamethasone/thiostrepton/BVT-948/ME-0328 (6 pairs); cross-plate subset: gabapentin-enacarbil/amlodipine/hexestrol (3 pairs)"
+  ]
+}

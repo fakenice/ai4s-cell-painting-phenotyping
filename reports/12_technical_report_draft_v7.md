@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_e88eaf41c13111f197eb525400393706
-    ReservedCode1: M2nLjXwUi2ZRBjztwi4TcNYAm98NyXWJW3y7K6UiUf8so3sSfH8dXoBSCvLwC3S/XoISWbQuXG0Vy0O7IoN71V/y0CEwS0Gkp/2gh8oStTVpI+aAnr1oUanNYK2v8bOqZxnDPhu0ezwdfLU7YATlgJOialAjgJAMJqVdvp9AZy2YGThzkvp2dC8uB+s=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_903b00d0c14111f18019525400248c00
+    ReservedCode1: LOXlYJAj2nwGezv6Nu3ZPqJf/WCK/jkOEJ9EtZU/v8Z1LqEPkHPLUvsRCS6jVMfGTAa77sESMofspLvXdvC+iooOE0JGaJNlDsr6ASnot35E1tX0SRBEmUIKnYXNGyMGUaJc1UMAF2PQTy+1s8rh7GC1x/e145lmMR4DMHbaFULbVY8uhDCMOzsR9qs=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_e88eaf41c13111f197eb525400393706
-    ReservedCode2: M2nLjXwUi2ZRBjztwi4TcNYAm98NyXWJW3y7K6UiUf8so3sSfH8dXoBSCvLwC3S/XoISWbQuXG0Vy0O7IoN71V/y0CEwS0Gkp/2gh8oStTVpI+aAnr1oUanNYK2v8bOqZxnDPhu0ezwdfLU7YATlgJOialAjgJAMJqVdvp9AZy2YGThzkvp2dC8uB+s=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_903b00d0c14111f18019525400248c00
+    ReservedCode2: LOXlYJAj2nwGezv6Nu3ZPqJf/WCK/jkOEJ9EtZU/v8Z1LqEPkHPLUvsRCS6jVMfGTAa77sESMofspLvXdvC+iooOE0JGaJNlDsr6ASnot35E1tX0SRBEmUIKnYXNGyMGUaJc1UMAF2PQTy+1s8rh7GC1x/e145lmMR4DMHbaFULbVY8uhDCMOzsR9qs=
 ---
+
+
 
 
 
@@ -1347,6 +1349,151 @@ replacement capability metric.
 
 ---
 
+## 26. Stage 11 P3: Cross-Plate Generalization Validation (2026-10-06)
+
+### 26.1 Motivation and protocol
+
+P2 extended the data to a second plate (BR00116992) but evaluated everything
+on same-plate comparisons. P3 asks the generalization question: train on
+plate 1 (BR00116991), test on plate 2 (BR00116992), with **zero new data
+downloads**. The 904-feature profile is the backbone; the deep ResNet18 512-d
+embedding is included where available (24-well subset). Three tasks are
+measured: (a) trt-vs-DMSO classification, (b) trt-vs-trt same-compound
+replicate retrieval, (c) trt-vs-trt compound identity / prototype
+discrimination.
+
+### 26.2 Cross-plate trt-vs-DMSO classification
+
+A logistic-regression classifier is trained on all 260 treated wells of
+plate 1 and evaluated on the 260 treated wells of plate 2, for two control
+definitions: strict DMSO (64 wells) and broad control (124 wells). Same-plate
+5-fold baselines are reported per plate.
+
+| Control definition | Cross-plate AUC / AP (P1 train → P2 test) | Within P1 5-fold AUC / AP | Within P2 5-fold AUC / AP |
+|---|---|---|---|
+| strict DMSO (64 wells) | **0.6825 / 0.9107** | 0.6794 / 0.9080 | 0.6892 / 0.9074 |
+| broad control (124 wells) | **0.6404 / 0.7933** | 0.6163 / 0.7714 | 0.5563 / 0.7269 |
+
+*Table 26.1: cross-plate trt-vs-DMSO is at parity with (strict) or above
+(broad) the same-plate baselines — the treated-vs-control signal transfers
+across plates without plate-specific overfitting.*
+
+**Positive result**: the trt-vs-DMSO decision boundary is not plate-specific;
+cross-plate AUC matches or exceeds the within-plate values.
+
+### 26.3 Cross-plate same-compound retrieval (904, 260 wells)
+
+Each of the 260 treated wells of one plate is used as a query against the
+260-well library of the other plate (self excluded); AP is computed over the
+ranked library (correct compound wells are positives). An in-plate reference
+is measured on the 8 wells of the 4 double-replicate compounds of P2.
+
+| Direction | mean AP | pair AUC | MRR | median rank | R@1 | R@5 | R@10 |
+|---|---|---|---|---|---|---|---|
+| p2 → p1 (260 queries) | 0.4157 | 0.8848 | 0.4200 | 5 | 0.331 | 0.508 | 0.577 |
+| p1 → p2 (260 queries) | 0.4457 | 0.8848 | 0.4509 | 4 | 0.369 | 0.531 | 0.604 |
+| in-plate reference (P2, 8 wells) | 0.9583 | 0.9792 | 1.000 | 1 | 1.000 | 1.000 | 1.000 |
+
+*Table 26.2: cross-plate replicate retrieval is far above random (positive) but
+far below the in-plate reference (AP 0.42–0.45 vs 0.958) — a substantial part
+of same-plate retrieval similarity is batch-local (negative gap).*
+
+On the P2-style 24-well full library (6 cross-plate queries), 904 achieves
+AP 0.1101 vs deep ResNet18 512-d AP 0.0841, consistent with P2's finding that
+the deep embedding generalizes across plates even worse than the 904 profile.
+
+### 26.4 Cross-plate compound identity top-k and prototype discrimination
+
+**Identity top-k**: an LR / cosine-kNN classifier trained on the 256
+single-replicate compounds of plate 1 and tested on the 260 wells of plate 2
+reaches top-1 0.331 / top-5 0.512 (LR) and top-1 0.331 / top-5 0.508 (kNN).
+Reference: P2 14-well LOOCV same-plate top-1 0.429 / top-5 0.929; full-scope
+260-well self-retrieval baseline top-1 0.000 / top-5 0.0115.
+
+**Prototype discrimination**: compound prototypes built on plate 1 (per-well
+904 mean) are scored against plate-2 wells for 100 randomly drawn pairs;
+cosine-based sign agreement reaches mean AUC 0.985 (median 1.000) and
+sign accuracy 0.927.
+
+*Table 26.3: cross-plate identity top-1 0.331 is far above the single-replicate
+self-retrieval ceiling (0.0115) — real transferred identity signal (positive);
+it remains below the 14-well same-plate LOOCV 0.429 (negative). Prototype
+discrimination is strong (sign accuracy 0.927).*
+
+### 26.5 P3 summary
+
+- **Positive**: trt-vs-DMSO generalizes at parity across plates; cross-plate
+  prototype discrimination is strong (sign acc 0.927); cross-plate identity
+  top-1 0.331 ≫ 0.0115 single-replicate baseline; cross-plate retrieval is far
+  above chance (AP 0.42–0.45).
+- **Negative**: cross-plate retrieval AP 0.42–0.45 is far below in-plate 0.958
+  (batch-local similarity is a large component of the same-plate signal);
+  cross-plate identity top-1 0.331 < 14-well same-plate 0.429; deep embedding
+  cross-plate AP 0.0841 < 904 0.1101.
+
+### Assets
+
+- Script: `scripts/stage11_p3_cross_plate.py`.
+- Data: `reports/20_stage11_p3_cross_plate_results.csv`, `reports/20_stage11_p3_cross_plate_summary.json`.
+- Figures: none added (tables only).
+
+---
+
+## 27. Stage 11 P4: Harder-Task trt-vs-trt Improvement (2026-10-06)
+
+### 27.1 Protocol
+
+On the P2-identical harder-task set (7 compounds × 2 wells = 14 wells,
+21 compound pairs), P4 tests whether model-side upgrades lift the pairwise
+trt-vs-trt discrimination above the P2 baseline (LR on 904, mean AUC 0.7619).
+Protocol is LOOCV per pair with **fold-internal** fitting only (scaler,
+feature selector, models re-fit on train folds). M0 reproduces P2 exactly
+(0.7619), confirming protocol parity.
+
+| Method | 21-pair mean AUC | frac ≥ 0.8 | in-plate 6 pairs | cross-plate 3 pairs | mixed 12 pairs |
+|---|---|---|---|---|---|
+| M0 LR (904), baseline | **0.7619** | 0.52 | 1.0000 | 0.1667 | 0.7917 |
+| M1 bagging-LR (10 seeds) | 0.7619 | 0.52 | 1.0000 | 0.1667 | 0.7917 |
+| M2 SelectKBest k=50 | 0.7262 | 0.43 | 0.9167 | 0.2500 | 0.7500 |
+| M2 SelectKBest k=100 | 0.7619 | 0.52 | 0.9583 | 0.0833 | 0.8333 |
+| M2 SelectKBest k=200 | 0.7500 | 0.48 | 0.9583 | 0.0833 | 0.8125 |
+| M3 XGB + LR soft vote | 0.5714 | 0.38 | 0.8333 | 0.0000 | 0.5833 |
+| M4 comb (k=100 + bagging + XGB) | 0.4762 | 0.19 | 0.6667 | 0.0000 | 0.5000 |
+| M5 LR on 904+deep (1416-d) | 0.5952 | 0.43 | 0.9167 | 0.1667 | 0.5417 |
+
+*Table 27.1: honest negative result — none of the model-side upgrades improves
+the P2 baseline; bagging ties it, feature selection ties or slightly hurts,
+XGB ensembles degrade sharply.*
+
+### 27.2 Discussion
+
+- **No improvement across all method families**: multi-seed bagging
+  (probability average) gives no gain because 10-seed averaging on 3-sample
+  training folds cannot diversify the learned boundary; SelectKBest ANOVA-F
+  ties (k=100) or hurts (k=50 −0.036, k=200 −0.012); XGB+LR soft voting
+  degrades by −0.19; the combined stack degrades further (−0.29); the
+  904+deep concatenation hurts (−0.167), consistent with the deep embedding's
+  weak cross-well signal (§26.3).
+- **Root cause**: each pair has only 4 wells (3 training samples per LOOCV
+  fold); the information bottleneck is replicate count, not model family.
+  Complex models overfit the 3-sample folds.
+- **Subgroup structure**: in-plate pairs are already saturated at AUC 1.0000
+  (baseline); cross-plate pairs are hard (0.1667) and unchanged; mixed pairs
+  are 0.7917. Headroom exists only in cross-plate/mixed pairs, but no method
+  tested here can extract it within the 4-well setting.
+- **Conclusion (negative, reported honestly)**: multi-seed bagging, feature
+  selection and XGB+LR integration do **not** improve the trt-vs-trt harder
+  task on this data; LR on the 904 profile (0.7619) remains the best model
+  and matches the P2 published number.
+
+### Assets
+
+- Script: `scripts/stage11_p4_trt_trt_boost.py`.
+- Data: `reports/20_stage11_p4_trt_trt_boost_results.csv`, `reports/20_stage11_p4_trt_trt_boost_summary.json`.
+- Figures: none added (tables only).
+
+---
+
 ## References
 
 1. Bray M-A, et al. Cell Painting, a high-content image-based assay for morphological profiling using multiplexed fluorescent dyes. Nat Protoc 11, 1757–1774 (2016).
@@ -1416,4 +1563,4 @@ Stage 11 adds `reports/19_stage11_p0_summary.json`,
 
 ## Data and reproducibility
 
-All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Stage 11 P0/P1 adds the shortboard plan `reports/23_shortboard_plan_p0-p2.md`, the P1 full-scope retrieval script `scripts/stage11_p1_retrieval_full.py`, and the summary artifacts listed in Appendix B; the default evaluation protocol is the soft scaffold-grouped CV (τ = 0.6, Table 24.2). Stage 11 P2 adds the BR00116992 coverage-extension download script `scripts/stage11_p2_download_br00116992.py`, the extended retrieval script `scripts/stage11_p2_retrieval_extended.py`, the ResNet18 embedding cache `reports/19_stage11_p2_embeddings.npz`, and the P2 summaries `reports/19_stage11_p2_retrieval_extended_results.csv` / `19_stage11_p2_retrieval_summary.json` / `19_stage11_p2_retrieval_breakdown.json` (deep embeddings are evaluated as retrieval features, §25). Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
+All intermediate results are stored in `reports/` as numbered CSV/PNG assets (`01_data_prep_report.md` → `17_deep_representation_results.csv`; `figures/` contains 17 PNG figures, including Stage-6 figures 16–20, Stage-7 figures 22–23 and Stage-8 figures 24–26). Analysis scripts live under `src/` (01–11) and are mirrored in the public repository, which additionally carries the Stage-6 entry script `05_structure_uncertainty_pipeline.py` and the Stage-7/8 entry script `06_deep_representation_pipeline.py` (Stage 8 adds DMSO image download, deep-embedding comparison and single-cell CNN). This report is the consolidated technical write-up (Draft v7); the Kaggle Writeup narrative is derived from it. Stage 11 P0/P1 adds the shortboard plan `reports/23_shortboard_plan_p0-p2.md`, the P1 full-scope retrieval script `scripts/stage11_p1_retrieval_full.py`, and the summary artifacts listed in Appendix B; the default evaluation protocol is the soft scaffold-grouped CV (τ = 0.6, Table 24.2). Stage 11 P2 adds the BR00116992 coverage-extension download script `scripts/stage11_p2_download_br00116992.py`, the extended retrieval script `scripts/stage11_p2_retrieval_extended.py`, the ResNet18 embedding cache `reports/19_stage11_p2_embeddings.npz`, and the P2 summaries `reports/19_stage11_p2_retrieval_extended_results.csv` / `19_stage11_p2_retrieval_summary.json` / `19_stage11_p2_retrieval_breakdown.json` (deep embeddings are evaluated as retrieval features, §25). Stage 11 P3/P4 adds the cross-plate generalization scripts `scripts/stage11_p3_cross_plate.py` and the trt-vs-trt harder-task boosting scripts `scripts/stage11_p4_trt_trt_boost.py`, with results in `reports/20_stage11_p3_cross_plate_results.csv` / `20_stage11_p3_cross_plate_summary.json` and `reports/20_stage11_p4_trt_trt_boost_results.csv` / `20_stage11_p4_trt_trt_boost_summary.json` (§26–§27). Demo video and repository links are provided in the front matter. Category declaration and team information are provided in the front matter; the team name and solo member (`wu_bigcat`) are declared in the front matter.
