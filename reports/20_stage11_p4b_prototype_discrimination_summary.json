@@ -1,0 +1,81 @@
+{
+  "experiment": "Stage 11 P4b trt-vs-trt harder-task re-run (A+B+C)",
+  "protocol": "A. prototype discrimination (multi-well mean prototypes, LOOCV cosine nearest-prototype scoring) replaces pairwise LR; B. full plate1 x plate2 cross-plate compound grid (32640 pairs) merged statistics, plus reference-21 subset for apple-to-apple comparison; C. per-plate z-score / mean-centering correction controls",
+  "baseline": {
+    "P2_P4_reported_M0_LR_21pairs_mean_AUC": 0.7619,
+    "note": "M0 is pairwise LOOCV LR AUC over 21 pairs; P4b reference-21 subset uses prototype discrimination on the same 21 pairs"
+  },
+  "full_grid_pairs": {
+    "raw": 32640,
+    "zscore": 32640,
+    "meancenter": 32640
+  },
+  "full_grid_summary": {
+    "raw": {
+      "label": "raw",
+      "n_pairs": 32640,
+      "mean": 0.9244044883578432,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.8776654411764706,
+      "frac_le_0_2": 0.034375
+    },
+    "zscore": {
+      "label": "zscore",
+      "n_pairs": 32640,
+      "mean": 0.9170955882352941,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.865594362745098,
+      "frac_le_0_2": 0.037745098039215684
+    },
+    "meancenter": {
+      "label": "meancenter",
+      "n_pairs": 32640,
+      "mean": 0.8762159160539216,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.7995710784313725,
+      "frac_le_0_2": 0.06161151960784314
+    }
+  },
+  "reference_21_subset": {
+    "raw": {
+      "label": "ref21_raw",
+      "n_pairs": 21,
+      "mean": 0.7291666666666666,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.5714285714285714,
+      "frac_le_0_2": 0.14285714285714285
+    },
+    "zscore": {
+      "label": "ref21_zscore",
+      "n_pairs": 21,
+      "mean": 0.8273809523809523,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.7142857142857143,
+      "frac_le_0_2": 0.09523809523809523
+    },
+    "meancenter": {
+      "label": "ref21_meancenter",
+      "n_pairs": 21,
+      "mean": 0.7767857142857143,
+      "min": 0.0,
+      "max": 1.0,
+      "frac_ge_0_8": 0.6190476190476191,
+      "frac_le_0_2": 0.14285714285714285
+    }
+  },
+  "verdict_vs_M0": {
+    "reference_21_prototype_vs_LR": "P4b reference-21 prototype mean AUC vs M0 LR 0.7619; see reference_21_subset.raw.mean",
+    "full_grid_scale_note": "full 32640-pair grid has no M0 LR counterpart; compare within-protocol only"
+  },
+  "notes": [
+    "cosine nearest-prototype scoring; prototypes are leave-rest-out well means",
+    "per-plate z-score / mean-centering fit on each plate's own trt wells only (no cross-plate info)",
+    "small per-pair sample sizes yield coarse AUC values; merged grid statistics are the meaningful readout",
+    "honest reporting: positive/negative/no-change relative to baseline are stated in the report"
+  ]
+}
