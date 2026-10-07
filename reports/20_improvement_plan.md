@@ -26,6 +26,8 @@ AIGC:
 
 # AI4S Submission — Optimization Plan (v1)
 
+> **Report restructure note (2026-10-07):** `12_technical_report_draft_v7.md` has been restructured along the scientific storyline (task definition → evaluation protocol → main results → exploration and boundaries) and compressed from 65–69 pages to **17 pages**. Former versioned sections (§12–§27, Stage / P0–P4 labels) no longer exist in the current report; numbered references to §12–§27 in this document point to previous report versions (v4/v5/v6/v7-pre-restructure) and are kept verbatim as execution records. Current report map: §1 Introduction and Task Definition, §2 Data & Materials, §3 Methods, §4 Results, §5 Discussion, §6 Reliability Analysis, §7 Impact, §8 Conclusion, §9 Future Work, §10 Reproduction Instructions, §11 External Resources and Licenses, Appendix A (exploratory and negative-result details), Appendix B (figure and asset inventory), References. Kaggle writeup `21_kaggle_writeup_draft.md` has been rewritten along the same storyline.
+
 **Competition:** AI4S Open Innovation: AI for Life Science (Kaggle Hackathon)
 **Project:** Morphological Phenotypic Profiling of Chemical Perturbations with JUMP-Cell Painting Data
 **Plan file:** `reports/20_improvement_plan.md`

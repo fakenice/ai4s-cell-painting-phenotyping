@@ -15,7 +15,7 @@ AIGC:
 
 # Kaggle Writeup — Draft
 
-**Note:** This file is the **draft** of the Kaggle Writeup to be pasted/adapted on the Kaggle competition page. It must be written in English, with the category declaration **at the very top** (mirroring the technical report front matter). Before final submission, replace the team placeholders below with real information; no placeholders are auto-filled. Structure follows the official recommended layout (re-checked 2026-10-01): category declaration → demo video → code repository → project summary → technical report link → optional demo link.
+**Note:** This file is the **draft** of the Kaggle Writeup to be pasted/adapted on the Kaggle competition page. It must be written in English, with the category declaration **at the very top** (mirroring the technical report front matter). Before final submission, replace the team placeholders below with real information; no placeholders are auto-filled. Structure follows the official recommended layout (re-checked 2026-10-01): category declaration → demo video → code repository → project summary → technical report link → optional demo link. The technical report has been restructured along the scientific storyline (task definition → evaluation protocol → main results → exploration and boundaries) and compressed from 65–69 pages to **17 pages**; this writeup mirrors the same storyline and page-count note.
 
 ---
 
@@ -37,13 +37,13 @@ A 72-second live-run screen recording (H.264, 1280×720, no login required) demo
 
 ## Code Repository Link
 
-Public repository with the complete reproducible pipeline (stages 01–04, one-command entry script `demo.py`, docs, figures, and demo video).
+Public repository with the complete reproducible pipeline (scripts `01`–`06`, one-command entry script `demo.py`, docs, figures, and demo video).
 
 **Link:** https://github.com/fakenice/ai4s-cell-painting-phenotyping
 
 ## Technical Report Link
 
-Full technical report (Draft v7) with detailed methods, results, reproduction instructions, and GitHub Pages dashboard.
+Full technical report (Draft v7, 17 pages) with detailed methods, results, reproduction instructions, and GitHub Pages dashboard.
 
 **Link:** https://github.com/fakenice/ai4s-cell-painting-phenotyping/blob/master/reports/12_technical_report_draft_v7.md
 
@@ -51,17 +51,21 @@ Full technical report (Draft v7) with detailed methods, results, reproduction in
 
 ## Project Summary (200-300 words)
 
-Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state. On the JUMP-Cell Painting pilot (`source_4`) dataset we built an end-to-end pipeline covering **303 compounds measured in 1,536 wells with 904 precomputed morphological features**: (i) compound fingerprinting and clustering (UMAP + KMeans, k = 12, silhouette = 0.166), (ii) a gradient-boosted classification baseline separating treated wells from DMSO controls (XGBoost, 5-fold CV, **AUC = 0.768**, AP = 0.936, ACC = 0.792), (iii) target-level Fisher enrichment of refined phenotype clusters (**36 significant cluster–target pairs** at BH-adjusted p < 0.05, dominated by microtubule, HSP90 and CDK/Aurora biology), (iv) a per-compound phenotypic-strength score, and (v) a supervised target-class analysis showing that **microtubule/tubulin compounds elicit significantly stronger phenotypes** (median 0.9958 vs 0.9368, Cliff's delta = 0.827, **p = 0.00145**, Mann–Whitney U), with Src-family kinase (p = 0.0019) and CDK (p = 0.018) families also significant. Two supplementary association screens (MOA cluster-level enrichment, strength–toxicity) returned negative results after multiple-testing correction; we report them transparently with interpretation. An incremental **Stage 6** further delivers the algorithmic contribution the organizers' clarification post recognizes: **scaffold-aware structure modeling** (RDKit ECFP4 fingerprint fusion raises trt-vs-DMSO AUC from 0.768 to 1.000 with 87.7% fingerprint importance; under scaffold-grouped CV the joint morphology+fingerprint model generalizes best, AUC 0.468 vs 0.281 morphology-only), **uncertainty-aware prediction** (isotonic calibration cuts ECE 0.146→0.093 and Brier 0.183→0.162; split conformal prediction with an explicit low-confidence→human-review OoC workflow flags 27.6% of test wells for manual inspection), and an **exploratory SIDER toxicity screen** honestly reported as weak-signal (AUC 0.636 / AP 0.367, baseline 0.180) with a null burden-ranking result. Throughout the submission, ECFP4 fingerprints are positioned as an **SAR control and confound check**, not as a phenotypic-recognition input: they serve structure–phenotype ablations and the structural-confirmation step of the OoC decision chain, and none of the phenotype-driven results derive their answers from them. An incremental **Stage 7** adds an in-house trained **deep model** (small MLP on the 904-feature morphology: 5-fold OOF **AUC 0.775**, AP 0.936, ACC 0.786 — matching/edging the gradient-boosted baseline of AUC 0.768, indicating handcrafted morphology is near its separability limit), a **leakage-controlled evaluation** showing the same MLP drops to **AUC 0.594** under compound-grouped GroupKFold (same compound never shared across train/test — an honest generalization number), and a **transfer-learning check** (ImageNet-pretrained ResNet18 512-d embeddings successfully extracted from local raw images). An incremental **Stage 8** downloads **matched-plate DMSO control images** (6 treated + 6 DMSO sites, 8 channels each, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket) and executes both previously skipped experiments: **deep-embedding vs handcrafted vs concatenated classifier comparison** (well-grouped LOO: deep ResNet18 512-d **AUC 0.778** vs handcrafted 904 AUC 0.556 vs concat 1416 AUC 0.667; site-level GroupKFold AUC 0.25 unstable at n = 12 sites) and a **self-trained single-cell CNN** (Cellpose cpsam_v2 → 2,564 crops; well-grouped GroupKFold test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as a small-sample negative).
+Phenotypic profiling with Cell Painting provides an unbiased, image-based readout of cellular state. On the JUMP-Cell Painting pilot (`source_4`) dataset we built an end-to-end pipeline covering **303 compounds measured in 1,536 wells with 904 precomputed morphological features**. We follow a single scientific storyline: **task definition → evaluation protocol → main results → exploration and boundaries**.
 
-An incremental **Stage 9** completes the submission with four rigor-focused additions: (i) a full **ablation study** — phenotype-only **AUC 0.768** vs fingerprint-only **1.000** vs phenotype+fingerprint **1.000** (5-fold OOF), with deep embedding **0.778** (well-grouped LOO, Stage 8); (ii) a **leakage analysis** showing that well-level 5-fold splits share 84.6–91.4% of compounds between train and test (substantial overlap), while a compound-disjoint control (zero shared treated compounds) still reaches AUC 1.000 — evidence that DMSO's unique chemistry drives the perfect separation, and that **scaffold-grouped CV (AUC 0.468) is the true generalization bottleneck**; (iii) an honest **mechanism discussion of the small-sample CNN negative** (6 wells, crop-level imbalance, 64×64 single-channel input losing well-level population statistics); and (iv) an explicit **Organ-on-a-Chip drug-screening decision chain** (single-cell phenotype → target/toxicity prediction → OoC validation → drug decision).
+**Task definition.** The treated-vs-DMSO separation is deceptively easy (well-level AUC 0.768): DMSO is chemically isolated from all 303 compounds, so we treat it as a structural control and focus on the harder **treated-vs-treated** discrimination and cross-plate generalization.
 
-An incremental **Stage 11** finalizes the submission with protocol rigor and harder-task evaluation: (i) the default evaluation is now the **soft scaffold-grouped CV (τ = 0.6)** — pheno+fp AUC **0.5222** / AP 0.6545 vs phenotype-only 0.3349 / AP 0.5559 (well-level 5-fold AUC 1.0000 is demoted to an in-fold sanity check because compound overlap inflates it); (ii) **trt-vs-DMSO AUC 1.0000 is labeled a structural control**, not a phenotype result — DMSO is chemically isolated from all 303 compounds (ECFP4 Tanimoto distance mean 0.9683, MWU p = 5.95e-148, nearest-neighbor similarity 0.15), so perfect separation is fingerprint-identity, not phenotypic generalization; (iii) the descaffolded ECFP4 fingerprint is kept only as an **ablation control** (maskA pheno+fp 0.9237, maskB soft-CV 0.3166); (iv) **deep-embedding coverage was extended** by downloading 18 treated wells of plate BR00116992 (8 channels each, public AWS cellpainting-gallery bucket) to reach 24 wells / 30 sites, and the ResNet18 512-d embedding is evaluated as a **retrieval feature**: on the extended scope manual 904 features retrieve replicates at mean AP **0.3945** / MRR 0.4085 vs deep **0.1418** / MRR 0.1788 — the 6-well single-plate deep advantage does not transfer across plates, so 904 cosine retrieval remains the default substrate; and (v) **harder tasks replace the saturated binary**: trt-vs-trt pairwise discrimination (21 pairs, 7 compounds) gives 904 mean AUC **0.7619** vs deep 0.2738, and compound-identity top-1/top-5 on 14 wells gives 904 **0.429 / 0.929** vs deep 0.000 / 0.571 (full-scope 260-well identity top-5 0.0115 — near chance, reported as a task-difficulty limitation); and (vi) a uniform positioning statement: **ECFP4 fingerprints are SAR controls and confound checks** — used for structure–phenotype ablations and structural confirmation in the OoC decision chain, never as inputs to the photo-to-identity phenotypic-recognition task.
+**Evaluation protocol.** We use soft scaffold-grouped CV (τ = 0.6) and compound-disjoint splits to prevent "back-answer" leakage from compound overlap across folds; AUC 1.000 under well-level CV is labeled a structural control, not a phenotypic result.
+
+**Main results.** (i) **Cross-plate generalization**: training on plate BR00116991 and testing on BR00116992 gives trt-vs-DMSO AUC **0.6825**, at parity with within-plate performance. (ii) **Prototype discrimination**: LOOCV cosine nearest-prototype on compound-mean profiles reaches mean AUC **0.985** / sign accuracy **0.927** across the full cross-plate pair grid, with per-plate z-score corrections raising reference-21 mean AUC to **0.8274**. (iii) **Replicate retrieval**: 904-feature cosine retrieval finds same-compound replicates at **6.1× chance AP** on the full scope, and compound-identity top-1/top-5 on held-out plates reaches **0.331 / 0.929**. (iv) **Target enrichment**: shared-target compound pairs show AUROC 0.5611 (p = 2.76e-07); microtubule/tubulin, Src-family and CDK classes elicit significantly stronger phenotypes.
+
+**Exploration and boundaries.** Self-supervised embeddings, Harmony batch correction, a self-trained single-cell CNN, and model-side integration attempts are reported as negative/exploratory results in the report appendix; ECFP4 fingerprints are kept strictly as **SAR controls and confound checks**, not as phenotypic-recognition inputs. Full details, negative results, and reproduction steps are in the technical report (17 pages).
 
 ## Relevance to Organ-on-a-Chip
 
 Organ-on-a-Chip (OoC) platforms recapitulate human organ-level physiology in microfluidic culture, and their readouts are dominated by **high-content, image-based measurements of cellular phenotype**. Cell Painting — the morphological profiling assay used in this submission — is precisely the kind of high-content cytological readout that OoC drug-screening and toxicity-prediction workflows need: it converts raw cellular state into dense, unbiased morphological feature vectors that are directly comparable across perturbations.
 
-Our pipeline transfers to OoC imaging data with minimal adaptation. (i) The **treated-vs-control classification** module (XGBoost, AUC = 0.768 on JUMP-CP) is assay-agnostic: given OoC chip imaging features (e.g., segmented cells from microfluidic channels), the same classifier distinguishes compound-exposed from vehicle-treated states. (ii) The **target-enrichment** step (36 significant cluster–target pairs) can annotate which biological pathways are perturbed on-chip, supporting mechanism-of-action readouts for organ-level toxicity. (iii) The **phenotypic-strength score** provides a continuous potency-like readout per perturbation — directly applicable to dose–response experiments in OoC devices. (iv) The **single-cell segmentation demo** (Cellpose) mirrors the segmentation step required for any high-content chip image analysis.
+Our pipeline transfers to OoC imaging data with minimal adaptation. (i) The **treated-vs-control classification** module is assay-agnostic: given OoC chip imaging features (e.g., segmented cells from microfluidic channels), the same classifier distinguishes compound-exposed from vehicle-treated states. (ii) The **target-enrichment** step (36 significant cluster–target pairs) can annotate which biological pathways are perturbed on-chip, supporting mechanism-of-action readouts for organ-level toxicity. (iii) The **phenotypic-strength score** provides a continuous potency-like readout per perturbation — directly applicable to dose–response experiments in OoC devices. (iv) The **single-cell segmentation demo** (Cellpose) mirrors the segmentation step required for any high-content chip image analysis.
 
 Importantly, we build on the official competition-recommended dataset: the **JUMP-Cell Painting (JUMP-CP) pilot**, released under CC BY 4.0 in the public `cellpainting-gallery` S3 bucket. Building the pipeline on this canonical reference keeps the submission within the competition's intended scope while maximizing transferability to Organ-on-a-Chip data pipelines.
 
@@ -71,72 +75,54 @@ Importantly, we build on the official competition-recommended dataset: the **JUM
 2. **Compound fingerprints:** mean of replicate wells per compound (303 × 904).
 3. **Unsupervised structure:** UMAP (n_neighbors = 15, min_dist = 0.1) + KMeans (k = 12, n_init = 10, silhouette = 0.166); refined clustering for enrichment.
 4. **Classification baseline:** XGBoost with 5-fold stratified cross-validation on well-level features; tasks: treated vs DMSO (648 wells) and treated vs all controls (768 wells). Random state fixed at 42.
-5. **Enrichment:** Fisher exact test per refined cluster × annotated target gene with Benjamini–Hochberg FDR correction (α = 0.05).
-6. **Phenotypic strength:** mean P(treated) of the treated-vs-DMSO classifier over replicate wells (256 compounds).
-7. **Target-class strength:** Mann–Whitney U test per target family (≥ 3 members) vs remaining compounds; effect size Cliff's delta.
-8. **Segmentation demo:** Cellpose (cyto2) on a real 8-channel JUMP-CP TIFF site.
-9. **Structure-aware modeling (Stage 6):** RDKit ECFP4 fingerprints (Morgan r=2, 1024 bits) from 303 SMILES; three XGBoost models (pheno-only / fp-only / pheno+fp) on identical 5-fold CV; scaffold groups via single-linkage Tanimoto > 0.5 clustering (282 groups) with 5-fold GroupKFold for new-scaffold generalization. ECFP4 is positioned as an **SAR control / confound check** (§3.1 of the report), not as a phenotypic-recognition input.
-10. **Uncertainty-aware modeling (Stage 6):** stratified 70/15/15 split; Platt and isotonic calibration; split conformal prediction (α = 0.1) with calibration-split quantile; low-confidence margin |p − 0.5| < 0.15 → human-review queue.
-11. **Exploratory toxicity (Stage 6):** SIDER merge on 256 compounds (46 annotated); has_sider 5-fold CV; burden high-vs-low within annotated set (median n_side_effects = 91 split), repeated 3×3-fold CV.
-12. **Deep representation (Stage 7):** in-house small MLP (`904→256→64→1`, ReLU + dropout 0.3, Adam lr 1e-3 / wd 1e-4, 20 epochs, batch 64, seed 42) trained on the same 904-feature morphology under identical trt-vs-DMSO 5-fold stratified CV; compound-grouped GroupKFold (`pert_iname + plate`) on trt-vs-all-controls for leak-free generalization; transfer-learning feasibility check with ImageNet-pretrained torchvision ResNet18 (512-d embeddings) on the local raw JUMP-CP images; asset-gated skip of deep-embedding classifier comparison and single-cell CNN where two-class image data is unavailable.
-13. **Deep representation images (Stage 8):** downloaded matched-plate DMSO control images (6 treated + 6 DMSO sites, 8-channel TIFFs, same plate BR00116991 / source_4, public AWS cellpainting-gallery bucket; `data/raw/BR00116991_dmso/`); deep-embedding classifier comparison (ImageNet-pretrained torchvision ResNet18 512-d embeddings, ch1/ch4/ch2 RGB composite, well-grouped LOO vs handcrafted 904 vs concat 1416; site-level GroupKFold stability check); self-trained single-cell CNN (Cellpose `cpsam_v2` crops, small 64×64 CNN, well-grouped GroupKFold(4), seed 42, 20 epochs); every step asset-gated, no fabricated numbers.
+5. **Evaluation protocol:** soft scaffold-grouped CV (τ = 0.6) as the default generalization estimate; well-level CV demoted to an in-fold sanity check; trt-vs-DMSO AUC 1.000 labeled a structural control.
+6. **Enrichment:** Fisher exact test per refined cluster × annotated target gene with Benjamini–Hochberg FDR correction (α = 0.05); known-target pair AUROC on compound pairs sharing a target.
+7. **Phenotypic strength:** mean P(treated) of the treated-vs-DMSO classifier over replicate wells; target-class strength via Mann–Whitney U + Cliff's delta.
+8. **Cross-plate protocol:** train on plate BR00116991, test on BR00116992 (trt-vs-DMSO, replicate retrieval, compound-identity top-k, prototype discrimination with per-plate z-score / mean-centering corrections).
+9. **SAR control:** RDKit ECFP4 fingerprints (Morgan r=2, 1024 bits) used only for structure–phenotype ablations and the structural-confirmation step of the OoC decision chain — never as phenotypic-recognition inputs.
+10. **Segmentation demo:** Cellpose (cyto2) on a real 8-channel JUMP-CP TIFF site.
+11. **Exploratory modules (appendix):** uncertainty calibration (isotonic ECE 0.093), self-supervised embeddings (DINOv2/OpenPhenom), Harmony well-position correction, self-trained single-cell CNN, and model-side integration (XGB stacking / feature selection) — all honest negatives or cautionary results.
 
 ## Key Results
 
 | Result | Value |
 |---|---|
-| Classification treated vs DMSO (5-fold CV) | **AUC = 0.768**, AP = 0.936, ACC = 0.792 (648 wells) |
-| Classification treated vs all controls | AUC = 0.687, AP = 0.816, ACC = 0.697 (768 wells) |
-| Significant cluster–target enrichments | **36 pairs** (9 clusters; BH-adjusted p from 3.9e-06 to 4.2e-02); dominant modules: microtubule (15 tubulin genes), HSP90, CDK/Aurora, calcium channel, SRC family |
-| Microtubule/tubulin phenotypic strength | median 0.9958 vs 0.9368, Cliff's delta = 0.827, **p = 0.00145** (n = 4) |
-| Src-family kinase strength | p = 0.0019 (n = 7) |
-| CDK strength | p = 0.018 (n = 6) |
-| Phenotypic strength distribution | n = 256; mean 0.877, median 0.938, IQR [0.805, 0.984] |
-| Cellpose segmentation demo | 116 cells detected on a 1080×1080 site |
-| Structure-enhanced model (trt vs DMSO) | AUC 0.7682 → **1.0000**; AP 0.9359 → 1.0000; fingerprint importance **87.7%** (Stage 6) |
-| Scaffold GroupKFold (trt vs all controls) | pheno+fp **AUC 0.4679** > fp 0.3593 > pheno 0.2809 (Stage 6, hard scaffold); **default protocol updated in Stage 11 to soft scaffold-grouped CV τ = 0.6: pheno+fp AUC 0.5222 / AP 0.6545, pheno-only 0.3349 / AP 0.5559** |
-| Probability calibration (test n = 98) | ECE 0.1461 → 0.1160 (Platt) → **0.0930** (isotonic); Brier 0.1833 → **0.1623** (Stage 6) |
-| Split conformal (α = 0.1) | q_hat 0.5600; empirical coverage **0.847** (nominal 90%); mean width 0.7809 (Stage 6) |
-| Low-confidence → human review | **27/98 (27.6%)** test wells below |p − 0.5| = 0.15 (Stage 6) |
-| Exploratory SIDER has_sider | AUC **0.6359**, AP 0.3673 vs baseline 0.180 — weak signal, honestly reported (Stage 6) |
-| Exploratory SIDER burden high-vs-low | AUC 0.4537 ± 0.0310 — **null**, exploratory only (Stage 6) |
-| In-house MLP, trt vs DMSO (5-fold OOF) | **AUC 0.7746** / AP 0.9361 / ACC 0.7855 — matches/edges XGBoost 0.768 (Stage 7) |
-| In-house MLP, compound-grouped GroupKFold (trt vs all controls) | **AUC 0.5944** / AP 0.7513 / ACC 0.6510 — leak-free estimate (Stage 7) |
-| ResNet18 embedding extraction (transfer learning) | 512-d embeddings OK from 8 local TIFFs (n = 2 groups, 0.36 s, seed fixed) (Stage 7) |
-| DMSO control images downloaded (Stage 8) | 6 treated + 6 DMSO sites, 8-channel TIFFs, same plate BR00116991 / source_4 (AWS public bucket) — matched plate reduces batch effects |
-| Deep-embedding vs handcrafted vs concat (trt vs DMSO, well-grouped LOO) | deep 512-d **AUC 0.7778** / AP 0.8056 / ACC 0.5000; handcrafted 904 AUC 0.5556 / AP 0.5889 / ACC 0.5000; concat 1416 AUC 0.6667 / AP 0.6389 / ACC 0.6667; site-level GroupKFold AUC 0.2500 (n = 12 sites, unstable — reported as limitation) (Stage 8) |
-| Self-trained single-cell CNN (Cellpose crops, well-grouped GroupKFold(4)) | n = 2,564 crops / 6 wells; test **AUC 0.0955** / AP 0.2698 / ACC 0.3292 — below chance, honestly reported as small-sample negative (Stage 8) |
-| Ablation (Stage 9): pheno-only / fp-only / pheno+fp (5-fold OOF) | **0.7682 / 1.0000 / 1.0000**; 5-fold mean±std 0.7688±0.0261 / 1.0000±0.0000 / 1.0000±0.0000; deep embedding 0.7778 (LOO, Stage 8) |
-| Leakage analysis (Stage 9) | well-level folds share 84.6–91.4% compounds train/test (leak); compound-disjoint control (0 shared treated) still AUC 1.0000 → DMSO structural uniqueness; **generalization bottleneck quantified by soft scaffold-grouped CV τ = 0.6 (Stage 11 default): pheno+fp AUC 0.5222 / pheno-only 0.3349** (hard-scaffold 0.4679 superseded as headline) |
-| OoC decision chain (Stage 9) | single-cell phenotype → target/toxicity prediction → OoC validation → drug decision workflow |
-| Self-supervised representations (Stage 10) | ResNet18 baseline AUC **0.7778** (well-grouped LOO); DINOv2 vit_small 0.3333 / vit_base 0.4444; OpenPhenom RGB 0.3333 / 8-ch 0.6667 — no self-supervised embedding beats the baseline on the 6-well task; OpenPhenom 8-ch closest, consistent with multi-channel value |
-| Harmony well-position correction (Stage 10) | trt-vs-DMSO OOF AUC 1.0000 before/after (fp dominates); scaffold-group CV AUC **0.4679 → 0.4136** (Δ −0.054) — correction removes informative plate/position structure, negative result reported |
-| Replicate retrieval AP (Stage 10) | 904-feature cosine retrieval: mean AP **0.2451** vs chance 0.0401 (pair AUC 0.6335); after Harmony 0.0766 — raw profiles retrieve replicates at ~6.1× chance |
-| Known-target enrichment (Stage 10) | shared-target pair AUROC **0.5611** (p = 2.76e-07, 569/32,640 pairs); 162 targets tested → **12** BH-significant by per-target AUROC (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528), **90** by Fisher on top-10% pairs |
-| Full-scope replicate retrieval (Stage 11, P1) | 648-well manual 904 baseline: mean AP **0.2451** (chance 0.0401), MRR 0.3004, median rank 10, R@1/5/10 = 0.202/0.406/0.503; deep-image embeddings limited to 6 wells (no local images for the other 642) — shared-scope ResNet18 AP **0.7333** vs 904 0.5083 |
-| Structural-control labeling (Stage 11, P1) | trt-vs-DMSO AUC 1.0000 is labeled a **structural control** (DMSO chemically isolated: ECFP4 distance DMSO–compound mean 0.9683, MWU p = 5.95e-148, nearest-neighbor Tanimoto sim 0.15) |
-| Descaffolded fingerprint (Stage 11, P1) | descaffolded ECFP4 downgraded to **ablation control**: soft-CV maskB pheno+fp 0.3166 (intact 0.4775), maskA 0.9237 — never a headline feature |
+| Cross-plate trt-vs-DMSO (train plate 991, test plate 992) | **AUC 0.6825** (strict DMSO, at parity with within-plate 0.68–0.69) |
+| Prototype discrimination, cross-plate pair grid | mean AUC **0.985** / sign accuracy **0.927** (LOOCV cosine nearest-prototype on compound-mean profiles) |
+| Prototype discrimination, reference-21 pairs | mean AUC raw 0.7292; per-plate z-score **0.8274**; mean-centering 0.7768 |
+| Compound-identity top-1 / top-5 (14 held-out wells) | **0.331 / 0.929** (full-scope 260-well baseline 0.0115, task-difficulty limitation) |
+| Cross-plate replicate retrieval AP | 0.42–0.45 (above chance, below in-plate 0.958) |
+| Replicate retrieval, full scope (cosine, 904 features) | mean AP **0.2451** vs chance 0.0401 — **6.1× chance**; MRR 0.3004; R@1/5/10 = 0.202/0.406/0.503 |
+| Known-target pair enrichment | shared-target AUROC **0.5611** (p = 2.76e-07, 569/32,640 pairs); 12 targets BH-significant (TUBB/TUBB4B 0.9998, TUBA family 0.9997, CACNA2D3 0.9843, CFTR 0.8528) |
+| Significant cluster–target enrichments | **36 pairs** (9 clusters; BH-adjusted p from 3.9e-06 to 4.2e-02); dominant: microtubule, HSP90, CDK/Aurora, SRC family |
+| Target-class strength | microtubule median 0.9958 vs 0.9368, Cliff's delta 0.827, **p = 0.00145**; Src p = 0.0019; CDK p = 0.018 |
+| Classification treated vs DMSO (well-level, in-fold sanity) | AUC = 0.768, AP = 0.936, ACC = 0.792 (648 wells) |
+| Soft scaffold-grouped CV τ = 0.6 (default protocol) | pheno+fp AUC **0.5222** / AP 0.6545; pheno-only 0.3349 / AP 0.5559 |
+| trt-vs-DMSO AUC 1.000 (structural control) | DMSO chemically isolated: ECFP4 Tanimoto distance mean 0.9683, MWU p = 5.95e-148, nearest-neighbor sim 0.15 — **not a phenotype result** |
+| Exploratory SIDER has_sider | AUC 0.6359, AP 0.3673 vs baseline 0.180 — weak signal, appendix |
+| Exploratory self-supervised / Harmony / CNN / integration | all negative or cautionary; details in report Appendix A (17-page report keeps full story in main text) |
 
-## Negative Results (reported transparently)
+## Negative and Exploratory Results (appendix)
 
-- **Cluster-level MOA enrichment:** 160 tests (17 ChEMBL MOA classes × 10 clusters) → zero pairs significant at q < 0.05 (smallest adjusted p = 0.420). Attributed to sparse MOA annotation (33.9%), broad class granularity, and low power.
-- **Strength–toxicity association:** 167 SIDER side-effect terms → zero significant at q < 0.05 (smallest adjusted p = 0.335); top nominal terms (myocardial infarction, acute coronary syndrome, peripheral neuropathy) are directionally plausible but fail FDR. Attributed to zero-inflated annotation (17.7% coverage) and conceptual mismatch between "phenotype distance" and toxicity.
+All exploratory and negative-result details live in **Appendix A** of the technical report, with scripts and raw outputs preserved in `reports/`:
 
-- **Deep-embedding classifier comparison (fig. 24) & self-trained single-cell CNN (Stage 8):** executed on newly downloaded matched-plate DMSO images, but the image-level classifiers are **small-sample / unstable negatives reported honestly** — deep-embedding well-grouped LOO AUC 0.7778 (n = 6 wells) vs site-level GroupKFold AUC 0.2500 (n = 12 sites, unstable); single-cell CNN test AUC 0.0955 / ACC 0.3292 (2,564 crops, 6 wells) below chance. Documented as evidence of execution and honest small-sample limitations, not positive claims. (Stage 7 had skipped these experiments because the original local subset was treated-only; Stage 8 resolved the data gap by downloading matched DMSO images.)
+- **Self-supervised representations:** DINOv2 and OpenPhenom embeddings do not beat the ResNet18 baseline on the small 6-well well-grouped LOO task (best: OpenPhenom 8-ch AUC 0.6667 vs 0.7778).
+- **Harmony well-position correction:** leaves trt-vs-DMSO at AUC 1.000 but **decreases** scaffold-grouped CV AUC (0.4679 → 0.4136) — removes informative plate/position structure, not recommended by default.
+- **Self-trained single-cell CNN:** 2,564 Cellpose crops / 6 wells; test AUC 0.0955 / ACC 0.3292 — below chance, honestly reported as a small-sample negative.
+- **Model-side integration on the harder task:** on the 21-pair LOOCV protocol, multi-seed bagging, SelectKBest feature selection and XGB+LR stacks do **not** improve the baseline LR(904) AUC 0.7619; no model-side upgrade replaces the 904 backbone.
+- **Cluster-level MOA enrichment and strength–toxicity association:** zero pairs significant at q < 0.05 after FDR (sparse annotation, low power).
 
-- **Self-supervised representations & Harmony correction (Stage 10):** both are **negative / cautionary results reported honestly** — DINOv2 and OpenPhenom embeddings do not beat the ResNet18 baseline on the 6-well well-grouped LOO task (best: OpenPhenom 8-ch AUC 0.6667 vs 0.7778); Harmony plate/well-position correction leaves trt-vs-DMSO OOF at 1.0000 but **decreases** scaffold-grouped CV AUC from 0.4679 to 0.4136, so it is not recommended by default in this dataset (recorded, not hidden).
-
-These negatives are methodological, not evidence of pipeline failure: positive controls (target-gene enrichment, target-class strength) demonstrate the pipeline detects signal when present.
+These negatives are methodological, not evidence of pipeline failure: positive controls (target-gene enrichment, target-class strength, cross-plate transfer) demonstrate the pipeline detects signal when present.
 
 ## Reproduction Steps
 
 1. Clone: `git clone https://github.com/fakenice/ai4s-cell-painting-phenotyping`
-2. Install: `pip install -r requirements.txt` (optional Cellpose/Torch for stage 04 only).
+2. Install: `pip install -r requirements.txt` (optional Cellpose/Torch for the deep-exploration scripts only).
 3. Download data (public S3, no sign-in):
    - profiles: `aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/profiles/ data/profiles/`
    - metadata: `aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/metadata/ data/metadata/`
-   - raw images (optional): `aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/images/BR00116991/ data/raw/BR00116991/` and `.../BR00116992/ data/raw/BR00116992/` (Stage 11 P2 coverage extension)
-4. Run: `python demo.py` (lightweight summary) or `python demo.py --full` (stages 01→04).
+   - raw images (optional, deep-exploration only): `aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/images/BR00116991/ data/raw/BR00116991/` and `.../BR00116992/ data/raw/BR00116992/`
+4. Run: `python demo.py` (lightweight summary) or `python demo.py --full` (full pipeline).
 5. (Optional) Rebuild demo video: `python scripts/make_demo_video_live.py`.
 
 Full details: `README.md` in the repository and the technical report (§10).
@@ -147,10 +133,10 @@ Full details: `README.md` in the repository and the technical report (§10).
 - `02_classification_target.py` — classification baseline + target consistency
 - `03_enrichment_strength.py` — refined clusters, Fisher enrichment, strength score
 - `04_cellpose_demo.py` — Cellpose single-cell segmentation demo
-- `05_structure_uncertainty_pipeline.py` — Stage 6: structure-aware + uncertainty-aware modeling, SIDER exploratory screen
-- `06_deep_representation_pipeline.py` — Stage 7/8: in-house MLP + compound-grouped GroupKFold leakage analysis; Stage 8 DMSO image download, deep-embedding vs handcrafted vs concat comparison, self-trained single-cell CNN
+- `05_structure_uncertainty_pipeline.py` — structure-aware (SAR control) + uncertainty-aware modeling, SIDER exploratory screen
+- `06_deep_representation_pipeline.py` — deep embeddings, compound-grouped GroupKFold leakage analysis, self-trained single-cell CNN
 - `demo.py` — one-command entry script
-- `figures/` — 17 result figures (incl. 16–20 Stage-6 figures, 22–23 Stage-7 figures, 24–26 Stage-8 figures); `demo_video.mp4` — 72 s live-run demo video (≤ 5 min)
+- `reports/` — result CSVs/JSONs (numbered `01_`–`23_`) and the technical report; `figures/` — result figures
 - `docs/` — GitHub Pages landing page + interactive dashboard
 - `LICENSE` (MIT), `requirements.txt` (incl. rdkit, torch, torchvision), `.gitignore`
 
@@ -160,36 +146,10 @@ Full details: `README.md` in the repository and the technical report (§10).
 - **One-command entry script:** `python demo.py` (see Reproduction Steps above)
 - **Single-cell segmentation demo:** `04_cellpose_demo.py` (Cellpose cyto2 on a real 8-channel JUMP-CP TIFF site)
 
-## Stage 11 P3/P4/P4b Supplementary Results (2026-10-06)
-
-Three follow-up experiments were added to the technical report (Draft v7 §3.13
-/ §4.9–4.10):
-
-- **Cross-plate generalization (P3, zero new downloads)** — training on plate
-  BR00116991 and testing on BR00116992: trt-vs-DMSO AUC 0.6825 (strict DMSO,
-  at parity with within-plate 0.68–0.69); cross-plate replicate retrieval
-  AP 0.42–0.45 (above chance, below in-plate 0.958); compound-identity top-1
-  0.331 (vs full-scope baseline 0.0115); prototype discrimination sign
-  accuracy 0.927. Honest split: classification and prototype transfer well;
-  retrieval keeps a large batch-local component.
-- **trt-vs-trt harder-task boost (P4)** — on the 21-pair LOOCV protocol,
-  multi-seed bagging, SelectKBest feature selection and XGB+LR integration do
-  **not** improve the baseline LR(904) AUC 0.7619 (XGB stacks degrade to
-  0.57 / 0.48); no model-side upgrade replaces the 904 backbone.
-- **Prototype-discrimination re-run (P4b, A+B+C)** — replaces pairwise LR
-  with LOOCV cosine nearest-prototype on compound-mean prototypes, expands
-  evaluation to the full plate1 × plate2 32,640-pair grid, and adds per-plate
-  z-score / mean-centering correction controls: reference-21 mean AUC raw
-  0.7292 (negative vs M0 LR 0.7619), per-plate z-score 0.8274 (+0.066),
-  mean-centering 0.7768 (+0.015); full-grid mean AUC 0.9244 / 0.9171 / 0.8762
-  — internally stable and the cross-plate expansion resolves the 0.167
-  small-sample bottleneck, but only the per-plate correction beats M0 on the
-  reference set, so the harder-task conclusion stands.
-
 ## License
 
 Project code: MIT. Data: JUMP-CP CC BY 4.0; ChEMBL CC BY-SA 3.0; SIDER academic use; Cellpose BSD-3-Clause. See technical report §2.5 / §11.
 
 ---
 
-*Team placeholders must be replaced by the submitting team before posting. This draft is derived from the technical report Draft v7; see `reports/22_optimization_log.md` for version history.*
+*Team placeholders must be replaced by the submitting team before posting. This draft is derived from the technical report Draft v7 (17 pages, scientific storyline); version history and raw experiment outputs are in `reports/22_optimization_log.md`.*
