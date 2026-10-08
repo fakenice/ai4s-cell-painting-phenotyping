@@ -1,76 +1,82 @@
-<mxfile host="app.diagrams.net" agent="draw.io" version="24.0.0" type="device">
+<mxfile host="Electron" agent="draw.io">
   <diagram id="ai4s_fig3_ooc_v2" name="Page-1">
-    <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="560" math="0" shadow="0">
+    <mxGraphModel dx="1305" dy="694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="560" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
-        <mxCell id="n1" value="Single-cell phenotype&#10;Cell Painting, 8 channels&#10;904-d morphology profile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="40" y="90" width="190" height="90" as="geometry" />
+        <mxCell id="n1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Single-cell phenotype&#xa;Cell Painting, 8 channels&#xa;904-d morphology profile" vertex="1">
+          <mxGeometry height="90" width="190" x="40" y="90" as="geometry" />
         </mxCell>
-
-        <mxCell id="n2" value="Chemical structure&#10;SMILES → ECFP4&#10;1024-bit fingerprint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="300" y="90" width="190" height="90" as="geometry" />
+        <mxCell id="n2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Chemical structure&#xa;SMILES → ECFP4&#xa;1024-bit fingerprint" vertex="1">
+          <mxGeometry height="90" width="190" x="270" y="90" as="geometry" />
         </mxCell>
-
-        <mxCell id="n3" value="Compound-level models&#10;XGBoost pheno + fingerprint&#10;AUC 0.468 (new-scaffold CV)&#10;AUC 1.000 (trt vs DMSO)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="560" y="90" width="210" height="90" as="geometry" />
+        <mxCell id="n3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Compound-level models&#xa;XGBoost pheno + fingerprint&#xa;AUC 0.468 (new-scaffold CV)&#xa;AUC 1.000 (trt vs DMSO)" vertex="1">
+          <mxGeometry height="90" width="210" x="490" y="90" as="geometry" />
         </mxCell>
-
-        <mxCell id="n4" value="Safety screen&#10;SIDER&#10;AUC 0.636&#10;(burden ranking: null result)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#3A7D44;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="560" y="340" width="210" height="90" as="geometry" />
+        <mxCell id="n4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#3A7D44;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Safety screen&#xa;SIDER&#xa;AUC 0.636&#xa;(burden ranking: null result)" vertex="1">
+          <mxGeometry height="90" width="210" x="490" y="280" as="geometry" />
         </mxCell>
-
-        <mxCell id="n5" value="Confidence gate&#10;calibrated P(trt) + conformal&#10;|p − 0.5| &lt; 0.15 → human review&#10;(27/98 low-confidence wells)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5DEB3;strokeColor=#8B6914;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
-          <mxGeometry x="840" y="45" width="180" height="180" as="geometry" />
+        <mxCell id="n5" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5DEB3;strokeColor=#8B6914;fontSize=12;verticalAlign=middle;align=center;" value="Confidence gate&#xa;calibrated P(trt) + conformal&#xa;|p − 0.5| &lt; 0.15 → human review&#xa;(27/98 low-confidence wells)" vertex="1">
+          <mxGeometry height="185" width="250" x="770" y="42.5" as="geometry" />
         </mxCell>
-
-        <mxCell id="n6" value="OoC validation&#10;organ-on-a-chip / orthogonal assay&#10;confirms mechanism&#10;&amp; dose window" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D8C4E8;strokeColor=#6A4B8A;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="1090" y="90" width="190" height="90" as="geometry" />
+        <mxCell id="n6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D8C4E8;strokeColor=#6A4B8A;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="OoC validation&#xa;organ-on-a-chip / orthogonal assay&#xa;confirms mechanism&#xa;&amp; dose window" vertex="1">
+          <mxGeometry height="90" width="190" x="1160" y="90" as="geometry" />
         </mxCell>
-
-        <mxCell id="n7" value="Drug decision&#10;advance | optimize dose | deprioritize&#10;(flagged human-review queue)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8C8D4;strokeColor=#B04A6C;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="1340" y="330" width="200" height="100" as="geometry" />
+        <mxCell id="n7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8C8D4;strokeColor=#B04A6C;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Drug decision&#xa;advance | optimize dose | deprioritize&#xa;(flagged human-review queue)" vertex="1">
+          <mxGeometry height="100" width="220" x="1135" y="355" as="geometry" />
         </mxCell>
-
-        <mxCell id="n8" value="Human review queue&#10;flagged wells re-checked&#10;→ re-rank / re-run" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;strokeColor=#555555;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="880" y="340" width="220" height="90" as="geometry" />
+        <mxCell id="n8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;strokeColor=#555555;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" value="Human review queue&#xa;flagged wells re-checked&#xa;→ re-rank / re-run" vertex="1">
+          <mxGeometry height="90" width="220" x="880" y="360" as="geometry" />
         </mxCell>
-
-        <mxCell id="e1" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n1" target="n2">
+        <mxCell id="e1" edge="1" parent="1" source="n1" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" target="n2" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e2" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n2" target="n3">
+        <mxCell id="e2" edge="1" parent="1" source="n2" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" target="n3" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e3" value="SIDER burden screen" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#3A7D44;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#3A7D44;" edge="1" parent="1" source="n3" target="n4">
+        <mxCell id="e3" edge="1" parent="1" source="n3" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#3A7D44;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#3A7D44;" target="n4" value="SIDER burden screen">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e4" value="safety result" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0.5;entryY=1;strokeColor=#3A7D44;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#3A7D44;" edge="1" parent="1" source="n4" target="n5">
+        <mxCell id="e4" edge="1" parent="1" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0.268;entryY=0.749;strokeColor=#3A7D44;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#3A7D44;entryDx=0;entryDy=0;entryPerimeter=0;" target="n5" value="safety result">
+          <mxGeometry relative="1" x="0.1843" y="-1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="799.06" y="325.03" />
+              <mxPoint x="799.06" y="180" />
+              <mxPoint x="831.51" y="180" />
+              <mxPoint x="831.51" y="181.09" />
+            </Array>
+            <mxPoint x="699" y="325" as="sourcePoint" />
+            <mxPoint x="831.5" y="181.25" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="n3" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" target="n5" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e5" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n3" target="n5">
+        <mxCell id="e6" edge="1" parent="1" source="n5" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#2E7D32;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#2E7D32;" target="n6" value="high conf (71/98)">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e6" value="high conf (71/98)" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#2E7D32;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#2E7D32;" edge="1" parent="1" source="n5" target="n6">
+        <mxCell id="e7" edge="1" parent="1" source="n5" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#B04A6C;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#B04A6C;" target="n8" value="low conf (27/98)">
+          <mxGeometry relative="1" x="0.2968" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="895" y="240" />
+              <mxPoint x="990.03" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="n8" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=1;dashed=1;strokeColor=#999999;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#666666;" target="n2" value="re-evaluate / re-run">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="e7" value="low conf (27/98)" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#B04A6C;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#B04A6C;" edge="1" parent="1" source="n5" target="n8">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e8" value="re-evaluate / re-run" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=1;dashed=1;strokeColor=#999999;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#666666;" edge="1" parent="1" source="n8" target="n2">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e9" value="passes orthogonal assay" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6A4B8A;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#6A4B8A;" edge="1" parent="1" source="n6" target="n7">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="e9" edge="1" parent="1" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0.526;entryY=0.008;strokeColor=#6A4B8A;strokeWidth=2;endArrow=block;fontSize=11;fontColor=#6A4B8A;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.525;exitY=1.007;exitDx=0;exitDy=0;exitPerimeter=0;" value="passes orthogonal assay">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1259.7" y="181.3" />
+              <mxPoint x="1260" y="355.2" />
+            </Array>
+            <mxPoint x="1259.65" y="179.99999999999994" as="sourcePoint" />
+            <mxPoint x="1260.1000000000001" y="355.1700000000001" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
