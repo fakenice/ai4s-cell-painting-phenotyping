@@ -1,0 +1,62 @@
+<mxfile host="app.diagrams.net" agent="draw.io" version="24.0.0" type="device">
+  <diagram id="ai4s_fig3_ooc" name="Page-1">
+    <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="Single-cell phenotype&#10;Cell Painting, 8 channels&#10;904-d morphology profile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="250" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="Chemical structure&#10;SMILES → ECFP4&#10;1024-bit fingerprint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFD7EA;strokeColor=#2E5A88;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="Compound-level models&#10;XGBoost pheno + fingerprint&#10;AUC 0.468 (new-scaffold CV)&#10;AUC 1.000 (trt vs DMSO)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="460" y="250" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n4" value="Safety screen&#10;SIDER&#10;AUC 0.636&#10;(burden ranking: null result)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#3A7D44;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="700" y="250" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n5" value="Confidence gate&#10;calibrated P(trt) + conformal&#10;|p − 0.5| &lt; 0.15 → human review&#10;(27/98 low-confidence wells)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5DEB3;strokeColor=#8B6914;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="910" y="250" width="210" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n6" value="OoC validation&#10;organ-on-a-chip / orthogonal assay&#10;confirms mechanism&#10;&amp; dose window" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D8C4E8;strokeColor=#6A4B8A;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="250" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n7" value="Drug decision&#10;advance | optimize dose | deprioritize&#10;(flagged human-review queue)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8C8D4;strokeColor=#B04A6C;fontSize=12;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="250" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n4" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e6" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#444444;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
