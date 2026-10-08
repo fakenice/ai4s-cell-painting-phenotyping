@@ -409,4 +409,3 @@ zero new downloads); P4 tests model-side upgrades on the P2 harder task
 | P3-D Deep embedding cross-plate | 24-well full-lib 6 queries: 904 AP **0.1101** vs deep **0.0841** — deep generalizes worse across plates | report v7 §26.3 |
 | P4-A Boost protocol parity | P2-identical 21 pairs, LOOCV LR AUC, fold-internal fitting; M0 reproduces **0.7619** exactly | report v7 §27.1 |
 | P4-B Model-side upgrades | M1 bagging **0.7619** (tie); M2 k=50/100/200 0.7262/0.7619/0.7500; M3 XGB+LR **0.5714** (−0.19); M4 comb **0.4762** (−0.29); M5 904+deep **0.5952** (−0.17) — honest negative: no upgrade beats baseline | report v7 §27.2, `20_stage11_p4_trt_trt_boost_results.csv` |
-*（内容由AI生成，仅供参考）*

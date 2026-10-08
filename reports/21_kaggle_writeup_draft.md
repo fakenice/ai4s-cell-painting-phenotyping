@@ -155,4 +155,3 @@ Project code: MIT. Data: JUMP-CP CC BY 4.0; ChEMBL CC BY-SA 3.0; SIDER academic 
 ---
 
 *Team placeholders must be replaced by the submitting team before posting. This draft is derived from the technical report Draft v7 (17 pages, scientific storyline); version history and raw experiment outputs are in `reports/22_optimization_log.md`.*
-*（内容由AI生成，仅供参考）*

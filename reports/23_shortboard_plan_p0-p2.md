@@ -211,4 +211,3 @@ re-assessment) remain out of scope for this round and are parked in the log.
   eports/20_stage11_p4_trt_trt_boost_summary.json.
 - **Doc sync:** report v7 §26–27; 20/21/22 synced; PDF regenerated;
   full-repo AI-trace re-scan zero hits.
-*（内容由AI生成，仅供参考）*
