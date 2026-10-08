@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_2380b71bc12111f197eb525400393706
-    ReservedCode1: TdX9EA75VXGREjEF9O3WiC624iRzNv0V5UbimOyKV9Ot+S/uZFVdQbZmHh+w6YhRhz6THDDxhxXmLvvnWlocKDzUkItb/hK1mguKHpsLiakFQwHJHiAsii5ZJ1+SqH5J0o/oKyj4bMHEQv+AxBnSoQ90ClONDAddgl5CYPJOYtd5TChr7axMGlKcacA=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_adca2cbfc27411f18019525400248c00
+    ReservedCode1: bF4pvECQ3lITPZPg598R2KN5oOHBl1qiYWqHRBCaC5t1e6Pnl88rdcPPtq3svRPTjaDUtH2OPKeKrCFyNaUJgkZ67f9TXbH2pg/A92f01rfm7vnKArSG+0xFk5HR5lDF0EZNKi+FnG3RpVUGo+bXXB16St8YsPHNNsXUpjQ+d2gqcBFF6RiRfo67NoE=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_2380b71bc12111f197eb525400393706
-    ReservedCode2: TdX9EA75VXGREjEF9O3WiC624iRzNv0V5UbimOyKV9Ot+S/uZFVdQbZmHh+w6YhRhz6THDDxhxXmLvvnWlocKDzUkItb/hK1mguKHpsLiakFQwHJHiAsii5ZJ1+SqH5J0o/oKyj4bMHEQv+AxBnSoQ90ClONDAddgl5CYPJOYtd5TChr7axMGlKcacA=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_adca2cbfc27411f18019525400248c00
+    ReservedCode2: bF4pvECQ3lITPZPg598R2KN5oOHBl1qiYWqHRBCaC5t1e6Pnl88rdcPPtq3svRPTjaDUtH2OPKeKrCFyNaUJgkZ67f9TXbH2pg/A92f01rfm7vnKArSG+0xFk5HR5lDF0EZNKi+FnG3RpVUGo+bXXB16St8YsPHNNsXUpjQ+d2gqcBFF6RiRfo67NoE=
 ---
+
+
 
 
 
@@ -209,3 +211,4 @@ re-assessment) remain out of scope for this round and are parked in the log.
   eports/20_stage11_p4_trt_trt_boost_summary.json.
 - **Doc sync:** report v7 §26–27; 20/21/22 synced; PDF regenerated;
   full-repo AI-trace re-scan zero hits.
+*（内容由AI生成，仅供参考）*

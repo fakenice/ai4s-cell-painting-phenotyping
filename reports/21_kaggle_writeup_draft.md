@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_2fd2c799bda811f197eb525400393706
-    ReservedCode1: 2QUjJQwuyB9e579WjfRqrN4UTW+X1Krlvu06mzlC5Py9KnLzMPvvwXFghX1COibRPWphz98rUPfXHommaA7qS/dsoOlVOIaghnMcIdPYL54HflREqwz4o//5mNPk9sjZFRMBhqwzUWkoRLaZm522ATGgDQ6ObjbEFMMNxYUBabURIoIDl2XBnTNJc7w=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_aac63ad9c27411f18019525400248c00
+    ReservedCode1: DxbQWDN9IMgNwTcaxqVW8bDWtPZsziuAKsbiFGIVQzA68SulljBD/y2V8CcaHjKAsd2cR5FTCsBJ1XeYw+IPh7ulb10uCyCGV8uqBn7YgxTWzLJHJP0Ol/4Kzris5gsULeoIHKRdASmdxWPLkHUfa5B2jgegfxQEya3FAKxDSxLQgDo/g00rVANIO20=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_2fd2c799bda811f197eb525400393706
-    ReservedCode2: 2QUjJQwuyB9e579WjfRqrN4UTW+X1Krlvu06mzlC5Py9KnLzMPvvwXFghX1COibRPWphz98rUPfXHommaA7qS/dsoOlVOIaghnMcIdPYL54HflREqwz4o//5mNPk9sjZFRMBhqwzUWkoRLaZm522ATGgDQ6ObjbEFMMNxYUBabURIoIDl2XBnTNJc7w=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_aac63ad9c27411f18019525400248c00
+    ReservedCode2: DxbQWDN9IMgNwTcaxqVW8bDWtPZsziuAKsbiFGIVQzA68SulljBD/y2V8CcaHjKAsd2cR5FTCsBJ1XeYw+IPh7ulb10uCyCGV8uqBn7YgxTWzLJHJP0Ol/4Kzris5gsULeoIHKRdASmdxWPLkHUfa5B2jgegfxQEya3FAKxDSxLQgDo/g00rVANIO20=
 ---
+
+
 
 
 
@@ -153,3 +155,4 @@ Project code: MIT. Data: JUMP-CP CC BY 4.0; ChEMBL CC BY-SA 3.0; SIDER academic 
 ---
 
 *Team placeholders must be replaced by the submitting team before posting. This draft is derived from the technical report Draft v7 (17 pages, scientific storyline); version history and raw experiment outputs are in `reports/22_optimization_log.md`.*
+*（内容由AI生成，仅供参考）*

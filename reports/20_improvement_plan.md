@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_e9541eddc13111f197eb525400393706
-    ReservedCode1: YRBM3JP/WpyEvVmwk3VSxomjaa5HwVyJpbrwH7AGK9lBUHNekQPTZAssU0jpUxu4NvOJgLtJ+HWL6s70mwjPzRZqaWmee8QGIzOAKtjlHM6PH99ok2g5hwsd3oDhsKgkw+mVY5gUTRGZA4w/pAl1jrWuysHwuWISiQY9wjJl5QrBBL1OIYQDBAW6cZg=
+    ProduceID: 1b7b0544872f18baedbb33526952b8c3_ac3d3bf4c27411f18019525400248c00
+    ReservedCode1: 7CCEk1X6BcoopWuc6vH1raKsq/vLww0ySs/vAnkaDTQu8dBCwhUfEtFKGFd3JyitQbCq8WhmitzHySAM6W5cX5mr2QOwwXSJ1Gcm45cGINsiI6SngTlGFnarPXbOl00v0L0aNL9OiyLNQBe9IsFfExgw7rD0T6lenlcKyZHYQppZ3B23fOw8mFRBCTA=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_e9541eddc13111f197eb525400393706
-    ReservedCode2: YRBM3JP/WpyEvVmwk3VSxomjaa5HwVyJpbrwH7AGK9lBUHNekQPTZAssU0jpUxu4NvOJgLtJ+HWL6s70mwjPzRZqaWmee8QGIzOAKtjlHM6PH99ok2g5hwsd3oDhsKgkw+mVY5gUTRGZA4w/pAl1jrWuysHwuWISiQY9wjJl5QrBBL1OIYQDBAW6cZg=
+    PropagateID: 1b7b0544872f18baedbb33526952b8c3_ac3d3bf4c27411f18019525400248c00
+    ReservedCode2: 7CCEk1X6BcoopWuc6vH1raKsq/vLww0ySs/vAnkaDTQu8dBCwhUfEtFKGFd3JyitQbCq8WhmitzHySAM6W5cX5mr2QOwwXSJ1Gcm45cGINsiI6SngTlGFnarPXbOl00v0L0aNL9OiyLNQBe9IsFfExgw7rD0T6lenlcKyZHYQppZ3B23fOw8mFRBCTA=
 ---
+
+
 
 
 
@@ -407,3 +409,4 @@ zero new downloads); P4 tests model-side upgrades on the P2 harder task
 | P3-D Deep embedding cross-plate | 24-well full-lib 6 queries: 904 AP **0.1101** vs deep **0.0841** — deep generalizes worse across plates | report v7 §26.3 |
 | P4-A Boost protocol parity | P2-identical 21 pairs, LOOCV LR AUC, fold-internal fitting; M0 reproduces **0.7619** exactly | report v7 §27.1 |
 | P4-B Model-side upgrades | M1 bagging **0.7619** (tie); M2 k=50/100/200 0.7262/0.7619/0.7500; M3 XGB+LR **0.5714** (−0.19); M4 comb **0.4762** (−0.29); M5 904+deep **0.5952** (−0.17) — honest negative: no upgrade beats baseline | report v7 §27.2, `20_stage11_p4_trt_trt_boost_results.csv` |
+*（内容由AI生成，仅供参考）*

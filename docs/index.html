@@ -38,23 +38,23 @@
     <div class="sub">Morphological phenotypic profiling of 303 chemical perturbations with JUMP-Cell Painting data (pilot source_4) — an end-to-end reproducible ML pipeline for the AI4S Open Innovation Hackathon.</div>
     <div>
       <span class="badge">Category: Model &amp; Algorithm</span>
-      <span class="badge">XGBoost AUC 0.768</span>
-      <span class="badge">36 enriched cluster–target pairs</span>
+      <span class="badge">Cross-plate AUC 0.6825</span>
+      <span class="badge">Prototype discrimination 0.985</span>
       <span class="badge">MIT License</span>
     </div>
     <div class="kpi">
-      <div><b>0.768</b>AUC treated vs DMSO (5-fold CV)</div>
-      <div><b>0.936</b>Average Precision</div>
-      <div><b>36</b>Sig. cluster–target pairs (q&lt;0.05)</div>
-      <div><b>p=0.00145</b>Microtubule MWU strength</div>
+      <div><b>0.6825</b>Cross-plate AUC (strict, board 1 → 2)</div>
+      <div><b>0.9107</b>Cross-plate Average Precision</div>
+      <div><b>0.985</b>Prototype discrimination (LOOCV)</div>
+      <div><b>6.1×</b>Retrieval AP vs chance (0.2451 vs 0.0401)</div>
     </div>
-    <p><b>Pipeline:</b> CellPainting profiles (904 features) → compound fingerprints → UMAP + KMeans clustering → XGBoost classification → Fisher enrichment → phenotypic strength scoring → Cellpose single-cell segmentation demo. Scripts 01–04 + one-command <code>demo.py</code>.</p>
+    <p><b>Approach:</b> Cellpose single-cell segmentation → structure-aware morphological features → cross-plate generalization validation (strict train-on-board-1 / test-on-board-2). ECFP4 fingerprints serve as SAR control only, not a phenotypic input. Well-level performance (0.768) is reported as a compound-leak signal; soft-grouped scaffold CV (AUC 0.4679) is the honest generalization estimate. Scripts 01–06 + <code>scripts/make_demo_video_v8.py</code>.</p>
   </div>
 
-  <h2>Demo video (146 s, ≤ 5 min)</h2>
+  <h2>Demo video (136 s, ≤ 5 min)</h2>
   <div class="card">
     <video controls preload="metadata" src="demo_video.mp4"></video>
-    <p style="font-size:13px;color:#57606a;">Narrated walkthrough of ShapeToTarget with English voice-over (en-US male voice, narration-only audio track, no background music; 146 seconds) and English caption cards: motivation (Organ-on-a-Chip phenotypic screening) → JUMP-Cell Painting data (768 wells, 904 features) → methods (structure-aware ECFP4, uncertainty quantification with calibration + conformal, deep embeddings) → live run demo (real pipeline stdout replay: input → workflow → output metrics, incl. Cellpose inference and stage-8 deep representation) → key results → reproducibility (open repo, 20-page technical report, GitHub Pages). All on-screen text is English (YouTube-ready, no Chinese): the live terminal replay shows English-translated logs of the real run with original metrics unchanged, marked "demo log (English translation of actual run)"; every figure segment pairs the chart with an English explanation panel (dark panel, white text, 2–4 key numbers such as Fig.03 AUC 0.9827, Fig.17 ECE 0.093 / conformal coverage 0.847). Figure segments are presented statically with fade transitions for a clean YouTube-ready look. No login required. Direct link: <a href="https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4">raw.githubusercontent.com</a></p>
+    <p style="font-size:13px;color:#57606a;">Narrated walkthrough (en-US male voice, narration-only audio track, no background music; 136 s) following the scientific narrative of the 17-page technical report: task definition (Organ-on-a-Chip phenotypic screening on JUMP-Cell Painting data, 768 wells / 904 features) → evaluation protocol (strict cross-plate train-on-board-1 / test-on-board-2; soft-grouped scaffold CV as the honest estimate) → cross-plate generalization &amp; retrieval (cross-plate AUC 0.6825 / AP 0.9107, prototype discrimination 0.985, retrieval AP 6.1× chance, compound identity top-1 0.331 / top-5 0.929; ECFP4 flagged as SAR control only, well-level 0.768 reported as compound-leak signal) → appendix (exploration &amp; negative results). Live-run segments replay real terminal logs: Cellpose inference and stage-11 cross-plate / retrieval / soft-grouped CV logs. All on-screen text is English (YouTube-ready, no Chinese, no watermark); figure segments are presented statically with fade transitions for a clean look. Regenerate with <code>scripts/make_demo_video_v8.py</code> + <code>scripts/gen_narration_v8.py</code>. Direct link: <a href="https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4">raw.githubusercontent.com</a></p>
   </div>
 
   <h2>Key results</h2>
@@ -77,7 +77,7 @@
   <h2>Links</h2>
   <ul>
     <li>Public repository: <a href="https://github.com/fakenice/ai4s-cell-painting-phenotyping">github.com/fakenice/ai4s-cell-painting-phenotyping</a></li>
-    <li>Technical report (v7): <a href="../reports/12_technical_report_draft_v7.md">reports/12_technical_report_draft_v7.md</a> · <a href="12_technical_report_draft_v7.pdf">PDF</a></li>
+    <li>Technical report (17-page, §1–§11 + Appendix): <a href="../reports/12_technical_report_draft_v7.md">reports/12_technical_report_draft_v7.md</a> · <a href="12_technical_report_draft_v7.pdf">PDF</a></li>
     <li>Kaggle Writeup draft: <a href="../reports/21_kaggle_writeup_draft.md">reports/21_kaggle_writeup_draft.md</a></li>
     <li>Optimization plan &amp; log: <a href="../reports/20_improvement_plan.md">20_improvement_plan.md</a> · <a href="../reports/22_optimization_log.md">22_optimization_log.md</a></li>
   </ul>
@@ -89,7 +89,9 @@ pip install -r requirements.txt
 aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/profiles/ data/profiles/
 aws s3 cp --no-sign-request --recursive s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/workspace/metadata/ data/metadata/
 python demo.py            # lightweight summary
-python demo.py --full     # full pipeline 01 -> 04</pre>
+python demo.py --full     # full pipeline 01 -> 06
+python scripts/make_demo_video_v8.py    # regenerate demo video v8 (1280x720, English cards)
+python scripts/gen_narration_v8.py      # regenerate narration (edge-tts en-US-ChristopherNeural)</pre>
   <div class="note">This page is served by GitHub Pages from the <code>docs/</code> folder. After pushing to GitHub, enable it in <b>Settings → Pages → Deploy from a branch → select branch (e.g. master/main) / folder docs</b>. Data: JUMP-CP CC BY 4.0 · ChEMBL CC BY-SA 3.0 · Code: MIT.</div>
 
   <footer>AI4S Open Innovation: AI for Life Science · generated 2026-10-01 · team placeholder: <code>ShapeToTarget</code> to be filled by submitting team.</footer>
