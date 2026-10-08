@@ -1,29 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_a64b452bc27411f18019525400248c00
-    ReservedCode1: zhevAXmDVU/NtWgehCGZsGpsaTdzbDaN5WxRvNAO4CSbPaDkuXKBxCgrtbC2udErRJV0KkmXvtORWc3A/9huRlZlvYmlBzbqeg7PM2nwW1eqTvXPzDX/AceS+/S6jfhczM1f8ZNI6Q/NdxWwFz/RB76/A3NVM0reToN1H4rPbBiv8lUbgf+ldTz/Td4=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_a64b452bc27411f18019525400248c00
-    ReservedCode2: zhevAXmDVU/NtWgehCGZsGpsaTdzbDaN5WxRvNAO4CSbPaDkuXKBxCgrtbC2udErRJV0KkmXvtORWc3A/9huRlZlvYmlBzbqeg7PM2nwW1eqTvXPzDX/AceS+/S6jfhczM1f8ZNI6Q/NdxWwFz/RB76/A3NVM0reToN1H4rPbBiv8lUbgf+ldTz/Td4=
----
-
-
-
-
-
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_31392ad2bda811f18019525400248c00
-    ReservedCode1: 5JWt2lzRLT0fY14OsUKYSoWMGg2Ecx6WRiKho5yo4rYba9xKdTJNQ5pVe+uKk1df2b89BkIvkfFFhaSBTY6744vrvxDTB8jtdZrnnSMkJbaNJYf8v//mCYgBiYXgE/csFZWAI1N081yodNqh0ZK6IcIjv4eZC2ab48k0UsJ8Pf2f2mLQ09PyZAKuU/w=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_31392ad2bda811f18019525400248c00
-    ReservedCode2: 5JWt2lzRLT0fY14OsUKYSoWMGg2Ecx6WRiKho5yo4rYba9xKdTJNQ5pVe+uKk1df2b89BkIvkfFFhaSBTY6744vrvxDTB8jtdZrnnSMkJbaNJYf8v//mCYgBiYXgE/csFZWAI1N081yodNqh0ZK6IcIjv4eZC2ab48k0UsJ8Pf2f2mLQ09PyZAKuU/w=
----
-
 # Technical Report: Morphological Phenotypic Profiling of Chemical Perturbations with JUMP-Cell Painting Data (Draft v7, streamlined)
 
 **Competition:** AI4S Open Innovation: AI for Life Science (Hackathon — Kaggle Writeup, technical report component)
@@ -910,6 +884,15 @@ python scripts/make_demo_video.py
 ```
 
 ---
+
+## AI Use Disclosure
+
+This project was developed with the assistance of AI-based tools in the following capacities:
+- Drafting, structuring, and language refinement of parts of this report and related project documentation;
+- Assistance with code development, debugging, and documentation;
+- Assistance with the production of the demonstration video (script drafting, subtitles) and cover design.
+
+All experimental designs, data processing, model training, evaluation, and result interpretation were planned, performed, and verified by the authors. All AI-assisted content has been reviewed, validated, and approved by the authors. No AI tool was used to fabricate experimental data, results, or conclusions.
 
 ## 11. External Resources and Licenses
 

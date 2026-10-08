@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_aac63ad9c27411f18019525400248c00
-    ReservedCode1: DxbQWDN9IMgNwTcaxqVW8bDWtPZsziuAKsbiFGIVQzA68SulljBD/y2V8CcaHjKAsd2cR5FTCsBJ1XeYw+IPh7ulb10uCyCGV8uqBn7YgxTWzLJHJP0Ol/4Kzris5gsULeoIHKRdASmdxWPLkHUfa5B2jgegfxQEya3FAKxDSxLQgDo/g00rVANIO20=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_aac63ad9c27411f18019525400248c00
-    ReservedCode2: DxbQWDN9IMgNwTcaxqVW8bDWtPZsziuAKsbiFGIVQzA68SulljBD/y2V8CcaHjKAsd2cR5FTCsBJ1XeYw+IPh7ulb10uCyCGV8uqBn7YgxTWzLJHJP0Ol/4Kzris5gsULeoIHKRdASmdxWPLkHUfa5B2jgegfxQEya3FAKxDSxLQgDo/g00rVANIO20=
----
-
 
 
 
@@ -128,6 +117,15 @@ These negatives are methodological, not evidence of pipeline failure: positive c
 5. (Optional) Rebuild demo video: `python scripts/make_demo_video_live.py`.
 
 Full details: `README.md` in the repository and the technical report (§10).
+
+## AI Use Disclosure
+
+This project was developed with the assistance of AI-based tools in the following capacities:
+- Drafting, structuring, and language refinement of parts of this report and related project documentation;
+- Assistance with code development, debugging, and documentation;
+- Assistance with the production of the demonstration video (script drafting, subtitles) and cover design.
+
+All experimental designs, data processing, model training, evaluation, and result interpretation were planned, performed, and verified by the authors. All AI-assisted content has been reviewed, validated, and approved by the authors. No AI tool was used to fabricate experimental data, results, or conclusions.
 
 ## Repository Contents
 

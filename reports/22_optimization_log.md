@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_acf9769dc27411f18019525400248c00
-    ReservedCode1: ivI9i4hnA5nxBi+iHFANCAMmh4whxdVftmBZp8y9z/40gBkXVFkpHIq9RorwVsWTzoyqsWG5JkQqp3oSfsRXhsDBPtqduSEQHZBamwGXKVgbzwVTL0S2Pb/Qm7t2tg6aim30LxjJedsKa2JE/gNTJ5SFilFyq4c9VrnDMb+mbUoRwUy8P3TRdAXOZvU=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_acf9769dc27411f18019525400248c00
-    ReservedCode2: ivI9i4hnA5nxBi+iHFANCAMmh4whxdVftmBZp8y9z/40gBkXVFkpHIq9RorwVsWTzoyqsWG5JkQqp3oSfsRXhsDBPtqduSEQHZBamwGXKVgbzwVTL0S2Pb/Qm7t2tg6aim30LxjJedsKa2JE/gNTJ5SFilFyq4c9VrnDMb+mbUoRwUy8P3TRdAXOZvU=
----
-
 
 
 
@@ -311,3 +300,12 @@ Script `scripts/stage11_p2_retrieval_extended.py` (+ `stage11_p0_embeddings.npz`
 
 | Stage 11 P3 (cross-plate generalization) + P4 (trt-vs-trt harder-task boost) | 完成 (scripts stage11_p3_cross_plate.py / stage11_p4_trt_trt_boost.py; results 20_stage11_p3_* / 20_stage11_p4_*; report v7 §26–27; 20/21/22/23 synced; PDF regenerated; AI-trace rescan zero hits) |
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
+
+## AI Use Disclosure
+
+This project was developed with the assistance of AI-based tools in the following capacities:
+- Drafting, structuring, and language refinement of parts of this report and related project documentation;
+- Assistance with code development, debugging, and documentation;
+- Assistance with the production of the demonstration video (script drafting, subtitles) and cover design.
+
+All experimental designs, data processing, model training, evaluation, and result interpretation were planned, performed, and verified by the authors. All AI-assisted content has been reviewed, validated, and approved by the authors. No AI tool was used to fabricate experimental data, results, or conclusions.

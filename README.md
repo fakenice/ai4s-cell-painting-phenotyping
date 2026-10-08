@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_58d2727abbab11f189c8525400393706
-    ReservedCode1: ownNAWLP0eWVo/dlUfOk3PAPUSguIUG2R0GPF+nkPbae3Bt8qUitJQvOdxLVH5CYsfS1Wk36XDjthsexRD5fJ5EjiAwhx/KMYB4EYwxTMCHm+QQiQ4XrN+GyDmARkpS6u1F6H9tC0sZGklRtWYoLxoPPhzqq+7iajXszYq4vmgqhUkNp58iAkcQEKIY=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_58d2727abbab11f189c8525400393706
-    ReservedCode2: ownNAWLP0eWVo/dlUfOk3PAPUSguIUG2R0GPF+nkPbae3Bt8qUitJQvOdxLVH5CYsfS1Wk36XDjthsexRD5fJ5EjiAwhx/KMYB4EYwxTMCHm+QQiQ4XrN+GyDmARkpS6u1F6H9tC0sZGklRtWYoLxoPPhzqq+7iajXszYq4vmgqhUkNp58iAkcQEKIY=
----
-
 
 
 # Morphological Phenotypic Profiling of Chemical Perturbations with JUMP-Cell Painting Data

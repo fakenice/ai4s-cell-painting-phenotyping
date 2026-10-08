@@ -1,31 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_ac3d3bf4c27411f18019525400248c00
-    ReservedCode1: 7CCEk1X6BcoopWuc6vH1raKsq/vLww0ySs/vAnkaDTQu8dBCwhUfEtFKGFd3JyitQbCq8WhmitzHySAM6W5cX5mr2QOwwXSJ1Gcm45cGINsiI6SngTlGFnarPXbOl00v0L0aNL9OiyLNQBe9IsFfExgw7rD0T6lenlcKyZHYQppZ3B23fOw8mFRBCTA=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_ac3d3bf4c27411f18019525400248c00
-    ReservedCode2: 7CCEk1X6BcoopWuc6vH1raKsq/vLww0ySs/vAnkaDTQu8dBCwhUfEtFKGFd3JyitQbCq8WhmitzHySAM6W5cX5mr2QOwwXSJ1Gcm45cGINsiI6SngTlGFnarPXbOl00v0L0aNL9OiyLNQBe9IsFfExgw7rD0T6lenlcKyZHYQppZ3B23fOw8mFRBCTA=
----
-
-
-
-
-
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1b7b0544872f18baedbb33526952b8c3_572e4f88bbab11f1b172525400248c00
-    ReservedCode1: mqJ7ZdR8T4T6+MajMU+lbZxKtBAuUGwIhQ4U9Npi+FIwEFZRKHdtQBBTeUwOzwX6/Ck5C8HL3HqXAyvkLkx9Hrq04cED+D8DCSXeVyPbFwtEYHDRvVDNazcoNSY6zzsnaou2ts2bQtzr4VaG7RP/F2C6PdVI2Wsm5I1F7IyWC+w9QYofUHzl495Oa6c=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1b7b0544872f18baedbb33526952b8c3_572e4f88bbab11f1b172525400248c00
-    ReservedCode2: mqJ7ZdR8T4T6+MajMU+lbZxKtBAuUGwIhQ4U9Npi+FIwEFZRKHdtQBBTeUwOzwX6/Ck5C8HL3HqXAyvkLkx9Hrq04cED+D8DCSXeVyPbFwtEYHDRvVDNazcoNSY6zzsnaou2ts2bQtzr4VaG7RP/F2C6PdVI2Wsm5I1F7IyWC+w9QYofUHzl495Oa6c=
----
-
-
-
 # AI4S Submission — Optimization Plan (v1)
 
 > **Report restructure note (2026-10-07):** `12_technical_report_draft_v7.md` has been restructured along the scientific storyline (task definition → evaluation protocol → main results → exploration and boundaries) and compressed from 65–69 pages to **17 pages**. Former versioned sections (§12–§27, Stage / P0–P4 labels) no longer exist in the current report; numbered references to §12–§27 in this document point to previous report versions (v4/v5/v6/v7-pre-restructure) and are kept verbatim as execution records. Current report map: §1 Introduction and Task Definition, §2 Data & Materials, §3 Methods, §4 Results, §5 Discussion, §6 Reliability Analysis, §7 Impact, §8 Conclusion, §9 Future Work, §10 Reproduction Instructions, §11 External Resources and Licenses, Appendix A (exploratory and negative-result details), Appendix B (figure and asset inventory), References. Kaggle writeup `21_kaggle_writeup_draft.md` has been rewritten along the same storyline.
@@ -409,3 +381,12 @@ zero new downloads); P4 tests model-side upgrades on the P2 harder task
 | P3-D Deep embedding cross-plate | 24-well full-lib 6 queries: 904 AP **0.1101** vs deep **0.0841** — deep generalizes worse across plates | report v7 §26.3 |
 | P4-A Boost protocol parity | P2-identical 21 pairs, LOOCV LR AUC, fold-internal fitting; M0 reproduces **0.7619** exactly | report v7 §27.1 |
 | P4-B Model-side upgrades | M1 bagging **0.7619** (tie); M2 k=50/100/200 0.7262/0.7619/0.7500; M3 XGB+LR **0.5714** (−0.19); M4 comb **0.4762** (−0.29); M5 904+deep **0.5952** (−0.17) — honest negative: no upgrade beats baseline | report v7 §27.2, `20_stage11_p4_trt_trt_boost_results.csv` |
+
+## AI Use Disclosure
+
+This project was developed with the assistance of AI-based tools in the following capacities:
+- Drafting, structuring, and language refinement of parts of this report and related project documentation;
+- Assistance with code development, debugging, and documentation;
+- Assistance with the production of the demonstration video (script drafting, subtitles) and cover design.
+
+All experimental designs, data processing, model training, evaluation, and result interpretation were planned, performed, and verified by the authors. All AI-assisted content has been reviewed, validated, and approved by the authors. No AI tool was used to fabricate experimental data, results, or conclusions.
