@@ -43,7 +43,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 > **Action required:** the submitting team must fill in the team name and member names/roles above before submission. The competition requires the technical report to declare the team composition (1–5 persons).
 
 **Public repository:** https://github.com/fakenice/ai4s-cell-painting-phenotyping
-**Demo video:** https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4 (42 s, 1280×720, 30 fps; ≤ 5 min requirement satisfied)
+**Demo video:** https://youtu.be/LquRhn_dh_Y (136 s, narrated walkthrough; ≤ 5 min requirement satisfied)
 
 ---
 

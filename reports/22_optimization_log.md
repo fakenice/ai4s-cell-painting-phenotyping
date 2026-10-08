@@ -41,7 +41,7 @@ Executed in order: H1 → H2 → H3 → H4 → A → B → C → D → E → rep
 
 ## H2. Kaggle Writeup draft
 
-- **Action:** wrote `reports/21_kaggle_writeup_draft.md` (English, ~8.2 KB) with: top Category Declaration (Model & Algorithm); demo video link `https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4`; public repo link; technical report link; abstract; methods; key results (AUC=0.768, AP=0.936, ACC=0.792, 36 enriched pairs, microtubule MWU p=0.00145); negative results (MOA cluster-level enrichment, strength–toxicity); reproduction steps.
+- **Action:** wrote `reports/21_kaggle_writeup_draft.md` (English, ~8.2 KB) with: top Category Declaration (Model & Algorithm); demo video link `https://youtu.be/LquRhn_dh_Y`; public repo link; technical report link; abstract; methods; key results (AUC=0.768, AP=0.936, ACC=0.792, 36 enriched pairs, microtubule MWU p=0.00145); negative results (MOA cluster-level enrichment, strength–toxicity); reproduction steps.
 - **Source:** report v3 front matter, §3 Methods, §4 Results, §10 Reproduction, Appendix A.
 - **Issues:** none.
 

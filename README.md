@@ -193,16 +193,9 @@ repository root:
 
 A narrated demo video is included:
 
-- [demo_video.mp4](demo_video.mp4) — **live run screen-capture** (1280×720,
-  72 s, 30 fps, H.264, ≤ 5 min requirement satisfied, no login required).
-  Content structure: (1) pipeline overview title → (2–4) real terminal runs of
-  `src/01_phenotypic_profiling.py`, `src/02_classification_target.py`,
-  `src/03_enrichment_strength.py` with scrolling stdout → (5) live Cellpose
-  (cpsam_v2) inference on a real 1080×1080 DNA-channel image (model loading,
-  masks, contour overlay; 115 cells, ~98 s CPU) → (6) charts rendered
-  progressively from the result CSVs: UMAP points appearing, ROC curve growing,
-  target-class strength bars appearing → (7) closing summary. Rebuild with:
-  `pip install pillow imageio-ffmpeg pandas numpy scipy scikit-learn matplotlib seaborn umap-learn xgboost statsmodels tifffile cellpose && python scripts/make_demo_video_live.py`.
+- [Demo video (YouTube)](https://youtu.be/LquRhn_dh_Y) — v8 narrated
+  walkthrough (136 s, narration-only audio, no background music, English,
+  no watermark; ≤ 5 min requirement satisfied).
 
 ## 7. License
 

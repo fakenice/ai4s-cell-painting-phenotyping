@@ -35,7 +35,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 
 A 72-second live-run screen recording (H.264, 1280×720, no login required) demonstrating the full pipeline on real JUMP-Cell Painting data — from raw profiles to clustering, classification, enrichment, phenotypic-strength scoring, and single-cell segmentation.
 
-**Link:** https://github.com/fakenice/ai4s-cell-painting-phenotyping/raw/master/demo_video.mp4
+**Link:** https://youtu.be/LquRhn_dh_Y
 
 ## Code Repository Link
 
