@@ -182,7 +182,7 @@ repository root:
 
 A narrated demo video is included:
 
-- [Demo video (YouTube)](https://youtu.be/LquRhn_dh_Y) — v8 narrated
+- [Demo video (YouTube)](https://youtu.be/IBZbox9Akcg) — v8 narrated
   walkthrough (136 s, narration-only audio, no background music, English,
   no watermark; ≤ 5 min requirement satisfied).
 

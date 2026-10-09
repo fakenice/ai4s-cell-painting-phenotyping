@@ -24,7 +24,7 @@ This submission is declared under the **Model & Algorithm** category of the AI4S
 | 1 | solo lead / AI modeling + bioinformatics | wu_bigcat | solo team |
 
 **Public repository:** https://github.com/fakenice/ai4s-cell-painting-phenotyping
-**Demo video:** https://youtu.be/LquRhn_dh_Y (136 s, narrated walkthrough; ≤ 5 min requirement satisfied)
+**Demo video:** https://youtu.be/IBZbox9Akcg (136 s, narrated walkthrough; ≤ 5 min requirement satisfied)
 
 ---
 
