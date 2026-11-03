@@ -147,13 +147,31 @@ Cellpose (cyto2) segmentation of the DNA channel.
 
 ## 5. Results Summary
 
+**Evaluation protocol first.** The default is soft scaffold-grouped CV (τ = 0.6), which keeps
+all wells of a chemical scaffold in one fold; it answers "does this generalize to a new
+scaffold?" rather than "can it recognize a compound it has already seen?". Well-level CV is
+reported below only as an in-fold sanity check, because 84.6–91.4 % of its test compounds are
+also in training. The full protocol comparison and the descaffolded-fingerprint ablation are in
+the technical report (`reports/12_technical_report_draft_v7.md`, §22–§24).
+
 - **UMAP + KMeans (k = 12, silhouette = 0.166):** DMSO negative controls separate
   clearly from treated compounds; clusters are uneven in size (cluster 0 = 143
   compounds, mostly weak/near-control phenotypes).
-- **Classification (XGBoost, 5-fold CV):** treated vs DMSO — **AUC = 0.768,
-  AP = 0.936, ACC = 0.792** (648 wells); treated vs all controls — AUC = 0.687,
-  AP = 0.816, ACC = 0.697 (768 wells). Top features are classical morphological
-  indicators (cytoplasmic intensity MAD, nuclear Zernike, AGP texture).
+- **Classification — generalization protocol (default):** soft scaffold-grouped
+  5-fold CV (ECFP4 Tanimoto τ = 0.6; all replicates of a scaffold stay in one fold),
+  treated vs all controls: phenotype+ECFP4 **AUC = 0.5222, AP = 0.6545**;
+  phenotype-only **AUC = 0.3349, AP = 0.5559** (768 wells). Hard-scaffold and
+  fingerprint-cluster groupings give AUC 0.5258 and 0.4775, so the grouping choice
+  moves the number by up to 0.048, not by the gap to chance.
+- **Classification — well-level sanity check (NOT the headline):** XGBoost 5-fold
+  CV, treated vs DMSO: AUC = 0.768, AP = 0.936, ACC = 0.792 (648 wells);
+  treated vs all controls: AUC = 0.687, AP = 0.816, ACC = 0.697 (768 wells).
+  **84.6–91.4 % of test compounds also occur in training under this split**, so
+  the 0.768 measures replicate memorization as much as phenotype. With ECFP4
+  fused in, treated-vs-DMSO reaches AUC 1.0 because DMSO is chemically isolated
+  from every compound (mean ECFP4 distance 0.9683); that run is reported as a
+  structural control, not a phenotype result. Top morphology features are
+  cytoplasmic intensity MAD, nuclear Zernike and AGP texture.
 - **Target enrichment:** **36 significant cluster–target pairs** at BH-adjusted
   p < 0.05, dominated by a microtubule module (cluster 13, 15 tubulin genes),
   HSP90 (cluster 1), and CDK/Aurora cell-cycle kinases (cluster 4) — recovering
