@@ -320,6 +320,7 @@ Question asked: does the committed trt-vs-DMSO result survive a **site** change 
 
 | Stage 11 P3 (cross-plate generalization) + P4 (trt-vs-trt harder-task boost) | 完成 (scripts stage11_p3_cross_plate.py / stage11_p4_trt_trt_boost.py; results 20_stage11_p3_* / 20_stage11_p4_*; report v7 §26–27; 20/21/22/23 synced; PDF regenerated; AI-trace rescan zero hits) |
 | Stage 12 (cross-site external validation on `cpg0016-jump`) | 完成，结论 = **未复现** (9 usable plates behind a SHA256 manifest; trt-vs-DMSO 0.5155–0.6436 vs in-site 0.6825; vehicle column ≡ label measured on 8/9 plates; retrieval positive — strict position-decoupled-only R@1 0.5971 ≈ 98× the applicable null; reports/24 + report v7 §4.7 + README + writeup + this log synced; PDF 15 pp MD5 726cc357…; scripted build `scripts/build_report_pdf.py`) |
+| Git commit (Stage 12 = `6861df5`, 39 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 1）。本行由紧随其后的 ledger commit 记录 |
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 
 ## AI Use Disclosure
