@@ -444,6 +444,7 @@ found by measuring rather than by reading.
 | Stage 13 (portability, self-check, unit tests) | 完成 (scripts/_paths.py + 14 scripts migrated; scripts/check_repo.py 49 checks / 50 --deep; tests/test_stage12_units.py 21 tests with SKIP semantics; README §3 + reports/12 §10.2/§10.5/§10.6 + reports/20 Stage 13 + this log synced; PDF rebuilt 16 pp MD5 29aadaf3…; two re-runs from a foreign cwd ⇒ 59/62 artifacts byte-identical) |
 | Git commit (Stage 13 = `cad2391`, 23 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 3：`6861df5`、`31f8c4e`、`cad2391`） |
 | Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；环境三行的机器独立性（row1 实时扫树、row2 改名为「recorded machine」、row3 先比 python+platform 再决定比对或跳过）并用伪造 fingerprint＋临时未声明 import 两条探针实测；PDF 重编译 16 pp MD5 2ec3f59f…（取代 4c5e8506… 与更早的 5e1586a4…）) |
+| Git commit (Stage 14 = `23b8a04`, 11 files / `2b45eff`, 8 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 6：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`）。`2b45eff` 是紧随其后的机器独立性提交（三行环境门禁＋README/§10.5/§10.7/§20/§24 同步＋PDF 重编译） |
 
 ## AI Use Disclosure
 
