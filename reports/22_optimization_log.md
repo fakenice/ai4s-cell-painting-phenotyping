@@ -523,8 +523,8 @@ Stage 14 的教训不是某个版本号写错，而是一句标签把「没钉�
 | Git commit (Stage 14 = `23b8a04`, 11 files / `2b45eff`, 8 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 6：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`）。`2b45eff` 是紧随其后的机器独立性提交（三行环境门禁＋README/§10.5/§10.7/§20/§24 同步＋PDF 重编译） |
 | Stage 15 (环境表标签与版本比较的测试) | 完成 (`status_label` 从 `build()` 抽出为纯函数·内存重跑证明除 `recorded_utc` 外与已提交工件逐键相等；tests 21→24（七种标签情境＋工件自洽重标＋`_meets` 数值比较），实测 `24/24`；两个变异体分别把标签测试打到 `22/24`、把 floor 测试打到 `0/1`，还原后 SHA256 不变且 `--check` 仍 `CURRENT`；`clone_probe.py` 复测 `23/23 (1 skipped)`＋`46/49`；README/§10.5/§20/本 ledger 同步；PDF 重编译 16 pp MD5 70741463…，12,226 words，文本层含 `status_label`/`2.6.0+cu124`/`24 unit tests`) |
 | Git commit (Stage 15 = `de7a85a`, 9 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 8：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`、`ad7ae8f`、`de7a85a`）。本行由紧随其后的 ledger commit 记录 |
-| Stage 16 (无输入仓库自动检查) | 代码完成：三条显式数据 SKIP；严格克隆输出校验；H ci 声明检查；六条回归测试，总计30条；checker54条／deep55条。工作流已写但未执行；PDF与最终验证见本阶段记录 |
-| Git commit (Stage 16) | 待最终验证与本地提交；未 push |
+| Stage 16 (无输入仓库自动检查) | 完成：三条显式数据 SKIP；严格克隆输出校验；H ci 声明检查；六条回归测试，总计30条；最终实测 checker54/54／deep55/55，无数据探针 PASS；16 页 PDF 已重建核验。工作流已写但未执行 |
+| Git commit (Stage 16 = `11c5e4d`, 11 files) | 本地提交完成，**未 push**（按要求；提交后本地 `master` 相对现有 `origin/master` 领先 10、落后 0；未刷新远程引用，不据此声称远程实时状态）。四个用户副本仍为未跟踪文件，未纳入提交。本行由紧随其后的 ledger commit 记录 |
 
 ## AI Use Disclosure
 
