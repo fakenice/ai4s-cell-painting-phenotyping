@@ -15,8 +15,12 @@ Two things it is not: it is not a `git clone` (no `.git`, so the history-depende
 themselves as skipped, which is one of the outcomes being probed), and it writes nothing inside the
 repo. The expected shape of the output, measured 2026-11-06:
 
-    20/20 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)
+    23/23 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)
     46/49 checks pass      # three FAILs, all data-dependent, each naming the path it looked at
+
+The recorder's labelling tests run here rather than skipping: they read `reports/23`, which is a
+tracked artifact, and compare it with the rules in `scripts/record_environment.py` - no environment
+and no input data involved.
 """
 import argparse
 import os

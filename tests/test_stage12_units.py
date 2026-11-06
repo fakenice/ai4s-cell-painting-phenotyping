@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Dependency-free unit tests for the pure helpers in scripts/stage12_external_site.py.
+"""Dependency-free unit tests for the pure helpers in scripts/stage12_external_site.py,
+scripts/_paths.py and scripts/record_environment.py.
 
 Why this file exists: the cross-site claims in reports/24 rest on four pieces of plumbing
 that never touch the network - the robust-z normalisation, the well-coordinate handling,
 the additive-layout residualisation, and the three-arm retrieval split. Those arms are a
 definition, not a measurement, so they are checkable on synthetic data, and the strict arm
-(`decoupled-only`) is the one the retrieval claim actually rests on.
+(`decoupled-only`) is the one the retrieval claim actually rests on. The recorder's status
+labels are in the same category: they are the sentences a reader quotes as pin claims, so
+the labelling rule is testable without any environment at all.
 
 Run it with plain python - no pytest in this environment:
 
@@ -14,11 +17,13 @@ Run it with plain python - no pytest in this environment:
 
 Exit code 0 means every assertion passed. Lines are PASS / SKIP / FAIL; SKIP is a precondition
 this checkout does not offer (no `data/` tree, i.e. a fresh clone), printed on the summary line
-so it cannot be mistaken for a pass. Measured on a clone without inputs: `20/20 tests pass
-(1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`.
+so it cannot be mistaken for a pass. Measured on a clone without inputs: `23/23 tests pass
+(1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`; with the inputs
+present, `24/24`.
 """
 import json
 import os
+import re
 import sys
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +33,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 import stage12_external_site as S  # noqa: E402
+import record_environment as R  # noqa: E402
 
 
 class Skip(Exception):
@@ -392,6 +398,73 @@ def test_committed_retrieval_artifact_keeps_the_strict_arm_disjoint():
     assert abs(strict["recall_at_1_query_weighted"] - 0.5971) < 5e-4
     assert strict["n_queries"] < d["arm_summaries_by_plate_pair"]["position-decoupled"]["n_queries"]
     assert d["pilot_layout_note"].startswith("384/384")
+
+
+# ------------------------------------------------- environment recorder (record_environment)
+def test_status_label_covers_the_seven_situations():
+    """`status_label` is the sentence a reader quotes as a pin claim, so its exact wording is
+    the contract. The first version of the fingerprint table called the four unpinned rows
+    "installed, equals the pin" - a version claim requirements.txt never made; this pins all
+    seven situations down, including the one case ('~=') the file does not use today."""
+    cases = [
+        (None, None, "1.2.3", "declared without a pin, installed"),
+        (None, None, None, "declared without a pin, not installed here"),
+        ("==", "1.2.3", None, "pinned, not installed here"),
+        ("==", "1.2.3", "1.2.4", "installed, differs from the pin"),
+        ("==", "1.2.3", "1.2.3", "installed, equals the pin"),
+        (">=", "0.5", "0.5.12", "declared as a range, installed at or above the floor"),
+        (">=", "0.5", "0.4.9", "declared as a range, installed below the floor"),
+        ("~=", "1.2", "1.2.3", "declared as ~= 1.2, installed (not compared)"),
+    ]
+    for op, spec, got, expected in cases:
+        got_label = R.status_label(op, spec, got)
+        assert got_label == expected, (op, spec, got, got_label, expected)
+    # the regression itself, stated as a property rather than as one row of the table
+    assert "equals the pin" not in R.status_label(None, None, "1.2.3")
+    assert "equals the pin" in R.status_label("==", "1.2.3", "1.2.3")
+
+
+def test_status_label_of_the_recorded_fingerprint_matches_its_own_numbers():
+    """Machine-independent self-consistency: every row of the committed artifact must read as
+    the sentence its own declared/installed fields imply. If this fails, a label was written by
+    hand or the table and the labelling function have drifted apart."""
+    p = os.path.join(S.REPORTS, "23_environment_fingerprint.json")
+    if not os.path.isfile(p):
+        raise Skip("no reports/23_environment_fingerprint.json in this checkout")
+    with open(p, encoding="utf-8") as fh:
+        rec = json.load(fh)
+    assert rec["requirements_txt"], "the recorded table is empty"
+    bad = []
+    for row in rec["requirements_txt"]:
+        declared = row["declared"]
+        m = re.match(r"^(==|>=|<=|~=)?(.*)$", declared)
+        op = m.group(1)
+        spec = m.group(2) or None
+        if R.status_label(op, spec, row["installed"]) != row["status"]:
+            bad.append(f"{row['distribution']}: declared {declared!r}, installed "
+                       f"{row['installed']!r}, labelled {row['status']!r}")
+    assert not bad, "; ".join(bad[:3])
+    # and no row may claim a pin it does not have
+    for row in rec["requirements_txt"]:
+        if not row["declared"]:
+            assert "pin" in row["status"], f"{row['distribution']}: {row['status']!r}"
+
+
+def test_version_floor_compare_is_numeric_not_lexicographic():
+    """'>=' floors are compared as version tuples, zero-padded. The traps: '1.10' must beat
+    '1.2' (string compare says otherwise), '0.5' must fall *below* a floor of '0.5.12' (padding
+    both ways), and a local version like '2.6.0+cu124' must still compare on its numeric
+    prefix."""
+    assert R._vnum("2.6.0+cu124") == (2, 6, 0)
+    assert R._vnum("2026.3.6") == (2026, 3, 6)
+    assert R._vnum("") == () and R._vnum(None) == ()
+    assert R._meets("1.10", "1.2") is True
+    assert R._meets("1.2", "1.10") is False
+    assert R._meets("0.5.12", "0.5") is True
+    assert R._meets("0.5", "0.5.12") is False
+    assert R._meets("2.6.0+cu124", "2.6.0") is True
+    assert R._meets("2.5.0+cu124", "2.6.0") is False
+    assert R._meets("2026.3.3", "2026.3.6") is False
 
 
 def main(argv):

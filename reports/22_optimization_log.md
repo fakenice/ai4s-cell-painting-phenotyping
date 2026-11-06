@@ -402,7 +402,8 @@ found by measuring rather than by reading.
   (52/53, measured `46/49` clone and why the denominators differ); `reports/12` §10.5 counts and failure
   modes, new **§10.7 "What the declared environment actually is"**; `reports/20` Stage 14 table; this
   ledger. `docs/12_technical_report_draft_v7.pdf` rebuilt after the sync: **16 pages, MD5
-  `2ec3f59fc9c5100b2d1b03b13724ad2a`**, 12/12 text-layer anchors, 12,147 words — superseding the first
+  `2ec3f59fc9c5100b2d1b03b13724ad2a`**, 12/12 text-layer anchors, 12,147 words (superseded below by the
+  Stage 15 build `70741463…`, 12,226 words) — superseding the first
   Stage-14 build (`4c5e8506…`, 16 pages, 11,993 words, rebuilt before §10.7 grew the machine-skip
   sentences), which had itself superseded an intermediate build (`5e1586a4…`, 11,931 words, overwritten
   when §10.5 grew the probe paragraph) and the Stage 13 build (`29aadaf3…`, also 16 pages); `reports/24`
@@ -414,6 +415,41 @@ found by measuring rather than by reading.
   *this* machine on 2026-11-06 and cannot be re-attributed to the 2026-10-05 build; the pin block and the
   live stack therefore stay in genuine tension, which is now recorded rather than hidden. No CI runs the
   recorder, and nothing was installed or uninstalled to make the numbers agree.
+
+## Stage 15 — 环境表里的句子也要有测试（2026-11-06）
+
+Stage 14 的教训不是某个版本号写错，而是一句标签把「没钉版本」写成了「与 pin 相等」——那是读者会当成
+已验证 pin 去引用的句子，而当时没有任何测试守着它。本阶段把这条规则抽成可测的函数并加上测试。
+
+- **抽出: 完成.** `scripts/record_environment.py` 里内联的七分支标签逻辑变成纯函数
+  `status_label(op, spec, got)`，文档串把七种情境（含本仓今天不用的 `~=`）逐条列出；`build()` 只留一行调用。
+  行为不变的证据不是「读代码觉得等价」，而是实测：内存里重跑 `build()` 与已提交的
+  `reports/23_environment_fingerprint.json` 在所有键与所有行上相等，只差 `recorded_utc`
+  （`2026-11-06T08:28:13Z` → `09:01:02Z`）。工件本身没有重写，因此记录的时间仍指向产生它的那次运行。
+- **测试 21→24: 完成.** 三条新测试：(i) 七种情境逐字比对，并把回归写成性质——未钉版本的标签里不得出现
+  "equals the pin"；(ii) 读已提交工件，用每行自己的 `declared`/`installed` 重新推导标签并要求与记录一致，
+  且凡 `declared` 为空者标签里必须含 "pin"——这条不碰环境，因此在无 `data/` 的克隆里照样执行；
+  (iii) `_vnum`/`_meets` 按数值 tuple 比较：`1.10 > 1.2`（字符串比较会判反）、`0.5 < 0.5.12`（两端补零）、
+  `2.6.0+cu124` 只比数字前缀。实测 `24/24 tests pass`。
+- **测试真的会咬: 已实测两个变异体.** 变异 A 把未钉分支改回 `return "installed, equals the pin"`
+  → 两条标签测试同时变红，`22/24 tests pass`，第二条直接点名真实行：
+  `pillow: declared '', installed '12.2.0', labelled 'declared without a pin, installed'`；
+  变异 B 把 `_meets` 改成字符串比较 → `test_version_floor_compare_is_numeric_not_lexicographic`
+  变红（`0/1 tests pass`）。两次之后都还原，`scripts/record_environment.py` 还原后 SHA256 与探针前相同
+  （`ec9fdc2d…`），`python scripts/record_environment.py --check` 仍报 `CURRENT`。
+- **无输入复测: 完成.** `python scripts/clone_probe.py` 重测为 `23/23 tests pass (1 skipped:
+  paths_data_rule_…)` ＋ `46/49 checks pass`。比原来 20/20 多的三条里，有两条就是上面 (ii) 这类
+  「读工件、不读环境」的测试，克隆里没有 `data/` 也能跑；唯一的 skip 仍是那条需要真实输入的规则。
+- **文档层: 完成.** 测试文件文档串（范围补上 `_paths`/`record_environment` 与新计数）、
+  `scripts/clone_probe.py` 的实测输出、README step 5（24 tests；克隆 `23/23 (1 skipped)`；有输入 `24/24`）、
+  `reports/12` §10.5 覆盖面清单、`reports/20` Stage 15 表、本 ledger；PDF 重编译 **16 pages, MD5
+  `70741463a545067f5d6900114216663a`**, 12,226 words（取代 Stage 14 的 `2ec3f59f…`，12,147 words），
+  文本层实测含 `status_label` / `2.6.0+cu124` / `24 unit tests` / `23/23 tests pass`；`reports/24`
+  §"Current build" 同步并保留取代链。
+- **未解决 / 边界:** 没有新增 checker 行——测试套件本身已由 `check_repo.py` 运行，标签测试变红就会让
+  门禁失败，再加一行只是重复计数。`parse_requirements` 仍能解析 `<=`/`~=`，但这两种运算子没有定义比较，
+  标签老实写 "not compared"；若将来真用到，需要先补语义再补测试。变异体的证据只存在于本 ledger（一次性
+  探针脚本已删除），仓库里没有可一键重放的 mutation 目标。
 
 ## Final status
 
@@ -443,8 +479,9 @@ found by measuring rather than by reading.
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Stage 13 (portability, self-check, unit tests) | 完成 (scripts/_paths.py + 14 scripts migrated; scripts/check_repo.py 49 checks / 50 --deep; tests/test_stage12_units.py 21 tests with SKIP semantics; README §3 + reports/12 §10.2/§10.5/§10.6 + reports/20 Stage 13 + this log synced; PDF rebuilt 16 pp MD5 29aadaf3…; two re-runs from a foreign cwd ⇒ 59/62 artifacts byte-identical) |
 | Git commit (Stage 13 = `cad2391`, 23 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 3：`6861df5`、`31f8c4e`、`cad2391`） |
-| Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；环境三行的机器独立性（row1 实时扫树、row2 改名为「recorded machine」、row3 先比 python+platform 再决定比对或跳过）并用伪造 fingerprint＋临时未声明 import 两条探针实测；PDF 重编译 16 pp MD5 2ec3f59f…（取代 4c5e8506… 与更早的 5e1586a4…）) |
+| Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；环境三行的机器独立性（row1 实时扫树、row2 改名为「recorded machine」、row3 先比 python+platform 再决定比对或跳过）并用伪造 fingerprint＋临时未声明 import 两条探针实测；PDF 重编译 16 pp MD5 2ec3f59f…（取代 4c5e8506… 与更早的 5e1586a4…；本阶段产物又被 Stage 15 的 70741463… 取代）) |
 | Git commit (Stage 14 = `23b8a04`, 11 files / `2b45eff`, 8 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 6：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`）。`2b45eff` 是紧随其后的机器独立性提交（三行环境门禁＋README/§10.5/§10.7/§20/§24 同步＋PDF 重编译） |
+| Stage 15 (环境表标签与版本比较的测试) | 完成 (`status_label` 从 `build()` 抽出为纯函数·内存重跑证明除 `recorded_utc` 外与已提交工件逐键相等；tests 21→24（七种标签情境＋工件自洽重标＋`_meets` 数值比较），实测 `24/24`；两个变异体分别把标签测试打到 `22/24`、把 floor 测试打到 `0/1`，还原后 SHA256 不变且 `--check` 仍 `CURRENT`；`clone_probe.py` 复测 `23/23 (1 skipped)`＋`46/49`；README/§10.5/§20/本 ledger 同步；PDF 重编译 16 pp MD5 70741463…，12,226 words，文本层含 `status_label`/`2.6.0+cu124`/`24 unit tests`) |
 
 ## AI Use Disclosure
 

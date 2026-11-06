@@ -1135,7 +1135,7 @@ Two read-only commands check that this document still matches the artifacts it d
 that the definitions the §4.7 claims rest on still hold:
 
 ```bash
-python tests/test_stage12_units.py     # 21 unit tests, no network, no pytest needed
+python tests/test_stage12_units.py     # 24 unit tests, no network, no pytest needed
 python scripts/check_repo.py           # 52 read-only checks, 7 groups
 python scripts/check_repo.py --deep    # 53/53: also re-hash the 159.9 MB external tree
 python scripts/clone_probe.py          # re-run both as if there were no data/ tree, then clean up
@@ -1159,15 +1159,20 @@ in their names instead of either passing quietly or failing spuriously. The unit
 tests cover the retrieval-arm definitions (which query lands in
 `position-matched`, `position-decoupled` and the strict `decoupled-only`, and how the applicable
 null scales with the number of accepted matches), the vehicle-only robust z, the well-coordinate
-encoding, the additive-layout residualiser, the four scaling arms, and the `DATA` resolution rule
-in `scripts/_paths.py`.
+encoding, the additive-layout residualiser, the four scaling arms, the `DATA` resolution rule
+in `scripts/_paths.py`, and since Stage 15 the sentences the environment table is made of: all
+seven `status_label` situations (the first version of that table called an unpinned declaration
+"installed, equals the pin", which is the mislabel this now prevents), every row of the recorded
+fingerprint re-labelled from its own `declared`/`installed` fields and required to agree, and the
+`>=` floor comparison as numeric rather than lexicographic (`1.10 > 1.2`, `0.5 < 0.5.12`,
+`2.6.0+cu124` compared on its numeric prefix).
 
 Neither entry point needs the inputs, and `python scripts/clone_probe.py` re-measures that claim
 instead of asserting it: it copies `git ls-files` (151 files) to `<workspace>/_tmp_clone_probe/github_repo`,
 one level above the workspace's real `data/` and therefore resolving to a tree that does not exist,
 runs both entry points there with any `AI4S_*` override cleared, prints the summary lines and every
 `FAIL`, and removes the copy (measured 2026-11-06):
-the suite prints `20/20 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
+the suite prints `23/23 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
 and `check_repo.py` prints `46/49`, the three failures being exactly the data-dependent rows
 ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
 each naming the path it resolved. The denominator is 49 there against 52 here for the same reason:

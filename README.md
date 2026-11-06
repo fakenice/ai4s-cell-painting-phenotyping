@@ -149,7 +149,7 @@ Cellpose (cyto2) segmentation of the DNA channel.
    third that re-measures the first two as if the inputs were gone:
 
    ```bash
-   python tests/test_stage12_units.py     # 21 unit tests, no data needed, no pytest needed
+   python tests/test_stage12_units.py     # 24 unit tests, no data needed, no pytest needed
    python scripts/check_repo.py           # 52 checks: paths, imports and dependencies, citations,
    python scripts/check_repo.py --deep    #     artifacts, committed numbers, docs, the test suite
                                           # 53: also re-hash the 17 external objects (SHA256)
@@ -161,7 +161,7 @@ Cellpose (cyto2) segmentation of the DNA channel.
    they are usable as a pre-commit gate. Measured on a **fresh clone with no `data/` yet** — what
    `scripts/clone_probe.py` reproduces, by copying `git ls-files` (151 files) one level above this
    repo's own `data/`, with any `AI4S_*` override cleared: the test suite reports
-   `20/20 tests pass (1 skipped)` — the skip is the one assertion that needs the live inputs —
+   `23/23 tests pass (1 skipped)` — the skip is the one assertion that needs the live inputs —
    and `check_repo.py` reports `46/49`, the three failures being exactly the data-dependent ones
    ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
    each naming the path it looked at. The 49 rows versus 52 above is that same absence: with no
@@ -173,7 +173,7 @@ Cellpose (cyto2) segmentation of the DNA channel.
    `belongs to another machine (skipped)` wherever python or the OS differ instead of failing a
    reader who changed computers — say so in their names rather than passing quietly or failing
    spuriously.
-   With the data tree in place you should see `21/21` and `52/52` (`53/53 --deep`).
+   With the data tree in place you should see `24/24` and `52/52` (`53/53 --deep`).
 
 6. (Optional) Rebuild the **live run** demo video — it actually executes the
    stage scripts, runs a real Cellpose inference and renders charts from the

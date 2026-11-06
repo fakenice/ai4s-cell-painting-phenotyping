@@ -354,11 +354,11 @@ python scripts/build_report_pdf.py --check-only
 ```
 
 Current build: `docs/12_technical_report_draft_v7.pdf`, 16 pages, MD5
-`2ec3f59fc9c5100b2d1b03b13724ad2a`, 12,147 words in the text layer (rebuilt after the machine-independence
-sentences were added to `reports/12` §10.5 and §10.7. It supersedes the first Stage-14 build
-`4c5e8506…` (16 pages, 11,993 words), which was itself rebuilt after §10.7 and the §10.5 probe paragraph
-were added, and one intermediate Stage-14 build `5e1586a4…` (16 pages, 11,931 words) that was superseded
-inside the same stage when §10.5 grew a paragraph; both are listed here so the chain stays complete. The Stage 13 build
+`70741463a545067f5d6900114216663a`, 12,226 words in the text layer (rebuilt after Stage 15 added the
+labelling/floor-compare coverage to `reports/12` §10.5. It supersedes the Stage-14 builds `2ec3f59f…`
+(16 pages, 12,147 words) and `4c5e8506…` (16 pages, 11,993 words) and one intermediate Stage-14 build
+`5e1586a4…` (16 pages, 11,931 words) that was superseded inside that stage when §10.5 grew a paragraph;
+all three are listed here so the chain stays complete. The Stage 13 build
 was also 16 pages, MD5
 `29aadaf3…`; the Stage 12 build was 15 pages, MD5 `726cc357…`, and the pre-Stage-12 committed build
 20 pages, MD5 `664ae12b…`, whose text layer contains none of the §4.7 anchors). Page-count changes

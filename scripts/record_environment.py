@@ -99,6 +99,37 @@ def _meets(got, floor):
     return g + (0,) * (n - len(g)) >= f + (0,) * (n - len(f))
 
 
+def status_label(op, spec, got):
+    """One row of the fingerprint table, as a sentence that only claims what the file claimed.
+
+    Extracted from `build()` because the first version of it called the four unpinned rows
+    "installed, equals the pin" - a version claim `requirements.txt` never made, and exactly the
+    kind of sentence a reader would later quote as a verified pin. The seven situations:
+
+      no operator at all, installed      -> "declared without a pin, installed"
+      no operator at all, absent         -> "declared without a pin, not installed here"
+      '==' , absent                      -> "pinned, not installed here"
+      '==' , present, unequal            -> "installed, differs from the pin"
+      '==' , present, equal              -> "installed, equals the pin"
+      '>=', present, at/above the floor  -> "declared as a range, installed at or above the floor"
+      '>=', present, below the floor     -> "declared as a range, installed below the floor"
+
+    Any other operator (e.g. '~=', which the file does not use today) is reported as declared
+    without being compared, because comparing it would be a claim this code has not defined.
+    """
+    if not op:
+        return "declared without a pin, installed" if got \
+            else "declared without a pin, not installed here"
+    if got is None:
+        return "pinned, not installed here"
+    if op == "==":
+        return "installed, equals the pin" if got == spec else "installed, differs from the pin"
+    if op == ">=":
+        return ("declared as a range, installed at or above the floor" if _meets(got, spec)
+                else "declared as a range, installed below the floor")
+    return f"declared as {op} {spec}, installed (not compared)"
+
+
 def sweep_imports():
     """{module: {level: [files]}} over the tracked scripts, split by how reachable the import is.
 
@@ -173,26 +204,8 @@ def build():
     requirements = []
     for dist, op, spec in reqs:
         got = installed(dist)
-        # A label has to distinguish seven situations here. The first version of this
-        # table called the four unpinned rows "installed, equals the pin", which reads as
-        # a version claim the file never made; an unpinned row has no pin to equal.
-        if not op:
-            status = "declared without a pin, installed" if got \
-                else "declared without a pin, not installed here"
-        elif got is None:
-            status = "pinned, not installed here"
-        elif op == "==" and got != spec:
-            status = "installed, differs from the pin"
-        elif op == "==":
-            status = "installed, equals the pin"
-        else:                                   # '>=floor': compare, without claiming equality
-            if op == ">=":
-                status = "declared as a range, installed at or above the floor" if _meets(got, spec) \
-                    else "declared as a range, installed below the floor"
-            else:
-                status = f"declared as {op} {spec}, installed (not compared)"
         requirements.append({"distribution": dist, "declared": f"{op or ''}{spec or ''}".strip(),
-                             "installed": got, "status": status})
+                             "installed": got, "status": status_label(op, spec, got)})
     imports = []
     for mod, where in sorted(sweep_imports().items()):
         dist = DIST.get(mod, mod)
