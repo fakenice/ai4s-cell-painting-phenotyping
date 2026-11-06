@@ -347,9 +347,32 @@ found by measuring rather than by reading.
   and exits 1 naming the moved rows, so an upgraded library is *reported* instead of quietly changing
   4th-decimal results (the §10.6 mechanism). Measured: `CURRENT - python 3.13.7, 22 declared,
   22 version rows + 23 import rows still match, no undeclared module-level import`. Three new
-  `check_repo.py` rows use it — module-level imports all declared, every blocking-but-absent dependency
-  named somewhere in the docs, fingerprint equals this machine — taking the read-only suite from 49 to
-  **52 (53 with `--deep`)**, verified `52/52` and `53/53` in the real tree and `21/21` in the suite.
+  `check_repo.py` rows use it — module-level imports all declared, every blocking-but-absent
+  dependency named somewhere in the docs, fingerprint equals this machine — taking the read-only
+  suite from 49 to **52 (53 with `--deep`)**, verified `52/52` and `53/53` in the real tree and
+  `21/21` in the suite. Two of those three names stated a claim about *this* machine in the present
+  tense; the next bullet records the correction and its measurements.
+- **同一门禁的机器独立性: 完成.** The rows above stated claims about *the author's machine* in the
+  present tense, which would have failed a legitimate clone for reasons that are not defects. Row 2 is
+  now scoped in its own name — `every dependency that blocks a script on the recorded machine is named
+  in the docs` (it reads the recorded `imports`, and is a claim about the docs, so it runs everywhere).
+  Row 1 lost its dependence on the artifact: `check_repo.py` imports `record_environment` and calls
+  `build()` itself, so the undeclared-import sweep describes the code in front of it rather than a
+  snapshot. Row 3 is gated on `same = (recorded python == live python and recorded platform == live
+  platform)`; when they differ it emits
+  `recorded fingerprint belongs to another machine (skipped: drift not assessable from here)` and
+  returns, naming both sides. Measured by running the checker against a doctored copy of the
+  fingerprint (`platform` set to `FakeOS-99-Not-This-Machine`), which printed
+  `PASS | … | record says python 3.13.7 on FakeOS-99-Not-This-Machine; this is python 3.13.7 on
+  Windows-10-10.0.19045-SP0` instead of comparing the record's 22 version rows and 23 import rows
+  against a machine it was never taken on, and on the real fingerprint, which
+  still gives `52/52 checks pass` (the artifact was restored byte-identical: SHA256 `c7d9a212…`, and
+  `git status` shows it unmodified). The live sweep was proven the same way: a throwaway
+  `scripts/_probe_undeclared.py` containing one `import zzz_probe_not_a_package` made row 1 FAIL
+  (`undeclared: zzz_probe_not_a_package`) *and* row 3 FAIL (`imported now, absent from the record:
+  …`), i.e. the code in front of the checker is judged even when the recorded artifact has not been
+  regenerated; `50/52`, and `52/52` again once the probe was deleted. Skipping is stated in the row
+  name; it is never a pass of the drift claim itself.
 - **检查器自身的第二个 vacuous 缺陷: 已修，并有实测.** The Stage 13 literal audit compared HEAD's
   `BASE`/`REPO` literals with the derived roots — but from `cad2391` onward HEAD *contains no such
   literals*, so the row had degraded to "the 0 path literals replaced at HEAD equal the derived roots":
@@ -379,10 +402,11 @@ found by measuring rather than by reading.
   (52/53, measured `46/49` clone and why the denominators differ); `reports/12` §10.5 counts and failure
   modes, new **§10.7 "What the declared environment actually is"**; `reports/20` Stage 14 table; this
   ledger. `docs/12_technical_report_draft_v7.pdf` rebuilt after the sync: **16 pages, MD5
-  `4c5e8506ea47f3dca75284b13f98e19a`**, 12/12 text-layer anchors, 11,993 words — superseding the Stage 13
-  build (`29aadaf3…`, also 16 pages) and one intermediate Stage-14 build (`5e1586a4…`, 11,931 words,
-  overwritten when §10.5 grew the probe paragraph); `reports/24` §"Current build" carries the new hash
-  and the chain back to `726cc357…` and `664ae12b…`.
+  `2ec3f59fc9c5100b2d1b03b13724ad2a`**, 12/12 text-layer anchors, 12,147 words — superseding the first
+  Stage-14 build (`4c5e8506…`, 16 pages, 11,993 words, rebuilt before §10.7 grew the machine-skip
+  sentences), which had itself superseded an intermediate build (`5e1586a4…`, 11,931 words, overwritten
+  when §10.5 grew the probe paragraph) and the Stage 13 build (`29aadaf3…`, also 16 pages); `reports/24`
+  §"Current build" carries the new hash and the chain back to `726cc357…` and `664ae12b…`.
 - **未解决 / 边界:** declaring a dependency is not installing one — `harmonypy`, `timm`, `transformers`,
   `imageio-ffmpeg`, `torchvision` and `cellpose` remain absent here, so `stage10_harmony.py`,
   `stage10_retrieval.py`, `stage10_self_supervised.py`, `stage11_p0_retrieval.py`, `04_cellpose_demo.py`
@@ -419,7 +443,7 @@ found by measuring rather than by reading.
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Stage 13 (portability, self-check, unit tests) | 完成 (scripts/_paths.py + 14 scripts migrated; scripts/check_repo.py 49 checks / 50 --deep; tests/test_stage12_units.py 21 tests with SKIP semantics; README §3 + reports/12 §10.2/§10.5/§10.6 + reports/20 Stage 13 + this log synced; PDF rebuilt 16 pp MD5 29aadaf3…; two re-runs from a foreign cwd ⇒ 59/62 artifacts byte-identical) |
 | Git commit (Stage 13 = `cad2391`, 23 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 3：`6861df5`、`31f8c4e`、`cad2391`） |
-| Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；PDF 重编译 16 pp MD5 4c5e8506…（取代同阶段中间件 5e1586a4…）) |
+| Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；环境三行的机器独立性（row1 实时扫树、row2 改名为「recorded machine」、row3 先比 python+platform 再决定比对或跳过）并用伪造 fingerprint＋临时未声明 import 两条探针实测；PDF 重编译 16 pp MD5 2ec3f59f…（取代 4c5e8506… 与更早的 5e1586a4…）) |
 
 ## AI Use Disclosure
 

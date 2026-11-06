@@ -185,20 +185,35 @@ def _group_environment():
     rows = rec.get("requirements_txt", [])
     differ = [r["distribution"] for r in rows if r["status"] == "installed, differs from the pin"]
     absent = [r["distribution"] for r in rows if r.get("installed") is None]
-    undeclared = s.get("undeclared_module_level_imports", [])
+    # (1) code vs declaration, re-derived live: whether an import is declared does not depend on
+    # which machine runs this, so this row is never another machine's business.
+    sys.path.insert(0, _paths._HERE)
+    import record_environment as rec_mod
+    live = rec_mod.build()
+    undeclared = live["summary"]["undeclared_module_level_imports"]
     add(g, "every module-level third-party import is declared in requirements.txt",
         not undeclared,
         "undeclared: " + ", ".join(undeclared) if undeclared else
-        f"all {s.get('third_party_modules_imported')} swept third-party modules are declared")
-    # a missing dependency that stops a script from even starting is a claim about this checkout,
-    # so the docs have to name it rather than leave a clone to discover it by traceback
+        f"all {live['summary']['third_party_modules_imported']} swept third-party modules are declared")
+    # (2) a missing dependency that stops a script from even starting is a claim about the machine
+    # that recorded it, so the docs have to name it rather than leave a clone to find out by traceback
     blocked = sorted({i["distribution"] for i in rec.get("imports", [])
                       if i["level"] in ("module", "module-guarded") and not i["installed_here"]})
     blob = md_blob()
     unstated = [d for d in blocked if d not in blob]
-    add(g, "every dependency that blocks a script here is named in the docs", not unstated,
+    add(g, "every dependency that blocks a script on the recorded machine is named in the docs",
+        not unstated,
         "undocumented: " + ", ".join(unstated) if unstated else
-        f"{len(blocked)} absent here, each named: {', '.join(blocked)}")
+        f"{len(blocked)} absent there, each named: {', '.join(blocked)}")
+    # (3) the environment comparison, and the one case where it must not be made: the fingerprint
+    # records a machine, and a reader on another one has not broken anything by living elsewhere.
+    same = (rec.get("python") == live["python"] and rec.get("platform") == live["platform"])
+    if not same:
+        add(g, "recorded fingerprint belongs to another machine (skipped: drift not "
+               "assessable from here)", True,
+            f"record says python {rec.get('python')} on {rec.get('platform')}; "
+            f"this is python {live['python']} on {live['platform']}")
+        return
     try:
         proc = subprocess.run([sys.executable, os.path.join(REPO, "scripts",
                                                             "record_environment.py"), "--check"],

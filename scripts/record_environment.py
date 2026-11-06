@@ -21,7 +21,10 @@ Two separate questions get conflated in a `requirements.txt`, so this file keeps
 
 `scripts/check_repo.py` group B re-derives both lists and fails if the recorded fingerprint no
 longer equals the live environment, so an upgraded library is reported instead of silently
-changing 4th-decimal results (see reports/12 §10.6).
+changing 4th-decimal results (see reports/12 §10.6). That comparison only runs where it means
+something: the fingerprint records a machine, and on a checkout whose python or platform differs
+the row reports itself as skipped rather than failing a reader who changed computers (reports/12
+§10.7).
 """
 import argparse
 import ast

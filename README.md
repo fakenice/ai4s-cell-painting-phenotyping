@@ -167,8 +167,12 @@ Cellpose (cyto2) segmentation of the DNA channel.
    each naming the path it looked at. The 49 rows versus 52 above is that same absence: with no
    fetch manifest to read, the manifest group reports the one "present?" row and returns instead
    of emitting its three content rows. Nothing else changes: the path, dependency, citation,
-   artifact, number, PDF and test groups all pass without the inputs, and the two checks that
-   need history or the author's own checkout say so in their names instead of passing quietly.
+   artifact, number, PDF and test groups all pass without the inputs, and the checks that can only
+   mean something on the author's own machine or in the author's own history — the pre-refactor
+   path-literal audit, and the environment-fingerprint comparison, which reports
+   `belongs to another machine (skipped)` wherever python or the OS differ instead of failing a
+   reader who changed computers — say so in their names rather than passing quietly or failing
+   spuriously.
    With the data tree in place you should see `21/21` and `52/52` (`53/53 --deep`).
 
 6. (Optional) Rebuild the **live run** demo video — it actually executes the

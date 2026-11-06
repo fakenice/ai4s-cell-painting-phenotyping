@@ -1150,8 +1150,12 @@ rather than HEAD), a PDF whose hash is not the one the ledger records, a manifes
 or SHA256
 moved, an `AI4S_REPO` / `AI4S_WORKSPACE` override that the module does not honour, a third-party
 module that committed code imports at module level while `requirements.txt` leaves it undeclared,
-a dependency that stops a script from starting here and that no document names, or a recorded
-environment fingerprint (§10.7) that no longer equals the machine running it. The unit
+a dependency that stops a script from starting on the recorded machine and that no document names,
+or a recorded environment fingerprint (§10.7) that no longer equals the machine running it — the
+last one compared only when this *is* that machine, because a reader living elsewhere has not
+broken anything by living elsewhere, and the two rows that can only mean something on the author's
+checkout (the pre-refactor literal audit, the fingerprint comparison) say `unproven` / `skipped`
+in their names instead of either passing quietly or failing spuriously. The unit
 tests cover the retrieval-arm definitions (which query lands in
 `position-matched`, `position-decoupled` and the strict `decoupled-only`, and how the applicable
 null scales with the number of accepted matches), the vehicle-only robust z, the well-coordinate
@@ -1258,10 +1262,16 @@ distribution with the pin beside the installed version and a label that distingu
 from a met range from an unpinned declaration from an absent package, one row per
 imported module with its reachability level and the files that import it, and a summary), and
 `--check` re-derives all of it and exits non-zero if the environment or the import surface moved,
-naming the rows. Three `check_repo.py` rows now depend on it — every module-level third-party
-import declared, every dependency that blocks a script here named in the docs, and the recorded
-fingerprint still equal to this machine — which took the read-only suite from 49 to 52 checks
-(53 with `--deep`). The pre-refactor path-literal audit was rewritten at the same time: it had been
+naming the rows. Three `check_repo.py` rows now cover it — every module-level third-party import
+declared (the checker calls the recorder's `build()` itself, so this describes the code in front of
+it and not a snapshot), every dependency that blocks a script *on the recorded machine* named in the
+docs (a claim about the docs, so it runs anywhere), and the recorded fingerprint still equal to this
+environment — which took the read-only suite from 49 to 52 checks (53 with `--deep`). The last row
+runs only when this checkout really is the machine the fingerprint records: python and platform are
+compared first, and on a doctored fingerprint the row reads `recorded fingerprint belongs to another
+machine (skipped: drift not assessable from here)` and names both sides, rather than comparing the
+fingerprint's 22 version rows and 23 import rows against a machine that never claimed them. The pre-refactor path-literal
+audit was rewritten at the same time: it had been
 comparing HEAD's literals with the derived roots, and since the refactor commit those literals are
 no longer in HEAD, so the row had quietly become "0 literals checked, all equal". It now reads the
 tree *before* `scripts/_paths.py` existed, compares the 16 literals it finds there, and where the
