@@ -410,9 +410,9 @@ equally finished:
 | Layer | Status | Evidence |
 |---|---|---|
 | Paths | 完成 | `scripts/_paths.py` derives REPO / WORKSPACE / DATA / REPORTS from its own location (override with `AI4S_REPO` / `AI4S_WORKSPACE`); 14 stage scripts migrated (+ the second pass moved `DATA`/`REPORTS` themselves into the module: 17 rewrites, 101 insertions / 46 deletions in `scripts/`). No drive-letter literal remains in any tracked `.py` |
-| Equivalence | 完成 (measured) | The 16 `BASE`/`REPO` literals removed at HEAD equal the roots `_paths` derives (checker group A); AST-evaluating every module-level path constant before vs after the rewrite gives **0 resolution differences, 0 lost names**, 6 non-path expressions skipped. `compileall` exit 0 |
+| Equivalence | 完成 (measured) | The 16 `BASE`/`REPO` literals the refactor removed equal the roots `_paths` derives (checker group A — reading them from the tree *before* `scripts/_paths.py`, since HEAD stopped containing them at the refactor commit; see Stage 14). AST-evaluating every module-level path constant before vs after the rewrite gives **0 resolution differences, 0 lost names**, 6 non-path expressions skipped. `compileall` exit 0 |
 | Results unchanged | 完成 (measured) | Two independent re-runs of the five local-only stages from a foreign cwd: **59 of 62 `reports/` artifacts byte-identical**, the 3 mismatches being the docs the stage edits. Only `20_stage11_p3_cross_plate_*` move, to identical bytes across 5 invocations (incl. the pre-refactor script) ⇒ library drift, not path handling; quoted in §10.6 with the `autocrlf` caveat |
-| Self-check | 完成 | `scripts/check_repo.py`: 49 read-only checks in 7 groups (50 with `--deep`, re-hashing the 159.9 MB external tree). Measured in a data-less clone: 43/46, failing only the three data-dependent rows, each naming the path it looked for |
+| Self-check | 完成 | `scripts/check_repo.py`: 52 read-only checks in 7 groups (53 with `--deep`, re-hashing the 159.9 MB external tree). Measured in a data-less clone: 46/49, failing only the three data-dependent rows, each naming the path it looked for |
 | Tests | 完成 | `tests/test_stage12_units.py`, 21 tests, plain-python runner, no data needed: the four scaling arms, the three retrieval arms + applicable null, vehicle-only robust z, well coordinates, additive residualiser, `_paths` data rule. Fresh clone: `20/20 pass (1 skipped)` — skips are excluded from the denominator and named |
 | Docs | 完成 | README §3 (both `data/` placements + the two verification commands + measured no-input output); reports/12 §10.2/§10.5/§10.6; reports/22 Stage 13; reports/24 artifacts header |
 | Not done | 未做 | The 7 root-level scripts (`demo.py`, `01_…`–`06_…`) keep their own two-level `dirname` derivation — they resolve correctly, just not through `_paths`; no CI workflow runs the checker; `stage10_*` stay unverified because `harmonypy` is not installed |
@@ -420,6 +420,22 @@ equally finished:
 Decision left open: `figures/`, `reports/figures/`, `docs/figures/` (+2) hold 20 shared filenames
 with 9 byte-identical and 11 differing copies — de-duplicating those is a user call, not a silent
 delete. Ledger detail: `reports/22_optimization_log.md` Stage 13.
+
+## Stage 14 — Dependency truth (2026-11-06)
+
+Question: does what the repo *declares* about its environment match what its code needs and what
+this machine has? Continuation of Stage 13's "can a reader off the author's machine run this", and
+it came out of re-running the checker rather than out of a plan.
+
+| Layer | Status | Evidence |
+|---|---|---|
+| Measured | 完成 | 22 declared distributions vs this machine: 3 `==` pins equal (pandas 3.0.3, seaborn 0.13.2, tifffile 2026.9.20), **7 differ** (numpy 2.4.6→2.3.4, scipy 1.17.1→1.18.1, scikit-learn 1.8.0→1.9.1, matplotlib 3.10.9→3.11.0, xgboost 3.2.0→3.4.1, rdkit 2026.3.6→2026.3.3, torch 2.14.0→2.6.0+cu124), 2 pinned but absent (torchvision, cellpose), 2 ranges met (umap-learn, statsmodels), 8 unpinned additions |
+| Undeclared imports | 完成 | AST sweep of every tracked `.py`, split by reachability: 16 module-level / module-guarded, 7 deferred. `pillow`, `imageio-ffmpeg`, `harmonypy`, `timm`, `transformers`, `pyarrow`, `scikit-image`, `pymupdf` were imported by committed code and undeclared; all 8 are declared now |
+| Pins invented? | 否 (deliberate) | The 8 newly declared distributions are declared **without versions**: a number there would read as a claim about the 2026-10-05 build env, and none of them can be tied back to it. `requirements.txt` now separates "the build environment" from "this machine" in its own comments |
+| Recorder | 完成 | `scripts/record_environment.py` writes `reports/23_environment_fingerprint.json` (python, platform, pin-vs-installed rows labelled so a matched pin, a met range, an unpinned declaration and an absent package cannot be read as each other, import rows with level + files, summary); `--check` re-derives everything, names what moved, exits 1 — measured `CURRENT … 22 version rows + 23 import rows still match` |
+| Checker | 完成 | 3 new `check_repo.py` rows (module-level imports all declared; every dependency that blocks a script here is named in the docs; the recorded fingerprint still equals this machine) → 49/50 became **52/53**. The pre-refactor literal audit was rewritten: it had degraded to "0 literals checked, all equal" because HEAD no longer holds those literals; it now reads the pre-`_paths` tree (16 literals, all equal), says `unproven` out loud where the history or the original checkout is missing (both skip branches exercised in a fixture), and a forced wrong root makes it FAIL and name the files |
+| Docs | 完成 | README step 2 + step 5 (incl. `python scripts/clone_probe.py`, the tracked re-measurement of the no-input claims: 151 files copied outside the data tree, `20/20 (1 skipped)` + `46/49`, self-cleaning); reports/12 §10.5 and new §10.7; reports/22 Stage 14; reports/24 PDF hash re-recorded after rebuild (`4c5e8506ea47f3dca75284b13f98e19a`, 16 pp) |
+| Not done | 未做 | `harmonypy` / `timm` / `transformers` / `imageio-ffmpeg` / `torchvision` / `cellpose` are still not installed here — declaring them is not installing them, so `stage10_harmony.py`, `stage10_retrieval.py`, `stage10_self_supervised.py`, `stage11_p0_retrieval.py`, `04_cellpose_demo.py` and the demo-video builders remain unverified on this machine. The fingerprint records *this* machine, not the 2026-10-05 build; no CI runs any of it |
 
 ## AI Use Disclosure
 

@@ -1,0 +1,477 @@
+{
+ "imports": [
+  {
+   "declared_in_requirements": true,
+   "distribution": "pillow",
+   "files": [
+    "scripts/make_demo_video.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/make_demo_video_v8.py"
+   ],
+   "installed_here": "12.2.0",
+   "level": "module",
+   "module": "PIL",
+   "n_files": 3
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "cellpose",
+   "files": [
+    "04_cellpose_demo.py",
+    "scripts/make_demo_video_live.py"
+   ],
+   "installed_here": null,
+   "level": "module",
+   "module": "cellpose",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "pymupdf",
+   "files": [
+    "scripts/build_report_pdf.py"
+   ],
+   "installed_here": "1.28.2",
+   "level": "deferred",
+   "module": "fitz",
+   "n_files": 1
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "harmonypy",
+   "files": [
+    "scripts/stage10_harmony.py",
+    "scripts/stage10_retrieval.py"
+   ],
+   "installed_here": null,
+   "level": "deferred",
+   "module": "harmonypy",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "imageio-ffmpeg",
+   "files": [
+    "scripts/make_demo_video.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/make_demo_video_v8.py"
+   ],
+   "installed_here": null,
+   "level": "module",
+   "module": "imageio_ffmpeg",
+   "n_files": 3
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "matplotlib",
+   "files": [
+    "01_phenotypic_profiling.py",
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "04_cellpose_demo.py",
+    "05_structure_uncertainty_pipeline.py",
+    "06_deep_representation_pipeline.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/make_demo_video_v8.py"
+   ],
+   "installed_here": "3.11.0",
+   "level": "module",
+   "module": "matplotlib",
+   "n_files": 13
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "numpy",
+   "files": [
+    "01_phenotypic_profiling.py",
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "04_cellpose_demo.py",
+    "05_structure_uncertainty_pipeline.py",
+    "06_deep_representation_pipeline.py",
+    "scripts/make_demo_video.py",
+    "scripts/make_demo_video_live.py"
+   ],
+   "installed_here": "2.3.4",
+   "level": "module",
+   "module": "numpy",
+   "n_files": 23
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "pandas",
+   "files": [
+    "01_phenotypic_profiling.py",
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "04_cellpose_demo.py",
+    "05_structure_uncertainty_pipeline.py",
+    "06_deep_representation_pipeline.py",
+    "demo.py",
+    "scripts/make_demo_video_live.py"
+   ],
+   "installed_here": "3.0.3",
+   "level": "module",
+   "module": "pandas",
+   "n_files": 21
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "pyarrow",
+   "files": [
+    "scripts/stage12_p1_external_site.py"
+   ],
+   "installed_here": "25.0.1",
+   "level": "deferred",
+   "module": "pyarrow",
+   "n_files": 1
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "pymupdf",
+   "files": [
+    "scripts/build_report_pdf.py",
+    "scripts/check_repo.py"
+   ],
+   "installed_here": "1.28.2",
+   "level": "deferred",
+   "module": "pymupdf",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "rdkit",
+   "files": [
+    "05_structure_uncertainty_pipeline.py",
+    "scripts/stage10_harmony.py",
+    "scripts/stage11_p0_structural.py"
+   ],
+   "installed_here": "2026.3.3",
+   "level": "module",
+   "module": "rdkit",
+   "n_files": 3
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "scipy",
+   "files": [
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "05_structure_uncertainty_pipeline.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/make_demo_video_v8.py",
+    "scripts/stage10_harmony.py",
+    "scripts/stage10_retrieval.py",
+    "scripts/stage11_p0_structural.py"
+   ],
+   "installed_here": "1.18.1",
+   "level": "module",
+   "module": "scipy",
+   "n_files": 9
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "seaborn",
+   "files": [
+    "01_phenotypic_profiling.py",
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "05_structure_uncertainty_pipeline.py",
+    "06_deep_representation_pipeline.py",
+    "scripts/stage11_p0_structural.py"
+   ],
+   "installed_here": "0.13.2",
+   "level": "module",
+   "module": "seaborn",
+   "n_files": 6
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "scikit-image",
+   "files": [
+    "scripts/make_demo_video_live.py"
+   ],
+   "installed_here": "0.26.0",
+   "level": "deferred",
+   "module": "skimage",
+   "n_files": 1
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "scikit-learn",
+   "files": [
+    "01_phenotypic_profiling.py",
+    "02_classification_target.py",
+    "03_enrichment_strength.py",
+    "05_structure_uncertainty_pipeline.py",
+    "06_deep_representation_pipeline.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/stage10_harmony.py",
+    "scripts/stage10_retrieval.py"
+   ],
+   "installed_here": "1.9.1",
+   "level": "module",
+   "module": "sklearn",
+   "n_files": 17
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "statsmodels",
+   "files": [
+    "03_enrichment_strength.py",
+    "scripts/stage10_retrieval.py"
+   ],
+   "installed_here": "0.15.0",
+   "level": "module",
+   "module": "statsmodels",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "tifffile",
+   "files": [
+    "04_cellpose_demo.py",
+    "06_deep_representation_pipeline.py",
+    "scripts/make_demo_video_live.py",
+    "scripts/stage10_self_supervised.py",
+    "scripts/stage11_p0_retrieval.py",
+    "scripts/stage11_p2_extract_embeddings.py"
+   ],
+   "installed_here": "2026.9.20",
+   "level": "module",
+   "module": "tifffile",
+   "n_files": 6
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "timm",
+   "files": [
+    "scripts/stage10_self_supervised.py",
+    "scripts/stage11_p0_retrieval.py"
+   ],
+   "installed_here": null,
+   "level": "deferred",
+   "module": "timm",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "torch",
+   "files": [
+    "06_deep_representation_pipeline.py",
+    "scripts/stage10_self_supervised.py",
+    "scripts/stage11_p0_retrieval.py",
+    "scripts/stage11_p2_extract_embeddings.py"
+   ],
+   "installed_here": "2.6.0+cu124",
+   "level": "module",
+   "module": "torch",
+   "n_files": 4
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "torchvision",
+   "files": [
+    "06_deep_representation_pipeline.py",
+    "scripts/stage10_self_supervised.py",
+    "scripts/stage11_p0_retrieval.py",
+    "scripts/stage11_p2_extract_embeddings.py"
+   ],
+   "installed_here": null,
+   "level": "module",
+   "module": "torchvision",
+   "n_files": 4
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "transformers",
+   "files": [
+    "scripts/stage10_self_supervised.py",
+    "scripts/stage11_p0_retrieval.py"
+   ],
+   "installed_here": null,
+   "level": "deferred",
+   "module": "transformers",
+   "n_files": 2
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "umap-learn",
+   "files": [
+    "01_phenotypic_profiling.py"
+   ],
+   "installed_here": "0.5.12",
+   "level": "module",
+   "module": "umap",
+   "n_files": 1
+  },
+  {
+   "declared_in_requirements": true,
+   "distribution": "xgboost",
+   "files": [
+    "02_classification_target.py",
+    "05_structure_uncertainty_pipeline.py",
+    "scripts/stage10_harmony.py",
+    "scripts/stage11_p0_structural.py",
+    "scripts/stage11_p4_trt_trt_boost.py"
+   ],
+   "installed_here": "3.4.1",
+   "level": "module",
+   "module": "xgboost",
+   "n_files": 5
+  }
+ ],
+ "platform": "Windows-10-10.0.19045-SP0",
+ "python": "3.13.7",
+ "recorded_utc": "2026-11-06T08:28:13Z",
+ "requirements_txt": [
+  {
+   "declared": "==2.4.6",
+   "distribution": "numpy",
+   "installed": "2.3.4",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==3.0.3",
+   "distribution": "pandas",
+   "installed": "3.0.3",
+   "status": "installed, equals the pin"
+  },
+  {
+   "declared": "==1.17.1",
+   "distribution": "scipy",
+   "installed": "1.18.1",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==1.8.0",
+   "distribution": "scikit-learn",
+   "installed": "1.9.1",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==3.10.9",
+   "distribution": "matplotlib",
+   "installed": "3.11.0",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==0.13.2",
+   "distribution": "seaborn",
+   "installed": "0.13.2",
+   "status": "installed, equals the pin"
+  },
+  {
+   "declared": ">=0.5",
+   "distribution": "umap-learn",
+   "installed": "0.5.12",
+   "status": "declared as a range, installed at or above the floor"
+  },
+  {
+   "declared": "==3.2.0",
+   "distribution": "xgboost",
+   "installed": "3.4.1",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==2026.3.6",
+   "distribution": "rdkit",
+   "installed": "2026.3.3",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": ">=0.14",
+   "distribution": "statsmodels",
+   "installed": "0.15.0",
+   "status": "declared as a range, installed at or above the floor"
+  },
+  {
+   "declared": "==2026.9.20",
+   "distribution": "tifffile",
+   "installed": "2026.9.20",
+   "status": "installed, equals the pin"
+  },
+  {
+   "declared": "==2.14.0",
+   "distribution": "torch",
+   "installed": "2.6.0+cu124",
+   "status": "installed, differs from the pin"
+  },
+  {
+   "declared": "==0.29.0",
+   "distribution": "torchvision",
+   "installed": null,
+   "status": "pinned, not installed here"
+  },
+  {
+   "declared": "==4.2.1.1",
+   "distribution": "cellpose",
+   "installed": null,
+   "status": "pinned, not installed here"
+  },
+  {
+   "declared": "",
+   "distribution": "pillow",
+   "installed": "12.2.0",
+   "status": "declared without a pin, installed"
+  },
+  {
+   "declared": "",
+   "distribution": "imageio-ffmpeg",
+   "installed": null,
+   "status": "declared without a pin, not installed here"
+  },
+  {
+   "declared": "",
+   "distribution": "harmonypy",
+   "installed": null,
+   "status": "declared without a pin, not installed here"
+  },
+  {
+   "declared": "",
+   "distribution": "timm",
+   "installed": null,
+   "status": "declared without a pin, not installed here"
+  },
+  {
+   "declared": "",
+   "distribution": "transformers",
+   "installed": null,
+   "status": "declared without a pin, not installed here"
+  },
+  {
+   "declared": "",
+   "distribution": "pyarrow",
+   "installed": "25.0.1",
+   "status": "declared without a pin, installed"
+  },
+  {
+   "declared": "",
+   "distribution": "scikit-image",
+   "installed": "0.26.0",
+   "status": "declared without a pin, installed"
+  },
+  {
+   "declared": "",
+   "distribution": "pymupdf",
+   "installed": "1.28.2",
+   "status": "declared without a pin, installed"
+  }
+ ],
+ "summary": {
+  "declared": 22,
+  "pinned_equal_to_this_machine": 3,
+  "status_counts": {
+   "declared as a range, installed at or above the floor": 2,
+   "declared without a pin, installed": 4,
+   "declared without a pin, not installed here": 4,
+   "installed, differs from the pin": 7,
+   "installed, equals the pin": 3,
+   "pinned, not installed here": 2
+  },
+  "third_party_modules_imported": 23,
+  "undeclared_deferred_imports": [],
+  "undeclared_module_guarded_imports": [],
+  "undeclared_module_level_imports": []
+ }
+}

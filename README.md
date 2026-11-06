@@ -51,6 +51,16 @@ Cellpose (cyto2) segmentation of the DNA channel.
    pip install cellpose torch
    ```
 
+   `requirements.txt` is two documents, and it now says so. The pinned block is the environment
+   that produced the submitted results (claimed for 2026-10-05); it is *not* a claim about the
+   machine you install on. `python scripts/record_environment.py` writes
+   `reports/23_environment_fingerprint.json`, which records each declared distribution beside
+   what this machine actually has — measured 2026-11-06, 3 of the 12 `==` pins equal this machine,
+   7 differ and 2 are absent — and `--check` turns that file into a drift gate. The unpinned rows
+   at the end are the distributions committed code imports but the original list never named;
+   they carry no version because no version of theirs can be tied back to the build environment.
+   `python scripts/check_repo.py` fails if either half goes stale.
+
 3. Download the data and place it as follows:
 
    ```bash
@@ -135,24 +145,31 @@ Cellpose (cyto2) segmentation of the DNA channel.
    DMSO control images; the script contains the exact public S3 download
    instructions and will print them when the assets are absent.
 
-5. Check the checkout. Two entry points, both read-only (they never write into `reports/`):
+5. Check the checkout. Two entry points, both read-only (they never write into `reports/`), plus a
+   third that re-measures the first two as if the inputs were gone:
 
    ```bash
    python tests/test_stage12_units.py     # 21 unit tests, no data needed, no pytest needed
-   python scripts/check_repo.py           # 49 checks: paths, imports, citations, artifacts,
-                                          # committed numbers, docs claims, the test suite
-   python scripts/check_repo.py --deep    # 50: also re-hash the 17 external objects (SHA256)
+   python scripts/check_repo.py           # 52 checks: paths, imports and dependencies, citations,
+   python scripts/check_repo.py --deep    #     artifacts, committed numbers, docs, the test suite
+                                          # 53: also re-hash the 17 external objects (SHA256)
+   python scripts/clone_probe.py          # stand-in fresh clone: copies the tracked files outside
+                                          # the data tree, runs both, then removes the copy
    ```
 
    Both print one line per check with a `FAIL` reason and exit non-zero if anything fails, so
-   they are usable as a pre-commit gate. Measured on a **fresh clone with no `data/` yet** (a copy
-   of the tracked files placed one level above this repo's own `data/`): the test suite reports
+   they are usable as a pre-commit gate. Measured on a **fresh clone with no `data/` yet** — what
+   `scripts/clone_probe.py` reproduces, by copying `git ls-files` (151 files) one level above this
+   repo's own `data/`, with any `AI4S_*` override cleared: the test suite reports
    `20/20 tests pass (1 skipped)` — the skip is the one assertion that needs the live inputs —
-   and `check_repo.py` reports `43/46`, the three failures being exactly the data-dependent ones
+   and `check_repo.py` reports `46/49`, the three failures being exactly the data-dependent ones
    ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
-   each naming the path it looked at. Nothing else changes: the path, citation, artifact, number,
-   PDF and test groups all pass without the inputs. With the data tree in place you should see
-   `21/21` and `49/49` (`50/50 --deep`).
+   each naming the path it looked at. The 49 rows versus 52 above is that same absence: with no
+   fetch manifest to read, the manifest group reports the one "present?" row and returns instead
+   of emitting its three content rows. Nothing else changes: the path, dependency, citation,
+   artifact, number, PDF and test groups all pass without the inputs, and the two checks that
+   need history or the author's own checkout say so in their names instead of passing quietly.
+   With the data tree in place you should see `21/21` and `52/52` (`53/53 --deep`).
 
 6. (Optional) Rebuild the **live run** demo video — it actually executes the
    stage scripts, runs a real Cellpose inference and renders charts from the

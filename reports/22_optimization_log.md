@@ -304,14 +304,95 @@ machine-checkable. Three new files (`scripts/_paths.py`, `scripts/check_repo.py`
 `tests/test_stage12_units.py`), 14 migrated scripts, docs synced.
 
 - **可移植层 (全仓): 完成.** `scripts/_paths.py` is now the only place a root is computed: repo root = parent of `scripts/`, workspace = parent of the repo (or `AI4S_WORKSPACE`), `DATA` = whichever of `<repo>/data` / `<workspace>/data` exists (an explicit workspace override wins outright), plus `REPORTS` / `FIG` / `DOCS` / `LOGS` / `PROFILES` / `METADATA` / `RAW` / `EXTERNAL`. All 14 stage scripts (`stage10_*`, `stage11_*`, `stage12_*`) import from it; the checkout contains no drive-letter root in any tracked `.py`. Diff: 101 insertions / 46 deletions over two passes (65/27 for the `BASE`/`REPO` import, then 17 rewrites so `DATA` and `REPORTS` also come from the module). Evidence, in the order the claims need it: (i) `python -m compileall scripts` exit 0; (ii) an AST pass over `git show HEAD:` of each file compares the old literal with the new expression — files checked: 14, **mismatches: none**; (iii) an undefined-name AST sweep caught a real defect in the first migration (stage12's earlier `__file__`-derived block had been deleted without the import being added → `NameError: BASE`), which is why that sweep is now part of the record; (iv) the same sweep after the second pass caught two scripts using bare `DATA` without importing it, and the rewrite's own checker reports **0 constants differing, 0 lost, 6 non-path expressions skipped**; (v) the local-only stages were re-run **from `C:\Users\<user>`**, twice, and 59/62 artifacts came back byte-identical both times (the 3 remaining being the docs this stage edits); (vi) the two that moved were traced to the library stack, not the paths, by running the *pre-refactor* script side by side — it emits the new bytes exactly (`cmp` equal), and the second round reproduced them again. `reports/12` §10.6 carries the numbers, the drift statement, and the `core.autocrlf` comparison caveat that makes `git show` hashes non-comparable to working-tree hashes.
-- **自检层: 完成.** `scripts/check_repo.py` — 49 read-only checks (50 with `--deep`) in seven groups: A layout (paths resolve, no hardcoded roots anywhere including `tests/`, the `DATA` preference rule, the 16 path literals that HEAD carried still equal the derived roots, and — when set — the `AI4S_REPO` / `AI4S_WORKSPACE` override actually being honoured), B compile (all 30 `.py` files in the root, `scripts/` and `tests/` parse), C citations (every `2*_stage1[12]…` token the markdown quotes expands — recursively, including the nested `{a,b}.{csv,json}` form — to a file on disk, 20 tokens; every image link resolves; the six numbered root scripts resolve `BASE` to the same workspace `_paths` would derive by default; `demo.py` derives `REPO_ROOT` from `__file__` rather than a literal), D numbers (each R@1/AUC/AP/p lifted from the stage12 JSONs must appear in the markdown; the withdrawn ~156× lift may only appear inside a withdrawal sentence; the 0.6825 source artifact exists; the 303 exists in the replicate CSV), E pdf (page band, six text-layer anchors, md5 equals the hash the docs record), G tests (runs the unit suite as a subprocess and quotes its summary line), F manifest (17 rows `status = ok`, sizes vs disk, byte total quoted; `--deep` re-hashes all 159.9 MB). Result in the real tree: **fast 49/49, `--deep` 50/50**. Two false FAILs were fixed on the way, both in the checker rather than the repo: a non-greedy citation token that cut a brace group in half, and a one-level brace expander that could not read `{a,b}.{csv,json}`. A third fix came from probing rather than from a failure: with an override active, the HEAD-literal and root-script comparisons had been reporting differences that were not differences (an override legitimately moves the live roots), so both now compare against the override-free defaults and a separate check asserts the override itself.
-- **测试层: 完成.** `tests/test_stage12_units.py` — 21 dependency-free tests (plain `python`, own runner, no pytest — pytest is not installed here), covering the retrieval-arm definitions and the per-query applicable null, the vehicle-only robust z (including that it cannot read treated wells: two plates sharing their DMSO rows share their vehicle normalisation), well-coordinate parsing/encoding, the additive-layout residualiser (pure row+column signal → max residual < 1e-8), `_rep_counts`, the four scaling arms and their relations (`zclip5 == clip(negcon_z)`, `rank` monotone, `posresid == residualise(impute(negcon_z))`, `posresid` refuses a table without `Metadata_Well`), `position_confound` on a synthetic column-vehicle plate vs a scattered one, the committed split's structural invariant that the strict arm shares no plate pair with the matched arm (which is why `paired_strict_by_plate_pair` is null), and the `DATA` resolution rule against temporary directories. **21/21 pass.** The runner also has a third outcome: `SKIP`, for the one assertion that needs the *live* inputs, excluded from the denominator and named on the summary line — measured in a clone of the tracked files with no `data/`: `20/20 tests pass (1 skipped: …)`, `check_repo.py 43/46` failing only the three data-dependent rows.
+- **自检层: 完成.** `scripts/check_repo.py` — 49 read-only checks (50 with `--deep`) in seven groups: A layout (paths resolve, no hardcoded roots anywhere including `tests/`, the `DATA` preference rule, the 16 path literals that HEAD carried still equal the derived roots, and — when set — the `AI4S_REPO` / `AI4S_WORKSPACE` override actually being honoured), B compile (all 30 `.py` files in the root, `scripts/` and `tests/` parse), C citations (every `2*_stage1[12]…` token the markdown quotes expands — recursively, including the nested `{a,b}.{csv,json}` form — to a file on disk, 20 tokens; every image link resolves; the six numbered root scripts resolve `BASE` to the same workspace `_paths` would derive by default; `demo.py` derives `REPO_ROOT` from `__file__` rather than a literal), D numbers (each R@1/AUC/AP/p lifted from the stage12 JSONs must appear in the markdown; the withdrawn ~156× lift may only appear inside a withdrawal sentence; the 0.6825 source artifact exists; the 303 exists in the replicate CSV), E pdf (page band, six text-layer anchors, md5 equals the hash the docs record), G tests (runs the unit suite as a subprocess and quotes its summary line), F manifest (17 rows `status = ok`, sizes vs disk, byte total quoted; `--deep` re-hashes all 159.9 MB). Result in the real tree: **fast 49/49, `--deep` 50/50** (Stage 14 later added three dependency rows and
+rewrote the HEAD-literal audit described below, taking the same suite to 52/53). Two false FAILs were fixed on the way, both in the checker rather than the repo: a non-greedy citation token that cut a brace group in half, and a one-level brace expander that could not read `{a,b}.{csv,json}`. A third fix came from probing rather than from a failure: with an override active, the HEAD-literal and root-script comparisons had been reporting differences that were not differences (an override legitimately moves the live roots), so both now compare against the override-free defaults and a separate check asserts the override itself.
+- **测试层: 完成.** `tests/test_stage12_units.py` — 21 dependency-free tests (plain `python`, own runner, no pytest — pytest is not installed here), covering the retrieval-arm definitions and the per-query applicable null, the vehicle-only robust z (including that it cannot read treated wells: two plates sharing their DMSO rows share their vehicle normalisation), well-coordinate parsing/encoding, the additive-layout residualiser (pure row+column signal → max residual < 1e-8), `_rep_counts`, the four scaling arms and their relations (`zclip5 == clip(negcon_z)`, `rank` monotone, `posresid == residualise(impute(negcon_z))`, `posresid` refuses a table without `Metadata_Well`), `position_confound` on a synthetic column-vehicle plate vs a scattered one, the committed split's structural invariant that the strict arm shares no plate pair with the matched arm (which is why `paired_strict_by_plate_pair` is null), and the `DATA` resolution rule against temporary directories. **21/21 pass.** The runner also has a third outcome: `SKIP`, for the one assertion that needs the *live* inputs, excluded from the denominator and named on the summary line — measured in a clone of the tracked files with no `data/`: `20/20 tests pass (1 skipped: …)`, `check_repo.py 43/46` failing only the three data-dependent rows
+(the same clone reads `46/49` after Stage 14, the three added rows being the dependency checks).
 - **文档层: 完成.** `reports/12` §10.2 rewritten (portability is no longer an open item; manifest byte totals stated as 159,909,495 fetched / 159,914,604 with the manifest), §10.5 *Verify the checkout* and §10.6 *Byte-level re-run evidence* added; `reports/24` artifact header aligned with the same two byte totals and the `_paths.py` derivation; `README.md` §3 gained the two allowed `data/` placements with the override variables, the two verification commands, and the measured no-input output; `reports/20_improvement_plan.md` gained a Stage 13 section. `docs/12_technical_report_draft_v7.pdf` rebuilt after that sync: **16 pages, MD5 `29aadaf3589f01075610e7eb461ef1de`**, 12/12 text-layer anchors, page band 12–22 holds — superseding the Stage 12 build (`726cc357…`, 15 pages); `reports/24` §"Current build" records the new hash and the chain back to `664ae12b…`.
 - **未解决 (measured gaps, not TODOs by choice):** `stage10_retrieval.py` and `stage10_harmony.py` cannot run here — `ModuleNotFoundError: No module named 'harmonypy'`, so their artifacts are unverified off the original machine; the two P3 files move in the 4th–5th decimal under the current library stack (statement in `reports/12` §10.6, committed artifacts kept); `reports/20_improvement_plan.md` lists Stage 13 as tooling rather than analysis, and the `12 v5/v6` archived drafts remain archived (banner only).
 - **图形目录层 (measured, deliberately not touched): 未完成 — 需用户裁定.** Five PNG directories coexist: `figures/` (27 png, the one the repo's markdown reads — 6 image links, all resolve), `reports/figures/` (15), `docs/figures/` (8), and outside the checkout `<workspace>/reports/figures/` (26) and `<workspace>/figures/` (10). The six root-level scripts (`01_…`–`06_…`) derive `BASE` as `dirname(dirname(__file__))` = the **workspace**, so `python 01_phenotypic_profiling.py` writes figures one level above the repo and cannot refresh `figures/` as committed. Of the 20 names shared between `figures/` and `<workspace>/reports/figures/`, 9 are byte-identical and 11 differ, with no consistent direction (by mtime the workspace copy is newer for 4 and the repo copy for 7 — and mtimes here are not clean evidence anyway, since an external backup tool rewrote files on 2026-10-09), so the two trees have diverged rather than one being a stale export of the other. Consolidating would delete or overwrite tracked binaries, which is not this stage's call; recorded with the counts, and group C now keeps the *links* honest. The actionable version of this decision: either point the root scripts at `_paths.FIG_ROOT` and re-render, or declare `figures/` the only tracked image tree and move the rest into `build/`.
 - **Not done in this stage:** the seven root-level scripts were left as they are — measured, the six numbered ones derive `BASE = dirname(dirname(__file__))` (which equals the workspace `_paths` derives by default, asserted by group C) and `demo.py` derives `REPO_ROOT = dirname(abspath(__file__))` (self-relative, now asserted too), so none of them carried a drive-letter literal to remove; routing them through `_paths.py` would be cosmetic churn on files this stage has no reason to touch — with one consequence worth naming: those six write figures and CSVs one level above the repo, which is the `图形目录层` divergence below. No CI workflow file was added — `check_repo.py` is a local command, and pushing a workflow is the user's call along with the commit.
 
+## Stage 14 — Dependency truth (2026-11-06)
+
+No new analysis. Stage 13 asked "can this run off the author's machine"; while re-measuring the
+checker for that question it became obvious the repo could not answer the simpler one: *what
+environment does this code need, and is the declared one the measured one?* Two defects, both
+found by measuring rather than by reading.
+
+- **声明层: 完成.** `requirements.txt` said its pins were "verified 2026-10-05" and nothing compared
+  them with anything since. Measured here (python 3.13.7, Windows-10-10.0.19045-SP0): of the twelve
+  `==` pins, 3 equal the machine (pandas 3.0.3, seaborn 0.13.2, tifffile 2026.9.20), **7 differ**
+  (numpy 2.4.6→2.3.4, scipy 1.17.1→1.18.1, scikit-learn 1.8.0→1.9.1, matplotlib 3.10.9→3.11.0,
+  xgboost 3.2.0→3.4.1, rdkit 2026.3.6→2026.3.3, torch 2.14.0→2.6.0+cu124) and 2 are pinned but not
+  installed (torchvision 0.29.0, cellpose 4.2.1.1); both range rows are met (umap-learn 0.5.12 ≥ 0.5,
+  statsmodels 0.15.0 ≥ 0.14). The pins were **not** rewritten to the live versions: they describe the
+  build environment of the submitted results and that environment is gone — silently replacing it with
+  this machine's stack would have destroyed the only record of what produced the CSVs. Instead the
+  file now states both, with the comparison in `reports/23_environment_fingerprint.json`.
+- **未声明依赖: 完成.** An AST sweep of every tracked `.py`, bucketed by how reachable each import is
+  (16 module-level or module-guarded, 7 deferred inside a function), turned up eight distributions the
+  code imports and the file never declared: `pillow`, `imageio-ffmpeg`, `harmonypy`, `timm`,
+  `transformers`, `pyarrow`, `scikit-image`, `pymupdf`. Three of those stop a script from starting on
+  this machine (`imageio-ffmpeg` in the demo-video builders; `cellpose`/`torchvision` were declared but
+  absent, so `04_cellpose_demo.py` cannot run here either), and the deferred ones are exactly why nobody
+  noticed: `python demo.py --full` never reaches them. All eight are declared now **without versions** —
+  a number in that file reads as a claim about the 2026-10-05 build, and none of the eight can be tied
+  back to it, so inventing a pin would have replaced a real gap with a fabricated fact. Their measured
+  status sits beside each name instead.
+- **记录与门禁: 完成.** `scripts/record_environment.py` writes the fingerprint (python, platform, every
+  declared distribution with pin-vs-installed and a label that keeps a matched pin, a met range, an
+  unpinned declaration and an absent package from reading as each other, every imported module with its
+  reachability level and the files importing it, plus a summary), and `--check` re-derives all of it
+  and exits 1 naming the moved rows, so an upgraded library is *reported* instead of quietly changing
+  4th-decimal results (the §10.6 mechanism). Measured: `CURRENT - python 3.13.7, 22 declared,
+  22 version rows + 23 import rows still match, no undeclared module-level import`. Three new
+  `check_repo.py` rows use it — module-level imports all declared, every blocking-but-absent dependency
+  named somewhere in the docs, fingerprint equals this machine — taking the read-only suite from 49 to
+  **52 (53 with `--deep`)**, verified `52/52` and `53/53` in the real tree and `21/21` in the suite.
+- **检查器自身的第二个 vacuous 缺陷: 已修，并有实测.** The Stage 13 literal audit compared HEAD's
+  `BASE`/`REPO` literals with the derived roots — but from `cad2391` onward HEAD *contains no such
+  literals*, so the row had degraded to "the 0 path literals replaced at HEAD equal the derived roots":
+  a passing check that checks nothing. It now walks back to the tree before `scripts/_paths.py` existed
+  (`git log --diff-filter=A -- scripts/_paths.py`, then that commit's parent), reads the 16 literals
+  there, and compares them with what `_paths` derives now: **16 checked, 0 differing**. Two things were
+  measured rather than assumed. (i) The failure path is live: forcing `DEFAULT_WORKSPACE` to a wrong
+  root makes the row FAIL and name the files. (ii) The skip paths are honest and were each run: in a
+  git-less copy of the tracked files the row reads `pre-refactor path literals checked (git unavailable,
+  skipped)`; in a single-commit fixture repo, where there is no pre-refactor tree at all, it reads
+  `pre-refactor literals name a different checkout (skipped: equivalence unproven here, 0 literals read
+  from <sha>)`; and in a real `git clone` of this repo — full history, different directory, so the
+  literals name a checkout that is not this one — it reports the 16 literals it read and still calls the
+  equivalence *unproven here* rather than failing a perfectly good clone. Unproven is stated as
+  unproven, never as a pass of the claim itself.
+- **无输入复测: 完成.** The clone simulation was re-run with the Stage 14 files included (151 tracked
+  files copied one level above this repo's `data/`): `20/20 tests pass (1 skipped:
+  paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)` and `check_repo.py 46/49`, the
+  three failures still being only the data-dependent rows. 49 rather than 52 rows for the same absence:
+  with no fetch manifest the manifest group emits its one "present?" row and returns, instead of adding
+  the three content rows it cannot compute. The dependency checks themselves pass in a data-less clone —
+  they read code and declarations, not inputs. This simulation had been a throwaway script under the
+  git-ignored `build/`; it is now `scripts/clone_probe.py`, tracked, self-cleaning, and quoted in README
+  step 5 and `reports/12` §10.5 — a reader without the inputs can re-measure the sentence rather than
+  take it on faith.
+- **文档层: 完成.** README step 2 (what the file declares vs what this machine has) and step 5
+  (52/53, measured `46/49` clone and why the denominators differ); `reports/12` §10.5 counts and failure
+  modes, new **§10.7 "What the declared environment actually is"**; `reports/20` Stage 14 table; this
+  ledger. `docs/12_technical_report_draft_v7.pdf` rebuilt after the sync: **16 pages, MD5
+  `4c5e8506ea47f3dca75284b13f98e19a`**, 12/12 text-layer anchors, 11,993 words — superseding the Stage 13
+  build (`29aadaf3…`, also 16 pages) and one intermediate Stage-14 build (`5e1586a4…`, 11,931 words,
+  overwritten when §10.5 grew the probe paragraph); `reports/24` §"Current build" carries the new hash
+  and the chain back to `726cc357…` and `664ae12b…`.
+- **未解决 / 边界:** declaring a dependency is not installing one — `harmonypy`, `timm`, `transformers`,
+  `imageio-ffmpeg`, `torchvision` and `cellpose` remain absent here, so `stage10_harmony.py`,
+  `stage10_retrieval.py`, `stage10_self_supervised.py`, `stage11_p0_retrieval.py`, `04_cellpose_demo.py`
+  and the demo-video builders stay unverified off the original machine. The fingerprint describes
+  *this* machine on 2026-11-06 and cannot be re-attributed to the 2026-10-05 build; the pin block and the
+  live stack therefore stay in genuine tension, which is now recorded rather than hidden. No CI runs the
+  recorder, and nothing was installed or uninstalled to make the numbers agree.
+
 ## Final status
+
 
 | Item | Status |
 |---|---|
@@ -338,6 +419,7 @@ machine-checkable. Three new files (`scripts/_paths.py`, `scripts/check_repo.py`
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
 | Stage 13 (portability, self-check, unit tests) | 完成 (scripts/_paths.py + 14 scripts migrated; scripts/check_repo.py 49 checks / 50 --deep; tests/test_stage12_units.py 21 tests with SKIP semantics; README §3 + reports/12 §10.2/§10.5/§10.6 + reports/20 Stage 13 + this log synced; PDF rebuilt 16 pp MD5 29aadaf3…; two re-runs from a foreign cwd ⇒ 59/62 artifacts byte-identical) |
 | Git commit (Stage 13 = `cad2391`, 23 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 3：`6861df5`、`31f8c4e`、`cad2391`） |
+| Stage 14 (dependency truth) | 完成 (requirements.txt 拆分「构建环境」与「本机」并补 8 个未声明依赖·不编版本号；scripts/record_environment.py + reports/23_environment_fingerprint.json；check_repo.py 49→52 checks / 53 --deep，pre-refactor 字面量审计从「HEAD 已无字面量⇒0 项空过」改为读取 `_paths` 引入前的树，16 项全等且两条 skip 分支实测；README step 2/5 + reports/12 §10.5/新 §10.7 + reports/20 Stage 14 + 本 ledger 同步；PDF 重编译 16 pp MD5 4c5e8506…（取代同阶段中间件 5e1586a4…）) |
 
 ## AI Use Disclosure
 

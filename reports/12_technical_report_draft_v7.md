@@ -1136,27 +1136,42 @@ that the definitions the §4.7 claims rest on still hold:
 
 ```bash
 python tests/test_stage12_units.py     # 21 unit tests, no network, no pytest needed
-python scripts/check_repo.py           # 49 read-only checks, 7 groups
-python scripts/check_repo.py --deep    # 50/50: also re-hash the 159.9 MB external tree
+python scripts/check_repo.py           # 52 read-only checks, 7 groups
+python scripts/check_repo.py --deep    # 53/53: also re-hash the 159.9 MB external tree
+python scripts/clone_probe.py          # re-run both as if there were no data/ tree, then clean up
 ```
 
 `check_repo.py` fails (exit 1) on: a quoted number that no longer equals the JSON/CSV that
-produced it, a doc citing an artifact that is not on disk (20 citation tokens currently), a
+produced it, a doc citing an artifact that is not on disk (21 citation tokens currently), a
 markdown image link that does not resolve, a script that grew a hardcoded absolute path again,
-a path literal replaced at HEAD whose value does not equal the derived root (16 of them, all
-equal), a PDF whose hash is not the one the ledger records, a manifest row whose size or SHA256
-moved, or an `AI4S_REPO` / `AI4S_WORKSPACE` override that the module does not honour. The unit
+a pre-refactor path literal whose value does not equal the root `scripts/_paths.py` derives now
+(16 of them, all equal; §10.7 explains why the reference is the commit the refactor replaced
+rather than HEAD), a PDF whose hash is not the one the ledger records, a manifest row whose size
+or SHA256
+moved, an `AI4S_REPO` / `AI4S_WORKSPACE` override that the module does not honour, a third-party
+module that committed code imports at module level while `requirements.txt` leaves it undeclared,
+a dependency that stops a script from starting here and that no document names, or a recorded
+environment fingerprint (§10.7) that no longer equals the machine running it. The unit
 tests cover the retrieval-arm definitions (which query lands in
 `position-matched`, `position-decoupled` and the strict `decoupled-only`, and how the applicable
 null scales with the number of accepted matches), the vehicle-only robust z, the well-coordinate
 encoding, the additive-layout residualiser, the four scaling arms, and the `DATA` resolution rule
 in `scripts/_paths.py`.
 
-Neither entry point needs the inputs. Measured on a clone of the tracked files with no `data/`
-tree: the suite prints `20/20 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
-and `check_repo.py` prints `43/46`, the three failures being exactly the data-dependent rows
+Neither entry point needs the inputs, and `python scripts/clone_probe.py` re-measures that claim
+instead of asserting it: it copies `git ls-files` (151 files) to `<workspace>/_tmp_clone_probe/github_repo`,
+one level above the workspace's real `data/` and therefore resolving to a tree that does not exist,
+runs both entry points there with any `AI4S_*` override cleared, prints the summary lines and every
+`FAIL`, and removes the copy (measured 2026-11-06):
+the suite prints `20/20 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
+and `check_repo.py` prints `46/49`, the three failures being exactly the data-dependent rows
 ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
-each naming the path it resolved. Skips are counted out of the denominator and named on the
+each naming the path it resolved. The denominator is 49 there against 52 here for the same reason:
+a checkout with no fetch manifest gets one "present?" row out of the manifest group instead of its
+four content rows. Two more rows change their wording rather than their verdict — the pre-refactor
+literal audit has no git history to read and no author-machine path to compare against, so it
+reports itself as *unproven here* instead of passing quietly. Skips are counted out of the
+denominator and named on the
 summary line, so a missing input can neither fail the run nor inflate it.
 
 Known environment gaps, stated rather than papered over: `stage10_retrieval.py` and
@@ -1209,6 +1224,49 @@ python scripts/stage11_p4b_prototype_discrimination.py
 python scripts/stage12_external_site.py --stage controls
 md5sum -c build/verify/reports_before.txt     # run from reports/
 ```
+
+### 10.7 What the declared environment actually is
+
+§10.1's `pip install -r requirements.txt` was, until now, the only environment instruction the
+repo gave, and reading it against this machine turned up two defects that no check could see.
+
+**The pins are not this machine.** `requirements.txt` headed its pinned block "verified
+2026-10-05", which is a statement about the build environment and cannot be re-measured. What
+*can* be measured is the machine doing the checking, and on 2026-11-06 it disagrees with the file:
+of the twelve `==` pins, three equal it (`pandas 3.0.3`, `seaborn 0.13.2`, `tifffile 2026.9.20`),
+seven differ (`numpy` 2.4.6→2.3.4, `scipy` 1.17.1→1.18.1, `scikit-learn` 1.8.0→1.9.1, `matplotlib`
+3.10.9→3.11.0, `xgboost` 3.2.0→3.4.1, `rdkit` 2026.3.6→2026.3.3, `torch` 2.14.0→2.6.0+cu124), and
+two are pinned but absent (`torchvision`, `cellpose`). The two range rows are met
+(`umap-learn` 0.5.12 against `>=0.5`, `statsmodels` 0.15.0 against `>=0.14`). §10.6 already needed
+exactly this fact — the 5th-decimal drift in `20_stage11_p3_*` is attributed to the library stack —
+and the stack it names is the measured one, not the pinned one.
+
+**Eight imported distributions were undeclared.** An AST sweep of every tracked script, sorted by
+how reachable each import is, found `pillow`, `imageio-ffmpeg`, `harmonypy`, `timm`,
+`transformers`, `pyarrow`, `scikit-image` and `pymupdf` used by committed code and absent from
+`requirements.txt`. Three of them are module-level, so the script cannot even start here:
+`imageio-ffmpeg` (the demo-video builders) and `cellpose`/`torchvision` (which *are* declared but
+not installed). The rest are deferred behind a function body or an `except ImportError`, so a plain
+`python demo.py --full` never reaches them — which is precisely why nobody noticed. All eight are
+declared now, **unpinned**: a version number in that file reads as a claim about the 2026-10-05
+build, and none of these eight can be tied back to it, so inventing one would have traded a real
+gap for a fabricated fact.
+
+`scripts/record_environment.py` keeps the two questions apart and makes the answer re-checkable:
+it writes `reports/23_environment_fingerprint.json` (python, platform, one row per declared
+distribution with the pin beside the installed version and a label that distinguishes a matched pin
+from a met range from an unpinned declaration from an absent package, one row per
+imported module with its reachability level and the files that import it, and a summary), and
+`--check` re-derives all of it and exits non-zero if the environment or the import surface moved,
+naming the rows. Three `check_repo.py` rows now depend on it — every module-level third-party
+import declared, every dependency that blocks a script here named in the docs, and the recorded
+fingerprint still equal to this machine — which took the read-only suite from 49 to 52 checks
+(53 with `--deep`). The pre-refactor path-literal audit was rewritten at the same time: it had been
+comparing HEAD's literals with the derived roots, and since the refactor commit those literals are
+no longer in HEAD, so the row had quietly become "0 literals checked, all equal". It now reads the
+tree *before* `scripts/_paths.py` existed, compares the 16 literals it finds there, and where the
+history or the original checkout is unavailable it says `unproven` in the row name instead of
+passing; forcing a wrong root makes it fail and name the files.
 
 ---
 

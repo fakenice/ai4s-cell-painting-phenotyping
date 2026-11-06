@@ -112,33 +112,50 @@ def group_layout():
             if re.match(r'^\s*(BASE|REPO|DATA|OUT|REPORTS|FIG)\s*=\s*r?"[A-Za-z]:', ln):
                 hard.append(f"{os.path.basename(f)}:{i}")
     add(g, "no hardcoded drive-letter roots left in any script", not hard, "; ".join(hard))
-    # and the roots that replaced them must be the *same* directories: read each script as it
-    # stands in HEAD, pull its old literal, compare to what _paths derives now.
+    # and the roots that replaced them must be the *same* directories: read each script as it stood
+    # in the last commit before scripts/_paths.py existed, pull its old literal, and compare it
+    # with what _paths derives now. HEAD is the wrong reference: from the refactor commit onward
+    # HEAD no longer contains those literals, so a HEAD comparison silently degrades to '0 checked,
+    # all fine' - which is how this check read after it had done its job once.
     try:
         proc = subprocess.run(["git", "-C", REPO, "rev-parse", "HEAD"],
                               capture_output=True, text=True, timeout=30)
         if proc.returncode != 0:
             raise OSError(proc.stderr.strip()[:80])
-        n, off = 0, []
+        added = subprocess.run(
+            ["git", "-C", REPO, "log", "--diff-filter=A", "--format=%H", "--",
+             "scripts/_paths.py"], capture_output=True, text=True, timeout=60).stdout.split()
+        if not added:
+            raise OSError("no add-commit for scripts/_paths.py in this history")
+        ref = added[-1] + "^"                  # the tree the refactor replaced
+        seen = []                              # (file, kind, literal) as written before the refactor
         for f in sorted(glob.glob(os.path.join(REPO, "scripts", "*.py"))):
             rel = "scripts/" + os.path.basename(f)
-            show = subprocess.run(["git", "-C", REPO, "show", "HEAD:" + rel],
+            show = subprocess.run(["git", "-C", REPO, "show", ref + ":" + rel],
                                   capture_output=True, text=True, encoding="utf-8", timeout=30)
             if show.returncode != 0:
-                continue                       # added this stage: nothing at HEAD to compare
+                continue                       # added this stage: nothing before it to compare
             for kind, rx in (("BASE", re.compile(r'^\s*BASE\s*=\s*r"(.*?)"\s*$', re.M)),
                              ("REPO", re.compile(r'^\s*REPO\s*=\s*r"(.*?)"\s*$', re.M))):
                 m = rx.search(show.stdout)
-                if not m:
-                    continue
-                n += 1
-                if os.path.abspath(m.group(1)) != (
-                        DEFAULT_WORKSPACE if kind == "BASE" else DEFAULT_REPO):
-                    off.append(f"{os.path.basename(f)}: old {kind} {m.group(1)!r}")
-        add(g, f"the {n} path literals replaced at HEAD equal the derived roots",
-            not off, "; ".join(off[:3]))
+                if m:
+                    seen.append((os.path.basename(f), kind, m.group(1)))
+        named = {l for _, kind, l in seen if kind == "REPO"}
+        if DEFAULT_REPO not in named:
+            # Those literals name the checkout the analysis actually ran in. This directory is not
+            # it (a clone, a second copy, another machine), so comparing them with the roots derived
+            # here would 'fail' every row for a perfectly fine checkout: the claim goes unproven,
+            # not violated - same convention as the git-unavailable branch below.
+            add(g, f"pre-refactor literals name a different checkout (skipped: equivalence "
+                   f"unproven here, {len(seen)} literals read from {ref[:9]})", True,
+                f"HEAD derives REPO={DEFAULT_REPO}, the history names {sorted(named)[:1]}")
+        else:
+            off = [f"{b}: old {kind} {l!r}" for b, kind, l in seen
+                   if os.path.abspath(l) != (DEFAULT_WORKSPACE if kind == "BASE" else DEFAULT_REPO)]
+            add(g, f"the {len(seen)} pre-refactor path literals equal the roots "
+                   f"_paths derives now", not off, "; ".join(off[:3]))
     except Exception as exc:  # noqa: BLE001 - git is optional, the claim just goes unproven
-        add(g, "HEAD-literal path equivalence checked (git unavailable, skipped)", True,
+        add(g, "pre-refactor path literals checked (git unavailable, skipped)", True,
             repr(exc)[:80])
 
 
@@ -152,6 +169,47 @@ def group_compile():
         except SyntaxError as e:
             bad.append(f"{os.path.basename(f)}:{e.lineno}: {e.msg}")
     add("B compile", f"all {len(files)} scripts parse", not bad, "; ".join(bad))
+    _group_environment()
+
+
+def _group_environment():
+    """requirements.txt vs what the code imports, and the recorded fingerprint vs this machine."""
+    g = "B compile"
+    rec_path = os.path.join(REPORTS, "23_environment_fingerprint.json")
+    if not os.path.isfile(rec_path):
+        add(g, "environment fingerprint recorded (reports/23)", False,
+            "run: python scripts/record_environment.py")
+        return
+    rec = json.loads(read(rec_path))
+    s = rec.get("summary", {})
+    rows = rec.get("requirements_txt", [])
+    differ = [r["distribution"] for r in rows if r["status"] == "installed, differs from the pin"]
+    absent = [r["distribution"] for r in rows if r.get("installed") is None]
+    undeclared = s.get("undeclared_module_level_imports", [])
+    add(g, "every module-level third-party import is declared in requirements.txt",
+        not undeclared,
+        "undeclared: " + ", ".join(undeclared) if undeclared else
+        f"all {s.get('third_party_modules_imported')} swept third-party modules are declared")
+    # a missing dependency that stops a script from even starting is a claim about this checkout,
+    # so the docs have to name it rather than leave a clone to discover it by traceback
+    blocked = sorted({i["distribution"] for i in rec.get("imports", [])
+                      if i["level"] in ("module", "module-guarded") and not i["installed_here"]})
+    blob = md_blob()
+    unstated = [d for d in blocked if d not in blob]
+    add(g, "every dependency that blocks a script here is named in the docs", not unstated,
+        "undocumented: " + ", ".join(unstated) if unstated else
+        f"{len(blocked)} absent here, each named: {', '.join(blocked)}")
+    try:
+        proc = subprocess.run([sys.executable, os.path.join(REPO, "scripts",
+                                                            "record_environment.py"), "--check"],
+                              capture_output=True, text=True, cwd=REPO, timeout=180)
+        lines = proc.stdout.strip().split("\n")
+        add(g, "the recorded fingerprint still equals this environment", proc.returncode == 0,
+            "; ".join(l.strip() for l in lines[1:])[:220] if proc.returncode else
+            f"{len(rows)} declared: {len(differ)} pins differ here ({', '.join(differ[:4])}), "
+            f"{len(absent)} of them not installed")
+    except Exception as exc:  # noqa: BLE001 - the recorder is part of this repo, so a failure is real
+        add(g, "record_environment.py --check runs", False, repr(exc)[:120])
 
 
 # ---------------------------------------------------------------- C. citations

@@ -354,8 +354,12 @@ python scripts/build_report_pdf.py --check-only
 ```
 
 Current build: `docs/12_technical_report_draft_v7.pdf`, 16 pages, MD5
-`29aadaf3589f01075610e7eb461ef1de` (rebuilt after the Stage 13 portability/verification sections
-were added; the Stage 12 build was 15 pages, MD5 `726cc357…`, and the pre-Stage-12 committed build
+`4c5e8506ea47f3dca75284b13f98e19a`, 11,993 words in the text layer (rebuilt after the Stage 14
+dependency section `reports/12` §10.7 and the §10.5 probe paragraph were added; one intermediate
+Stage-14 build, `5e1586a4…` (16 pages, 11,931 words), was superseded inside the same stage when §10.5
+grew a paragraph, and is listed here so the chain stays complete. The Stage 13 build
+was also 16 pages, MD5
+`29aadaf3…`; the Stage 12 build was 15 pages, MD5 `726cc357…`, and the pre-Stage-12 committed build
 20 pages, MD5 `664ae12b…`, whose text layer contains none of the §4.7 anchors). Page-count changes
 are style plus prose, not content: the 15-page build carried 10,321 words vs 7,734 in the 20-page
 one, with the same 6 distinct figures, under the committed `docs/print_style.css` instead of the

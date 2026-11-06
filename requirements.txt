@@ -1,5 +1,12 @@
 # Core analysis stack
 # Versions pinned to the environment that produced the submitted results (verified 2026-10-05).
+# That sentence is a claim about 2026-10-05, which cannot be re-measured; what the pins look like
+# against the machine you are reading this on is recorded, row by row, in
+# reports/23_environment_fingerprint.json (rewritten by `python scripts/record_environment.py`,
+# compared by `python scripts/record_environment.py --check`, and enforced by
+# `python scripts/check_repo.py`). Measured 2026-11-06: 3 of the 12 `==` pins below equal this
+# machine, 7 differ (numpy, scipy, scikit-learn, matplotlib, xgboost, rdkit, torch) and 2 are not
+# installed at all (torchvision, cellpose).
 numpy==2.4.6
 pandas==3.0.3
 scipy==1.17.1
@@ -16,8 +23,39 @@ torchvision==0.29.0
 
 # Optional — required for the Cellpose segmentation demo (04_cellpose_demo.py) and
 # the Stage 8 single-cell CNN crops (06_deep_representation_pipeline.py, part 4)
-# NOTE: umap-learn / statsmodels / cellpose are not installed in the build env;
-# pinned to PyPI latest stable as of 2026-10-05.
+# NOTE: an earlier version of this note asserted that umap-learn / statsmodels / cellpose were
+# "not installed in the build env", and that cellpose is "pinned to PyPI latest stable as of
+# 2026-10-05". Neither statement can be re-measured now. What was measured on 2026-11-06 with
+# python scripts/record_environment.py: umap-learn 0.5.12 and statsmodels 0.15.0 are installed
+# here (both at or above the declared floor), torchvision 0.29.0 and cellpose 4.2.1.1 are not -
+# so 04_cellpose_demo.py cannot start on this machine, which reports/12 sec. 10.5 states too.
 cellpose==4.2.1.1
 # optional (06 stage8 download helper) — boto3 if using AWS CLI/SDK path; direct S3 HTTP used by default
 # boto3>=1.26
+
+# Imported at module level by the demo-video builders (make_demo_video*.py) and therefore
+# required to run those, though not by the analysis stages. Discovered by
+# scripts/record_environment.py rather than added by hand; imageio-ffmpeg is not installed in
+# the 2026-11-06 check environment, so its version is deliberately left unspecified here.
+pillow
+imageio-ffmpeg
+
+# Imported inside a function or an optional code path, so a plain `python demo.py --full` never
+# reaches them. Declared because they are real dependencies of committed scripts, with what each
+# one gates (measured 2026-11-06 by python scripts/record_environment.py --check):
+#   harmonypy      stage10_harmony.py, stage10_retrieval.py batch correction - NOT installed here,
+#                  which is why those two stages are declared unverified in reports/12 sec. 10.5
+#   timm, transformers  stage10_self_supervised.py, stage11_p0_retrieval.py deep embeddings -
+#                  NOT installed here; the scripts fall back to the published 904-feature profiles
+#   pyarrow        stage12_p1_external_site.py parquet reader - installed here (25.0.1)
+#   scikit-image   make_demo_video_live.py cell crops - installed here (0.26.0)
+#   pymupdf        scripts/check_repo.py (PDF group E) and build_report_pdf.py - installed here
+#                  (1.28.2); without it the PDF checks report themselves as skipped, not passed
+# No version is pinned for any of these: none of them can be tied back to the 2026-10-05 build
+# environment, and a number here would read as a claim about it.
+harmonypy
+timm
+transformers
+pyarrow
+scikit-image
+pymupdf
