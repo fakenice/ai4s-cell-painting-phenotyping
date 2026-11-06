@@ -3,12 +3,16 @@
 
     python scripts/check_repo.py            # fast checks (no re-hashing of the 160 MB data tree)
     python scripts/check_repo.py --deep     # also recompute every SHA256 in the fetch manifest
+    python scripts/check_repo.py --allow-missing-data
+                                            # report the three rows that can only pass with data/
+                                            # as skips, so an input-less checkout can be gated green
     python scripts/check_repo.py --list     # print the check inventory and exit
 
-Seven groups of independent assertions, printed as PASS/FAIL, non-zero exit on any FAIL. The
+Eight groups of independent assertions, printed as PASS/FAIL, non-zero exit on any FAIL. The
 point is drift: a number quoted in a report that no longer equals the JSON that produced it, a
-doc citing a deleted artifact, a PDF that no longer matches the hash the ledger records, or a
-script that grew a hardcoded absolute path again. Everything here is read-only.
+doc citing a deleted artifact, a PDF that no longer matches the hash the ledger records, a
+script that grew a hardcoded absolute path again, or a CI workflow whose dependency list no longer
+covers what its own entry points import. Everything here is read-only.
 """
 import argparse
 import ast
@@ -37,11 +41,21 @@ RETRIEVAL_ARMS = ("decoupled-only", "position-decoupled", "position-matched")
 DEFAULT_REPO = os.path.dirname(_paths._HERE)
 DEFAULT_WORKSPACE = os.path.dirname(DEFAULT_REPO)
 
-R = []          # (group, name, ok, note)
+R = []          # (group, name, ok, note, kind) with kind in {"pass", "fail", "skip"}
+
+# --allow-missing-data turns the data-dependent rows into named skips, so a checkout without the
+# gitignored inputs (a fresh clone, CI) can still use this as a gate. It only changes the verdict
+# when the data tree is genuinely absent: with inputs present, a failed data row stays a failure.
+ALLOW_MISSING_DATA = False
 
 
-def add(group, name, ok, note=""):
-    R.append((group, name, bool(ok), note))
+def add(group, name, ok, note="", requires_data=False):
+    ok = bool(ok)
+    kind = "pass" if ok else "fail"
+    if requires_data and not ok and ALLOW_MISSING_DATA and not os.path.isdir(_paths.DATA):
+        kind = "skip"
+        note = f"skipped: needs the data tree, absent here ({note})"
+    R.append((group, name, ok, note, kind))
 
 
 def read(path):
@@ -83,7 +97,7 @@ def group_layout():
         os.path.isdir(os.path.join(REPO, "scripts")), REPO)
     add(g, "reports/ exists", os.path.isdir(REPORTS), REPORTS)
     add(g, "the resolved data tree exists (gitignored inputs)",
-        os.path.isdir(_paths.DATA), _paths.DATA)
+        os.path.isdir(_paths.DATA), _paths.DATA, requires_data=True)
     cands = [os.path.join(_paths.REPO, "data"), os.path.join(_paths.WORKSPACE, "data")]
     add(g, "DATA is one of the two documented candidates", _paths.DATA in cands,
         " vs ".join(cands))
@@ -103,7 +117,8 @@ def group_layout():
             _paths.REPO == DEFAULT_REPO and _paths.WORKSPACE == DEFAULT_WORKSPACE,
             f"REPO={_paths.REPO} WORKSPACE={_paths.WORKSPACE}")
     add(g, "pilot profile tables are present",
-        len(glob.glob(os.path.join(_paths.PROFILES, "*.csv.gz"))) >= 2, _paths.PROFILES)
+        len(glob.glob(os.path.join(_paths.PROFILES, "*.csv.gz"))) >= 2, _paths.PROFILES,
+        requires_data=True)
     hard = []
     for f in _py_files():
         if os.path.basename(f) == os.path.basename(__file__):
@@ -145,7 +160,7 @@ def group_layout():
             # Those literals name the checkout the analysis actually ran in. This directory is not
             # it (a clone, a second copy, another machine), so comparing them with the roots derived
             # here would 'fail' every row for a perfectly fine checkout: the claim goes unproven,
-            # not violated - same convention as the git-unavailable branch below.
+            # not violated - same convention as the "history unreadable" branch below.
             add(g, f"pre-refactor literals name a different checkout (skipped: equivalence "
                    f"unproven here, {len(seen)} literals read from {ref[:9]})", True,
                 f"HEAD derives REPO={DEFAULT_REPO}, the history names {sorted(named)[:1]}")
@@ -155,7 +170,9 @@ def group_layout():
             add(g, f"the {len(seen)} pre-refactor path literals equal the roots "
                    f"_paths derives now", not off, "; ".join(off[:3]))
     except Exception as exc:  # noqa: BLE001 - git is optional, the claim just goes unproven
-        add(g, "pre-refactor path literals checked (git unavailable, skipped)", True,
+        # Reached when git is absent *or* when this checkout has no history to read (a file-copy
+        # clone, a tarball): the reason goes in the note, the row says which of the two it was.
+        add(g, "pre-refactor path literals checked (git history unreadable here, skipped)", True,
             repr(exc)[:80])
 
 
@@ -227,6 +244,103 @@ def _group_environment():
         add(g, "record_environment.py --check runs", False, repr(exc)[:120])
 
 
+# ------------------------------------------------------------------- H. CI
+def workflow_commands(text):
+    """Read this workflow's plain `run:` and literal-block commands, not arbitrary YAML.
+
+    This is a command/dependency declaration check, NOT a GitHub workflow validator.
+    Conditional steps and folded/quoted YAML scalars require extending this reader first.
+    """
+    import shlex
+    commands, block = [], None
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip())
+        if block is not None and indent > block:
+            commands.append(shlex.split(stripped, comments=True))
+            continue
+        block = None
+        if re.match(r"\s*(?:-\s+)?if:", line) or re.match(
+                r"\s*continue-on-error:\s*true\b", line):
+            raise ValueError("conditional or error-suppressing CI steps are not supported")
+        match = re.match(r"\s+(?:-\s+)?run:\s*(.*)", line)
+        if not match:
+            continue
+        value = match.group(1).split(" #", 1)[0].strip()
+        if value in ("|", "|-"):
+            block = indent
+        elif not value or value[0] in "'\">":
+            raise ValueError("unsupported run scalar; use a plain command or literal block")
+        else:
+            commands.append(shlex.split(value, comments=True))
+    return [c for c in commands if c]
+
+
+def group_ci():
+    g = "H ci"
+    wf = os.path.join(REPO, ".github", "workflows", "verify.yml")
+    try:
+        if not os.path.isfile(wf):
+            raise ValueError("missing .github/workflows/verify.yml")
+        commands = workflow_commands(read(wf))
+    except ValueError as exc:
+        add(g, "CI workflow declares both required commands and their files exist", False, str(exc))
+        add(g, "CI dependency declarations cover the offline entry points", False,
+            "cannot inspect commands")
+        return
+    expected = [("python", "tests/test_stage12_units.py"),
+                ("python", "scripts/check_repo.py", "--allow-missing-data")]
+    eps = sorted({c[1] for c in commands if len(c) >= 2 and c[0] == "python"
+                  and c[1].startswith(("tests/", "scripts/"))})
+    missing = [" ".join(c) for c in expected if list(c) not in commands]
+    gone = [p for p in eps if not os.path.isfile(os.path.join(REPO, p))]
+    add(g, "CI workflow declares both required commands and their files exist",
+        not missing and not gone, "; ".join(missing + gone))
+    import record_environment as rec_mod
+    normalize = lambda s: re.sub(r"[-_.]+", "-", s).lower()
+    pip = set()
+    for cmd in commands:
+        args = (cmd[2:] if cmd[:2] == ["pip", "install"] else
+                cmd[4:] if cmd[:4] == ["python", "-m", "pip", "install"] else [])
+        for arg in args:
+            name = re.match(r"^([A-Za-z0-9][A-Za-z0-9_.-]*)(?:\[.*\])?(?:[<>=!~].*)?$", arg)
+            if name and name.group(1) != "pip":
+                pip.add(normalize(name.group(1)))
+    # Fixed, reviewed relationship; do not infer the CI environment from this machine's packages.
+    provided = pip | ({"scipy"} if "scikit-learn" in pip else set())
+    local = {os.path.splitext(os.path.basename(f))[0]: f
+             for folder in ("scripts", "tests")
+             for f in glob.glob(os.path.join(REPO, folder, "*.py"))}
+    seen, todo, tops = set(), [os.path.join(REPO, p) for p in eps], set()
+    for_path_errors = list(gone)
+    while todo:
+        path = todo.pop()
+        if path in seen or not os.path.isfile(path):
+            continue
+        seen.add(path)
+        hard, guarded, deferred = set(), set(), set()
+        try:
+            rec_mod.walk_body(ast.parse(read(path), filename=path).body,
+                              False, hard, guarded, deferred)
+        except SyntaxError as exc:
+            for_path_errors.append(str(exc))
+            continue
+        for module in hard:
+            if module in sys.stdlib_module_names or module.startswith("."):
+                continue
+            if module in local:
+                todo.append(local[module])
+            else:
+                tops.add(module)
+    needed = {normalize(rec_mod.DIST.get(m, m)) for m in tops} | {"pymupdf"}
+    uncovered = sorted(needed - provided)
+    add(g, "CI dependency declarations cover the offline entry points",
+        bool(eps) and not uncovered and not for_path_errors,
+        "; ".join(for_path_errors + (["not provided: " + ", ".join(uncovered)] if uncovered else [])))
+
+
 # ---------------------------------------------------------------- C. citations
 def group_citations():
     blob = md_blob()
@@ -243,7 +357,8 @@ def group_citations():
     add("C citations", f"every stage artifact the docs cite exists ({len(tokens)} tokens)",
         not missing, "; ".join(missing))
     manifest = os.path.join(_paths.EXTERNAL, "cpg0016", "manifest_sha256.csv")
-    add("C citations", "fetch manifest present", os.path.isfile(manifest), manifest)
+    add("C citations", "fetch manifest present", os.path.isfile(manifest), manifest,
+        requires_data=True)
     broken = []
     for f in MD_FILES + sorted(glob.glob(os.path.join(DOCS, "*.md"))):
         for m in re.finditer(r"!\[[^\]]*\]\(([^) ]+)", read(f)):
@@ -412,14 +527,20 @@ INVENTORY = [
     ("D numbers", "quoted numbers equal the JSON/CSV artifacts", group_numbers),
     ("E pdf", "PDF pages, anchors, and the recorded md5", group_pdf),
     ("G tests", "the dependency-free unit suite runs green", group_tests),
+    ("H ci", "the workflow file still transcribes the two entry points", group_ci),
 ]
 
 
 def main():
+    global ALLOW_MISSING_DATA
     ap = argparse.ArgumentParser()
     ap.add_argument("--deep", action="store_true", help="recompute every manifest SHA256")
     ap.add_argument("--list", action="store_true", help="print the check inventory")
+    ap.add_argument("--allow-missing-data", action="store_true",
+                    help="in a checkout with no data/ tree, report the data-dependent rows as "
+                         "SKIP and exit 0 (the gate a CI or a fresh clone can use)")
     a = ap.parse_args()
+    ALLOW_MISSING_DATA = a.allow_missing_data
     if a.list:
         for g, name, _ in INVENTORY:
             print(f"{g}: {name}")
@@ -432,19 +553,21 @@ def main():
             manifest = out
     if manifest:
         group_manifest(manifest, a.deep)
-    fails = 0
+    counts = {"pass": 0, "fail": 0, "skip": 0}
     group = None
-    width = max(len(name) for _, name, _, _ in R)
-    for g, name, ok, note in R:
+    width = max(len(name) for _, name, _, _, _ in R)
+    for g, name, ok, note, kind in R:
         if g != group:
             print(f"\n[{g}]")
             group = g
-        fails += not ok
-        print(f"  {'PASS' if ok else 'FAIL'}  {name:<{width}}" +
-              ("" if ok or not note else f"   <- {note}"))
-    print(f"\n{len(R) - fails}/{len(R)} checks pass"
+        counts[kind] += 1
+        print(f"  {kind.upper()}  {name:<{width}}"
+              + ("" if kind == "pass" or not note else f"   <- {note}"))
+    ran = counts["pass"] + counts["fail"]
+    print(f"\n{counts['pass']}/{ran} checks pass"
+          + (f"  ({counts['skip']} skipped, they need data/)" if counts["skip"] else "")
           + ("  (deep SHA256 included)" if a.deep else "  (use --deep to recompute SHA256)"))
-    return 1 if fails else 0
+    return 1 if counts["fail"] else 0
 
 
 if __name__ == "__main__":

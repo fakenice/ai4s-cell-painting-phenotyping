@@ -307,11 +307,12 @@ machine-checkable. Three new files (`scripts/_paths.py`, `scripts/check_repo.py`
 - **自检层: 完成.** `scripts/check_repo.py` — 49 read-only checks (50 with `--deep`) in seven groups: A layout (paths resolve, no hardcoded roots anywhere including `tests/`, the `DATA` preference rule, the 16 path literals that HEAD carried still equal the derived roots, and — when set — the `AI4S_REPO` / `AI4S_WORKSPACE` override actually being honoured), B compile (all 30 `.py` files in the root, `scripts/` and `tests/` parse), C citations (every `2*_stage1[12]…` token the markdown quotes expands — recursively, including the nested `{a,b}.{csv,json}` form — to a file on disk, 20 tokens; every image link resolves; the six numbered root scripts resolve `BASE` to the same workspace `_paths` would derive by default; `demo.py` derives `REPO_ROOT` from `__file__` rather than a literal), D numbers (each R@1/AUC/AP/p lifted from the stage12 JSONs must appear in the markdown; the withdrawn ~156× lift may only appear inside a withdrawal sentence; the 0.6825 source artifact exists; the 303 exists in the replicate CSV), E pdf (page band, six text-layer anchors, md5 equals the hash the docs record), G tests (runs the unit suite as a subprocess and quotes its summary line), F manifest (17 rows `status = ok`, sizes vs disk, byte total quoted; `--deep` re-hashes all 159.9 MB). Result in the real tree: **fast 49/49, `--deep` 50/50** (Stage 14 later added three dependency rows and
 rewrote the HEAD-literal audit described below, taking the same suite to 52/53). Two false FAILs were fixed on the way, both in the checker rather than the repo: a non-greedy citation token that cut a brace group in half, and a one-level brace expander that could not read `{a,b}.{csv,json}`. A third fix came from probing rather than from a failure: with an override active, the HEAD-literal and root-script comparisons had been reporting differences that were not differences (an override legitimately moves the live roots), so both now compare against the override-free defaults and a separate check asserts the override itself.
 - **测试层: 完成.** `tests/test_stage12_units.py` — 21 dependency-free tests (plain `python`, own runner, no pytest — pytest is not installed here), covering the retrieval-arm definitions and the per-query applicable null, the vehicle-only robust z (including that it cannot read treated wells: two plates sharing their DMSO rows share their vehicle normalisation), well-coordinate parsing/encoding, the additive-layout residualiser (pure row+column signal → max residual < 1e-8), `_rep_counts`, the four scaling arms and their relations (`zclip5 == clip(negcon_z)`, `rank` monotone, `posresid == residualise(impute(negcon_z))`, `posresid` refuses a table without `Metadata_Well`), `position_confound` on a synthetic column-vehicle plate vs a scattered one, the committed split's structural invariant that the strict arm shares no plate pair with the matched arm (which is why `paired_strict_by_plate_pair` is null), and the `DATA` resolution rule against temporary directories. **21/21 pass.** The runner also has a third outcome: `SKIP`, for the one assertion that needs the *live* inputs, excluded from the denominator and named on the summary line — measured in a clone of the tracked files with no `data/`: `20/20 tests pass (1 skipped: …)`, `check_repo.py 43/46` failing only the three data-dependent rows
-(the same clone reads `46/49` after Stage 14, the three added rows being the dependency checks).
+(the same clone reads `46/49` after Stage 14, the three added rows being the dependency checks, and
+`48/51` after Stage 16, the two further rows being the CI-workflow checks).
 - **文档层: 完成.** `reports/12` §10.2 rewritten (portability is no longer an open item; manifest byte totals stated as 159,909,495 fetched / 159,914,604 with the manifest), §10.5 *Verify the checkout* and §10.6 *Byte-level re-run evidence* added; `reports/24` artifact header aligned with the same two byte totals and the `_paths.py` derivation; `README.md` §3 gained the two allowed `data/` placements with the override variables, the two verification commands, and the measured no-input output; `reports/20_improvement_plan.md` gained a Stage 13 section. `docs/12_technical_report_draft_v7.pdf` rebuilt after that sync: **16 pages, MD5 `29aadaf3589f01075610e7eb461ef1de`**, 12/12 text-layer anchors, page band 12–22 holds — superseding the Stage 12 build (`726cc357…`, 15 pages); `reports/24` §"Current build" records the new hash and the chain back to `664ae12b…`.
 - **未解决 (measured gaps, not TODOs by choice):** `stage10_retrieval.py` and `stage10_harmony.py` cannot run here — `ModuleNotFoundError: No module named 'harmonypy'`, so their artifacts are unverified off the original machine; the two P3 files move in the 4th–5th decimal under the current library stack (statement in `reports/12` §10.6, committed artifacts kept); `reports/20_improvement_plan.md` lists Stage 13 as tooling rather than analysis, and the `12 v5/v6` archived drafts remain archived (banner only).
 - **图形目录层 (measured, deliberately not touched): 未完成 — 需用户裁定.** Five PNG directories coexist: `figures/` (27 png, the one the repo's markdown reads — 6 image links, all resolve), `reports/figures/` (15), `docs/figures/` (8), and outside the checkout `<workspace>/reports/figures/` (26) and `<workspace>/figures/` (10). The six root-level scripts (`01_…`–`06_…`) derive `BASE` as `dirname(dirname(__file__))` = the **workspace**, so `python 01_phenotypic_profiling.py` writes figures one level above the repo and cannot refresh `figures/` as committed. Of the 20 names shared between `figures/` and `<workspace>/reports/figures/`, 9 are byte-identical and 11 differ, with no consistent direction (by mtime the workspace copy is newer for 4 and the repo copy for 7 — and mtimes here are not clean evidence anyway, since an external backup tool rewrote files on 2026-10-09), so the two trees have diverged rather than one being a stale export of the other. Consolidating would delete or overwrite tracked binaries, which is not this stage's call; recorded with the counts, and group C now keeps the *links* honest. The actionable version of this decision: either point the root scripts at `_paths.FIG_ROOT` and re-render, or declare `figures/` the only tracked image tree and move the rest into `build/`.
-- **Not done in this stage:** the seven root-level scripts were left as they are — measured, the six numbered ones derive `BASE = dirname(dirname(__file__))` (which equals the workspace `_paths` derives by default, asserted by group C) and `demo.py` derives `REPO_ROOT = dirname(abspath(__file__))` (self-relative, now asserted too), so none of them carried a drive-letter literal to remove; routing them through `_paths.py` would be cosmetic churn on files this stage has no reason to touch — with one consequence worth naming: those six write figures and CSVs one level above the repo, which is the `图形目录层` divergence below. No CI workflow file was added — `check_repo.py` is a local command, and pushing a workflow is the user's call along with the commit.
+- **Not done in this stage:** the seven root-level scripts were left as they are — measured, the six numbered ones derive `BASE = dirname(dirname(__file__))` (which equals the workspace `_paths` derives by default, asserted by group C) and `demo.py` derives `REPO_ROOT = dirname(abspath(__file__))` (self-relative, now asserted too), so none of them carried a drive-letter literal to remove; routing them through `_paths.py` would be cosmetic churn on files this stage has no reason to touch — with one consequence worth naming: those six write figures and CSVs one level above the repo, which is the `图形目录层` divergence below. No CI workflow file was added — `check_repo.py` is a local command, and pushing a workflow is the user's call along with the commit (Stage 16 writes one into the checkout — never executed, never pushed).
 
 ## Stage 14 — Dependency truth (2026-11-06)
 
@@ -382,14 +383,16 @@ found by measuring rather than by reading.
   measured rather than assumed. (i) The failure path is live: forcing `DEFAULT_WORKSPACE` to a wrong
   root makes the row FAIL and name the files. (ii) The skip paths are honest and were each run: in a
   git-less copy of the tracked files the row reads `pre-refactor path literals checked (git unavailable,
-  skipped)`; in a single-commit fixture repo, where there is no pre-refactor tree at all, it reads
+  skipped)` — that label reads `git history unreadable here` since Stage 16, because the copy does have
+  git on `PATH` and lacks only the history; in a single-commit fixture repo, where there is no pre-refactor tree at all, it reads
   `pre-refactor literals name a different checkout (skipped: equivalence unproven here, 0 literals read
   from <sha>)`; and in a real `git clone` of this repo — full history, different directory, so the
   literals name a checkout that is not this one — it reports the 16 literals it read and still calls the
   equivalence *unproven here* rather than failing a perfectly good clone. Unproven is stated as
   unproven, never as a pass of the claim itself.
 - **无输入复测: 完成.** The clone simulation was re-run with the Stage 14 files included (151 tracked
-  files copied one level above this repo's `data/`): `20/20 tests pass (1 skipped:
+  files copied one level above this repo's `data/`; historical Stage 14 measurement, with current
+  measurements recorded separately under Stage 16): `20/20 tests pass (1 skipped:
   paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)` and `check_repo.py 46/49`, the
   three failures still being only the data-dependent rows. 49 rather than 52 rows for the same absence:
   with no fetch manifest the manifest group emits its one "present?" row and returns, instead of adding
@@ -451,6 +454,43 @@ Stage 14 的教训不是某个版本号写错，而是一句标签把「没钉�
   标签老实写 "not compared"；若将来真用到，需要先补语义再补测试。变异体的证据只存在于本 ledger（一次性
   探针脚本已删除），仓库里没有可一键重放的 mutation 目标。
 
+## Stage 16 — 无输入仓库的自动检查（2026-11-06）
+
+本阶段只改离线验证，不改变模型、数据或已有科学结论。
+
+- **数据跳过：完成。** `--allow-missing-data` 只在整个 `data/` 不存在时允许三条数据检查转为明确的
+  SKIP，并从分母剔除。数据目录存在但残缺、代码错误等仍失败。有输入时带与不带开关均为 `54/54`。
+- **克隆探针：完成。** 复制 152 个跟踪文件的工作树内容（不含 git 历史），要求普通模式恰好三条数据 FAIL、
+  开关模式恰好同三条 SKIP；汇总计数必须与逐行结果一致，非数据 PASS 集合不变；套件只允许真实数据断言跳过。
+  空输出、traceback、缺行、重复行和额外跳过均失败。实测套件 `29/29 (1 skipped)`、普通检查 `48/51`、
+  开关检查 `48/48 (3 skipped)`，探针 exit 0；副本已清理。
+- **工作流：已写，未在 GitHub 执行。** Python 3.13，安装 numpy、pandas、scikit-learn、pymupdf，运行
+  套件与开关模式检查。Scipy 由 scikit-learn 提供；本机 metadata 与屏蔽 scipy.stats 的探针已确认这个依赖。
+  这不是 Linux 实测、全量建模环境复现或成功徽章。
+- **H ci 两条检查：完成。** 要求工作流文件、两条必要命令及入口文件存在；检查模块级导入和运行时 pymupdf
+  的依赖声明。忽略注释，使用固定 DIST 映射，接受版本限定名与已知的 sklearn→scipy 关系。
+  读取范围只覆盖当前普通 `run:`／文字块格式，不是通用 YAML、shell 或 Actions 语义验证器。
+- **复核与回归：完成。** 独立审查发现初版把注释当命令、缺工作流仍通过、包映射依赖本机，以及克隆探针仅看
+  退出码等缺陷。新增六条回归测试，修复前四条 CI 测试和一条克隆测试失败；数据跳过边界测试原本通过。
+  修复后总计 `30/30`，环境指纹仍为 CURRENT（22 版本行＋23 导入行）。二次只读审查未发现所述范围内的
+  阻断问题；它是静态复核，实际测试由主会话执行。**撤回初版两项错误判据：缺工作流不该跳过；新增 scipy
+  导入也不该因未直接列包而失败。** 新测试用临时文件和子进程边界替身，不修改真实工作流来注入故障。
+- **计数：** checker `54/54`，deep `55/55`，8 组；测试 24→30；文件仍为 152。历史审计标签改为
+  `git history unreadable here, skipped`。历史／环境适用性行仍沿用旧的条件 PASS 计数，标签中的 skipped
+  不属于本次三条显式 SKIP，不能当成已证明跨机器等价。
+- **文档与 PDF：完成。** README、报告 §10.5/§10.7、优化计划和本记录同步；PDF 重编译为 **16 页，MD5
+  `600d6d85d1a336f2f3ad713cbe4b65bb`**，文本层 12,462 words，1,237,096 bytes，取代 Stage 15 的
+  `70741463…`。12/12 必需文本锚点通过；新测试／检查计数在规范化空白后均命中（`48/48 checks pass`
+  在 PDF 中跨行）。16 页文本边界检查无越界；已目视检查全页缩略图与更新后的第 13 页，未见重叠或裁切。
+  `reports/24` 的 Current build 已同步，保留旧构建取代链。
+- **最终复验：完成。** 在上述 PDF 与文档同步后重新执行：套件 `30/30`；普通检查 `54/54`；
+  `--deep` 为 `55/55`（17 个 manifest 对象的 SHA256 全部重算相符）；有数据时 `--allow-missing-data`
+  为 `54/54` 且无 SKIP；环境指纹 `CURRENT`；PDF `--check-only` 为 PASS。再次运行实际无数据副本探针，
+  得到 `29/29 (1 skipped)`／`48/51`（exit 1）／`48/48 (3 skipped)`（exit 0），总判定 PASS，副本已清理。
+  `git diff --check` 无空白错误；Git 仅提示现有 LF→CRLF 转换策略，未修改配置。
+- **未解决：** GitHub 执行、干净环境安装与 Linux 行为均未验证；Stage 14 的六个缺失依赖和原始训练环境复现
+  缺口仍在。本轮没有下载数据、安装依赖或运行新模型，也未改动重复图片与用户副本。
+
 ## Final status
 
 
@@ -483,6 +523,8 @@ Stage 14 的教训不是某个版本号写错，而是一句标签把「没钉�
 | Git commit (Stage 14 = `23b8a04`, 11 files / `2b45eff`, 8 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 6：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`）。`2b45eff` 是紧随其后的机器独立性提交（三行环境门禁＋README/§10.5/§10.7/§20/§24 同步＋PDF 重编译） |
 | Stage 15 (环境表标签与版本比较的测试) | 完成 (`status_label` 从 `build()` 抽出为纯函数·内存重跑证明除 `recorded_utc` 外与已提交工件逐键相等；tests 21→24（七种标签情境＋工件自洽重标＋`_meets` 数值比较），实测 `24/24`；两个变异体分别把标签测试打到 `22/24`、把 floor 测试打到 `0/1`，还原后 SHA256 不变且 `--check` 仍 `CURRENT`；`clone_probe.py` 复测 `23/23 (1 skipped)`＋`46/49`；README/§10.5/§20/本 ledger 同步；PDF 重编译 16 pp MD5 70741463…，12,226 words，文本层含 `status_label`/`2.6.0+cu124`/`24 unit tests`) |
 | Git commit (Stage 15 = `de7a85a`, 9 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 8：`6861df5`、`31f8c4e`、`cad2391`、`83d658e`、`23b8a04`、`2b45eff`、`ad7ae8f`、`de7a85a`）。本行由紧随其后的 ledger commit 记录 |
+| Stage 16 (无输入仓库自动检查) | 代码完成：三条显式数据 SKIP；严格克隆输出校验；H ci 声明检查；六条回归测试，总计30条；checker54条／deep55条。工作流已写但未执行；PDF与最终验证见本阶段记录 |
+| Git commit (Stage 16) | 待最终验证与本地提交；未 push |
 
 ## AI Use Disclosure
 

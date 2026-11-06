@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Dependency-free unit tests for the pure helpers in scripts/stage12_external_site.py,
-scripts/_paths.py and scripts/record_environment.py.
+"""Plain-Python tests for analysis helpers, paths, environment labels and offline CI gates.
+Uses the declared numerical packages, but requires neither pytest nor downloaded data.
 
 Why this file exists: the cross-site claims in reports/24 rest on four pieces of plumbing
 that never touch the network - the robust-z normalisation, the well-coordinate handling,
@@ -17,9 +17,9 @@ Run it with plain python - no pytest in this environment:
 
 Exit code 0 means every assertion passed. Lines are PASS / SKIP / FAIL; SKIP is a precondition
 this checkout does not offer (no `data/` tree, i.e. a fresh clone), printed on the summary line
-so it cannot be mistaken for a pass. Measured on a clone without inputs: `23/23 tests pass
+so it cannot be mistaken for a pass. Measured on a clone without inputs: `29/29 tests pass
 (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`; with the inputs
-present, `24/24`.
+present, `30/30`.
 """
 import json
 import os
@@ -465,6 +465,112 @@ def test_version_floor_compare_is_numeric_not_lexicographic():
     assert R._meets("2.6.0+cu124", "2.6.0") is True
     assert R._meets("2.5.0+cu124", "2.6.0") is False
     assert R._meets("2026.3.3", "2026.3.6") is False
+
+
+# ---------------------------------------------------------- CI / clone-gate regressions
+# These exercise production decisions with isolated files or subprocess-boundary fixtures.
+def _ci_verdict(text, extra_import=""):
+    import tempfile
+    from pathlib import Path
+    from unittest.mock import patch
+    import check_repo as C
+    with tempfile.TemporaryDirectory() as root:
+        base = Path(root)
+        (base / "scripts").mkdir()
+        (base / "tests").mkdir()
+        (base / "tests/test_stage12_units.py").write_text(
+            "import numpy\nimport pandas\nimport sklearn\n" + extra_import, encoding="utf-8")
+        (base / "scripts/check_repo.py").write_text("pass\n", encoding="utf-8")
+        if text is not None:
+            (base / ".github/workflows").mkdir(parents=True)
+            (base / ".github/workflows/verify.yml").write_text(text, encoding="utf-8")
+        with patch.object(C, "REPO", root), patch.object(C, "R", []):
+            C.group_ci()
+            return list(C.R)
+
+
+def _ci_text():
+    with open(os.path.join(os.path.dirname(_HERE), ".github/workflows/verify.yml"),
+              encoding="utf-8") as fh:
+        return fh.read()
+
+
+def test_ci_rejects_missing_or_commented_workflow():
+    for text in (None, "\n".join("# " + s for s in _ci_text().splitlines())):
+        rows = _ci_verdict(text)
+        assert any(row[-1] == "fail" for row in rows), rows
+
+
+def test_ci_ignores_commands_inside_comments():
+    rows = _ci_verdict(_ci_text() + "\n# python scripts/nonexistent.py\n")
+    assert rows and all(row[-1] == "pass" for row in rows), rows
+
+
+def test_ci_accepts_versioned_names_and_known_transitive_scipy():
+    text = _ci_text().replace("pip install numpy pandas scikit-learn pymupdf",
+                              'pip install "numpy>=2" pandas scikit_learn pymupdf')
+    rows = _ci_verdict(text, "import scipy\n")
+    assert rows and all(row[-1] == "pass" for row in rows), rows
+
+
+def test_ci_rejects_missing_runtime_dependency_or_required_command():
+    source = _ci_text()
+    cases = [source.replace("pip install numpy pandas scikit-learn pymupdf",
+                            "pip install numpy scikit-learn pymupdf"),
+             source.replace("pip install numpy pandas scikit-learn pymupdf",
+                            "pip install numpy pandas scikit-learn"),
+             source.replace("run: python scripts/check_repo.py --allow-missing-data",
+                            "run: python scripts/check_repo.py")]
+    for text in cases:
+        rows = _ci_verdict(text)
+        assert any(row[-1] == "fail" for row in rows), rows
+
+
+def _clone_run(plain=None, gated=None, suite=None):
+    import contextlib
+    import io
+    from types import SimpleNamespace
+    from unittest.mock import patch
+    import clone_probe as P
+    names = ["the resolved data tree exists (gitignored inputs)",
+             "pilot profile tables are present", "fetch manifest present"]
+    def result(code, text):
+        return SimpleNamespace(returncode=code, stdout=text, stderr="")
+    if suite is None:
+        suite = (0, "  PASS  test_synthetic\n  SKIP  test_paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace: no data\n1/1 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)\n")
+    if plain is None:
+        plain = (1, "  PASS  static check\n" + "\n".join("  FAIL  " + n for n in names)
+                 + "\n1/4 checks pass\n")
+    if gated is None:
+        gated = (0, "  PASS  static check\n" + "\n".join("  SKIP  " + n for n in names)
+                 + "\n1/1 checks pass (3 skipped, they need data/)\n")
+    with patch.object(P.subprocess, "run", side_effect=[result(*x) for x in (suite, plain, gated)]), \
+            contextlib.redirect_stdout(io.StringIO()):
+        return P.run()
+
+
+def test_clone_probe_accepts_only_complete_expected_results():
+    assert _clone_run() == 0
+    cases = [dict(plain=(1, "Traceback: crashed\n")), dict(gated=(0, "")),
+             dict(suite=(0, "")), dict(plain=(1, "FAIL  fetch manifest present\n0/1 checks pass\n")),
+             dict(gated=(0, "SKIP  broken source code\n0/0 checks pass (1 skipped)\n")),
+             dict(plain=(1, "FAIL  fetch manifest present\nFAIL  fetch manifest present\n0/2 checks pass\n"))]
+    for args in cases:
+        assert _clone_run(**args) == 1, args
+
+
+def test_allow_missing_data_never_skips_nondata_or_partial_data_errors():
+    import tempfile
+    from unittest.mock import patch
+    import check_repo as C
+    with tempfile.TemporaryDirectory() as root:
+        absent = os.path.join(root, "missing")
+        for data_path, tagged, expected in [(absent, True, "skip"), (absent, False, "fail"),
+                                            (root, True, "fail")]:
+            with patch.object(C, "R", []), patch.object(C, "ALLOW_MISSING_DATA", True), \
+                    patch.object(C._paths, "DATA", data_path):
+                C.add("fixture", "failure", False, requires_data=tagged)
+                assert C.R[-1][-1] == expected, C.R
 
 
 def main(argv):

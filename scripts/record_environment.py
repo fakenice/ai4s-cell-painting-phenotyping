@@ -54,7 +54,7 @@ DIST = {
 # undeclared-import failure only if the code never imports it
 LOCAL_MODULES = {"_paths", "stage12_external_site", "demo", "make_demo_video",
                  "make_demo_video_live", "make_demo_video_v8", "record_environment",
-                 "check_repo", "check_paths_equal", "adopt_paths_data", "legacy_p3"}
+                 "check_repo", "clone_probe", "check_paths_equal", "adopt_paths_data", "legacy_p3"}
 
 
 def parse_requirements(path):

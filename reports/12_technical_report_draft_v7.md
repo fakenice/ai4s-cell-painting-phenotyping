@@ -1135,10 +1135,11 @@ Two read-only commands check that this document still matches the artifacts it d
 that the definitions the §4.7 claims rest on still hold:
 
 ```bash
-python tests/test_stage12_units.py     # 24 unit tests, no network, no pytest needed
-python scripts/check_repo.py           # 52 read-only checks, 7 groups
-python scripts/check_repo.py --deep    # 53/53: also re-hash the 159.9 MB external tree
-python scripts/clone_probe.py          # re-run both as if there were no data/ tree, then clean up
+python tests/test_stage12_units.py                 # 30 tests, no network, no pytest needed
+python scripts/check_repo.py                       # 54 read-only checks, 8 groups
+python scripts/check_repo.py --deep                # 55/55: also re-hash the 159.9 MB external tree
+python scripts/check_repo.py --allow-missing-data  # the three rows that need data/ become SKIPs
+python scripts/clone_probe.py                      # re-run all of it as if there were no data/ tree
 ```
 
 `check_repo.py` fails (exit 1) on: a quoted number that no longer equals the JSON/CSV that
@@ -1153,7 +1154,10 @@ module that committed code imports at module level while `requirements.txt` leav
 a dependency that stops a script from starting on the recorded machine and that no document names,
 or a recorded environment fingerprint (§10.7) that no longer equals the machine running it — the
 last one compared only when this *is* that machine, because a reader living elsewhere has not
-broken anything by living elsewhere, and the two rows that can only mean something on the author's
+broken anything by living elsewhere; and since Stage 16 a `.github/workflows/verify.yml` that names
+a missing required command or entry-point file, or insufficient dependency declarations for the
+module-level imports and the runtime PDF check (scope and limitations below).
+The two rows that can only mean something on the author's
 checkout (the pre-refactor literal audit, the fingerprint comparison) say `unproven` / `skipped`
 in their names instead of either passing quietly or failing spuriously. The unit
 tests cover the retrieval-arm definitions (which query lands in
@@ -1167,21 +1171,36 @@ fingerprint re-labelled from its own `declared`/`installed` fields and required 
 `>=` floor comparison as numeric rather than lexicographic (`1.10 > 1.2`, `0.5 < 0.5.12`,
 `2.6.0+cu124` compared on its numeric prefix).
 
-Neither entry point needs the inputs, and `python scripts/clone_probe.py` re-measures that claim
-instead of asserting it: it copies `git ls-files` (151 files) to `<workspace>/_tmp_clone_probe/github_repo`,
-one level above the workspace's real `data/` and therefore resolving to a tree that does not exist,
-runs both entry points there with any `AI4S_*` override cleared, prints the summary lines and every
-`FAIL`, and removes the copy (measured 2026-11-06):
-the suite prints `23/23 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
-and `check_repo.py` prints `46/49`, the three failures being exactly the data-dependent rows
-("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
-each naming the path it resolved. The denominator is 49 there against 52 here for the same reason:
-a checkout with no fetch manifest gets one "present?" row out of the manifest group instead of its
-four content rows. Two more rows change their wording rather than their verdict — the pre-refactor
-literal audit has no git history to read and no author-machine path to compare against, so it
-reports itself as *unproven here* instead of passing quietly. Skips are counted out of the
-denominator and named on the
-summary line, so a missing input can neither fail the run nor inflate it.
+`python scripts/clone_probe.py` copies the 152 tracked working-tree files to
+`<workspace>/_tmp_clone_probe/github_repo`, where the resolved `data/` tree is absent, clears path
+overrides, and runs the suite plus both checker modes. This is a file-copy simulation without git
+history, not a fresh installation or a Linux runner. Measured on 2026-11-06: the suite reports
+`29/29 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`;
+the plain checker reports `48/51`, exit 1; the flagged checker reports
+`48/48 checks pass (3 skipped, they need data/)`, exit 0. The three affected rows are "the resolved
+data tree exists", "pilot profile tables are present", and "fetch manifest present". Without a
+manifest, three content checks are not emitted, explaining the 51 versus 54 totals.
+
+The probe checks the complete verdicts, not only exit codes: exactly those three FAIL rows in the
+plain run and three SKIP rows in the flagged run, matching summaries, unchanged non-data PASS rows,
+and only the live-data test skipped. Empty output, traceback, missing or duplicate rows, or extra
+skips produce `PROBLEM` and a non-zero exit; a valid run ends `verdict: PASS` and removes the copy.
+The explicit data SKIPs are excluded from denominators. The older history/environment applicability
+rows retain a conditional PASS convention with `unproven` or `skipped` in the name; those rows must
+not be read as proof of equivalence when the necessary history or matching environment is absent.
+
+The workflow `.github/workflows/verify.yml` declares Python 3.13, four direct packages (`numpy`,
+`pandas`, `scikit-learn`, `pymupdf`), the suite and the flagged checker. Scipy is provided by
+scikit-learn. Group H verifies the two command declarations and their files, scans the local
+module-level import closure, and checks dependency coverage using a fixed distribution-name map
+plus that known scipy relationship; it also requires the runtime PDF dependency pymupdf.
+It reads the current plain `run:` format, not arbitrary YAML, shell code or GitHub execution semantics.
+Six regression tests added in Stage 16 cover missing/commented workflows, comments that resemble
+commands, versioned package names and scipy, omitted packages/commands, incomplete clone output,
+and the rule that missing-data permission cannot hide unrelated or partial-data failures.
+The five failing regression tests were observed before the fixes; all six pass afterwards.
+**The workflow has not run on GitHub.** Local validation does not establish Linux execution, a clean
+runner's dependency installation, or reproducibility of the original model training.
 
 Known environment gaps, stated rather than papered over: `stage10_retrieval.py` and
 `stage10_harmony.py` import `harmonypy`, which is not installed here (verified: `ImportError`), so
@@ -1271,7 +1290,8 @@ naming the rows. Three `check_repo.py` rows now cover it — every module-level 
 declared (the checker calls the recorder's `build()` itself, so this describes the code in front of
 it and not a snapshot), every dependency that blocks a script *on the recorded machine* named in the
 docs (a claim about the docs, so it runs anywhere), and the recorded fingerprint still equal to this
-environment — which took the read-only suite from 49 to 52 checks (53 with `--deep`). The last row
+environment — which took the read-only suite from 49 to 52 checks (53 with `--deep`); the CI-
+transcription rows added in Stage 16 took it to 54 (55 with `--deep`). The last row
 runs only when this checkout really is the machine the fingerprint records: python and platform are
 compared first, and on a doctored fingerprint the row reads `recorded fingerprint belongs to another
 machine (skipped: drift not assessable from here)` and names both sides, rather than comparing the

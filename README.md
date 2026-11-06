@@ -149,31 +149,46 @@ Cellpose (cyto2) segmentation of the DNA channel.
    third that re-measures the first two as if the inputs were gone:
 
    ```bash
-   python tests/test_stage12_units.py     # 24 unit tests, no data needed, no pytest needed
-   python scripts/check_repo.py           # 52 checks: paths, imports and dependencies, citations,
-   python scripts/check_repo.py --deep    #     artifacts, committed numbers, docs, the test suite
-                                          # 53: also re-hash the 17 external objects (SHA256)
-   python scripts/clone_probe.py          # stand-in fresh clone: copies the tracked files outside
-                                          # the data tree, runs both, then removes the copy
+   python tests/test_stage12_units.py                 # 30 tests, no data needed, no pytest needed
+   python scripts/check_repo.py                       # 54 checks in 8 groups: paths, imports and
+   python scripts/check_repo.py --deep                #     dependencies, citations, artifacts,
+                                                      #     committed numbers, docs, the test suite and
+                                                      #     the CI workflow; 55 with --deep, which also
+                                                      #     re-hashes the 17 external objects
+   python scripts/check_repo.py --allow-missing-data  # the same rows, except that the three that can
+                                                      # only pass with `data/` are SKIPped, not FAILED
+   python scripts/clone_probe.py                      # stand-in fresh clone: copies the tracked files
+                                                      # outside the data tree, runs all three, removes
+                                                      # the copy, and exits 0 only if all held
    ```
 
-   Both print one line per check with a `FAIL` reason and exit non-zero if anything fails, so
-   they are usable as a pre-commit gate. Measured on a **fresh clone with no `data/` yet** — what
-   `scripts/clone_probe.py` reproduces, by copying `git ls-files` (151 files) one level above this
-   repo's own `data/`, with any `AI4S_*` override cleared: the test suite reports
-   `23/23 tests pass (1 skipped)` — the skip is the one assertion that needs the live inputs —
-   and `check_repo.py` reports `46/49`, the three failures being exactly the data-dependent ones
-   ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
-   each naming the path it looked at. The 49 rows versus 52 above is that same absence: with no
-   fetch manifest to read, the manifest group reports the one "present?" row and returns instead
-   of emitting its three content rows. Nothing else changes: the path, dependency, citation,
-   artifact, number, PDF and test groups all pass without the inputs, and the checks that can only
-   mean something on the author's own machine or in the author's own history — the pre-refactor
-   path-literal audit, and the environment-fingerprint comparison, which reports
-   `belongs to another machine (skipped)` wherever python or the OS differ instead of failing a
-   reader who changed computers — say so in their names rather than passing quietly or failing
-   spuriously.
-   With the data tree in place you should see `24/24` and `52/52` (`53/53 --deep`).
+   With the inputs present, the suite reports `30/30` and the checker `54/54`
+   (`55/55 --deep`); `--allow-missing-data` makes no difference while `data/` exists.
+   The clone probe copies the 152 tracked working-tree files outside the data tree, clears the
+   path overrides and runs all three commands. This is a file-copy simulation, not a git clone.
+
+   Without inputs, the suite reports `29/29 tests pass (1 skipped)` and the plain checker
+   `48/51`, exit 1. Exactly three rows fail: "the resolved data tree exists", "pilot profile
+   tables are present", and "fetch manifest present". With `--allow-missing-data`, these become
+   explicit SKIP rows, excluded from the denominator: `48/48 checks pass (3 skipped, they need
+   data/)`, exit 0. Three manifest-content rows are not emitted without a manifest, explaining
+   the 51 versus 54 totals. History/machine applicability rows retain their earlier conditional
+   PASS convention, with `unproven` or `skipped` in the label; they do not prove historical path
+   equivalence or environment equality on another checkout/machine.
+
+   The probe requires the exact three FAIL names in the plain run and the exact three SKIP names
+   in the flagged run, matching summaries, unchanged non-data PASS rows, and a successful suite
+   with only its live-data assertion skipped. Missing/duplicate rows, empty output, traceback or
+   extra skips fail the probe. A valid run ends `verdict: PASS` and exit 0, then removes the copy.
+
+   `.github/workflows/verify.yml` runs the suite and flagged checker on push, pull request and
+   manual dispatch, installing `numpy`, `pandas`, `scikit-learn` and `pymupdf` (scipy is a
+   scikit-learn dependency). Group H checks the declared commands, files and dependency coverage;
+   it ignores comments and uses a fixed package-name mapping rather than this machine's package
+   metadata. Missing/commented-out workflows, missing commands and omitted runtime dependencies
+   fail. It reads the current plain `run:` format, **not arbitrary YAML or shell syntax**.
+   **The GitHub workflow has not run.** Local checks do not establish Linux execution, successful
+   dependency installation on a clean runner, or reproducibility of the original model training.
 
 6. (Optional) Rebuild the **live run** demo video — it actually executes the
    stage scripts, runs a real Cellpose inference and renders charts from the

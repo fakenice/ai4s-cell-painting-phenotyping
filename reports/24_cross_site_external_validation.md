@@ -354,14 +354,19 @@ python scripts/build_report_pdf.py --check-only
 ```
 
 Current build: `docs/12_technical_report_draft_v7.pdf`, 16 pages, MD5
-`70741463a545067f5d6900114216663a`, 12,226 words in the text layer (rebuilt after Stage 15 added the
-labelling/floor-compare coverage to `reports/12` §10.5. It supersedes the Stage-14 builds `2ec3f59f…`
+`600d6d85d1a336f2f3ad713cbe4b65bb`, 12,462 words in the text layer, 1,237,096 bytes (rebuilt after
+Stage 16 updated the offline-check contract and regression coverage in `reports/12` §10.5/§10.7).
+All 12 required text anchors passed; the new count anchors were also checked after whitespace
+normalization. No text spans extended beyond the page boundaries on any of the 16 pages; the
+all-page contact sheet and updated page 13 were visually inspected. This build supersedes Stage
+15's `70741463a545067f5d6900114216663a` (16 pages, 12,226 words, labelling/floor-compare coverage),
+which superseded the Stage-14 builds `2ec3f59f…`
 (16 pages, 12,147 words) and `4c5e8506…` (16 pages, 11,993 words) and one intermediate Stage-14 build
 `5e1586a4…` (16 pages, 11,931 words) that was superseded inside that stage when §10.5 grew a paragraph;
 all three are listed here so the chain stays complete. The Stage 13 build
 was also 16 pages, MD5
 `29aadaf3…`; the Stage 12 build was 15 pages, MD5 `726cc357…`, and the pre-Stage-12 committed build
-20 pages, MD5 `664ae12b…`, whose text layer contains none of the §4.7 anchors). Page-count changes
+20 pages, MD5 `664ae12b…`, whose text layer contains none of the §4.7 anchors. Page-count changes
 are style plus prose, not content: the 15-page build carried 10,321 words vs 7,734 in the 20-page
 one, with the same 6 distinct figures, under the committed `docs/print_style.css` instead of the
 unrecorded ad-hoc style. `scripts/check_repo.py` group E re-verifies the band, the anchors and this

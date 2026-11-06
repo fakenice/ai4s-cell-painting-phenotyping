@@ -1,0 +1,31 @@
+# Offline checks only: no dataset download, model execution, or PDF rebuild.
+# The commands have been exercised locally in a data-less working-tree copy;
+# this workflow itself has NOT run on GitHub. No Linux/CI success is claimed.
+# Direct dependencies: numpy, pandas, scikit-learn, pymupdf (runtime PDF check).
+# scipy is supplied by scikit-learn. The historical full requirements.txt is
+# deliberately not installed: this job does not reproduce the model environment.
+# H ci checks these command/dependency declarations in their current plain-run
+# format; it is not a general YAML, shell, or GitHub Actions validator.
+name: verify-checkout
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  readonly-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install offline-check dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pandas scikit-learn pymupdf
+      - name: Synthetic and regression tests
+        run: python tests/test_stage12_units.py
+      - name: Repository checks (absent-data rows are explicit skips)
+        run: python scripts/check_repo.py --allow-missing-data
