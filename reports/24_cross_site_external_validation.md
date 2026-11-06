@@ -10,11 +10,11 @@
 (written by `--stage controls`; the retrieval JSON additionally carries `arm_summaries_by_plate_pair`
 and `paired_strict_by_plate_pair`)
 **External data:** `<workspace>/data/external/cpg0016/` — one level **above** `github_repo/`
-(`scripts/stage12_external_site.py` derives it from its own location: repo root = the parent of
-`scripts/`, workspace = the parent of that; override with `AI4S_REPO` / `AI4S_WORKSPACE`).
-Gitignored, 159,914,604 bytes on disk; every object carries a SHA256 in
-`data/external/cpg0016/manifest_sha256.csv` — 17 rows, 159,909,495 bytes of fetched objects,
-all `status = ok`)
+(`scripts/_paths.py` derives it from its own location: repo root = the parent of `scripts/`,
+workspace = the parent of that; override with `AI4S_REPO` / `AI4S_WORKSPACE`).
+Gitignored; 159,909,495 bytes of fetched objects, 159,914,604 counting the manifest itself.
+Every object carries a SHA256 in
+`data/external/cpg0016/manifest_sha256.csv` — 17 rows, all `status = ok`)
 
 ## Verdict, by layer
 
@@ -353,8 +353,11 @@ python scripts/build_report_pdf.py            # pandoc -> HTML -> Chrome print-t
 python scripts/build_report_pdf.py --check-only
 ```
 
-Current build: `docs/12_technical_report_draft_v7.pdf`, 15 pages, MD5
-`726cc35711211e062bf50074ea09602e` (the pre-Stage-12 committed build was 20 pages, MD5
-`664ae12b…`, and its text layer contains none of the §4.7 anchors). The page-count change is
-style, not content: 10,321 words vs 7,734 and the same 6 distinct figures, with the tighter
-`docs/print_style.css` now committed instead of the unrecorded ad-hoc style.
+Current build: `docs/12_technical_report_draft_v7.pdf`, 16 pages, MD5
+`29aadaf3589f01075610e7eb461ef1de` (rebuilt after the Stage 13 portability/verification sections
+were added; the Stage 12 build was 15 pages, MD5 `726cc357…`, and the pre-Stage-12 committed build
+20 pages, MD5 `664ae12b…`, whose text layer contains none of the §4.7 anchors). Page-count changes
+are style plus prose, not content: the 15-page build carried 10,321 words vs 7,734 in the 20-page
+one, with the same 6 distinct figures, under the committed `docs/print_style.css` instead of the
+unrecorded ad-hoc style. `scripts/check_repo.py` group E re-verifies the band, the anchors and this
+hash on every run.

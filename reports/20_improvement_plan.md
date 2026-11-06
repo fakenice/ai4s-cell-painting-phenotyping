@@ -401,6 +401,26 @@ Full write-up: `reports/24_cross_site_external_validation.md`; engine `scripts/s
 manuscript §4.7 + the §2.1/§3.1 replicate-layout correction; `reports/22_optimization_log.md` keeps the
 stage ledger.
 
+## Stage 13 — Portability, self-check and unit tests (2026-11-06)
+
+Question: can a reader who is not on the author's machine run this repo and tell whether the
+documents still describe the artifacts? Layers are reported separately, because they are not
+equally finished:
+
+| Layer | Status | Evidence |
+|---|---|---|
+| Paths | 完成 | `scripts/_paths.py` derives REPO / WORKSPACE / DATA / REPORTS from its own location (override with `AI4S_REPO` / `AI4S_WORKSPACE`); 14 stage scripts migrated (+ the second pass moved `DATA`/`REPORTS` themselves into the module: 17 rewrites, 101 insertions / 46 deletions in `scripts/`). No drive-letter literal remains in any tracked `.py` |
+| Equivalence | 完成 (measured) | The 16 `BASE`/`REPO` literals removed at HEAD equal the roots `_paths` derives (checker group A); AST-evaluating every module-level path constant before vs after the rewrite gives **0 resolution differences, 0 lost names**, 6 non-path expressions skipped. `compileall` exit 0 |
+| Results unchanged | 完成 (measured) | Two independent re-runs of the five local-only stages from a foreign cwd: **59 of 62 `reports/` artifacts byte-identical**, the 3 mismatches being the docs the stage edits. Only `20_stage11_p3_cross_plate_*` move, to identical bytes across 5 invocations (incl. the pre-refactor script) ⇒ library drift, not path handling; quoted in §10.6 with the `autocrlf` caveat |
+| Self-check | 完成 | `scripts/check_repo.py`: 49 read-only checks in 7 groups (50 with `--deep`, re-hashing the 159.9 MB external tree). Measured in a data-less clone: 43/46, failing only the three data-dependent rows, each naming the path it looked for |
+| Tests | 完成 | `tests/test_stage12_units.py`, 21 tests, plain-python runner, no data needed: the four scaling arms, the three retrieval arms + applicable null, vehicle-only robust z, well coordinates, additive residualiser, `_paths` data rule. Fresh clone: `20/20 pass (1 skipped)` — skips are excluded from the denominator and named |
+| Docs | 完成 | README §3 (both `data/` placements + the two verification commands + measured no-input output); reports/12 §10.2/§10.5/§10.6; reports/22 Stage 13; reports/24 artifacts header |
+| Not done | 未做 | The 7 root-level scripts (`demo.py`, `01_…`–`06_…`) keep their own two-level `dirname` derivation — they resolve correctly, just not through `_paths`; no CI workflow runs the checker; `stage10_*` stay unverified because `harmonypy` is not installed |
+
+Decision left open: `figures/`, `reports/figures/`, `docs/figures/` (+2) hold 20 shared filenames
+with 9 byte-identical and 11 differing copies — de-duplicating those is a user call, not a silent
+delete. Ledger detail: `reports/22_optimization_log.md` Stage 13.
+
 ## AI Use Disclosure
 
 This project was developed with the assistance of AI-based tools in the following capacities:

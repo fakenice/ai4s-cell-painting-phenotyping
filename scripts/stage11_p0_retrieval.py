@@ -24,9 +24,13 @@ import torch
 import torch.nn as nn
 
 RANDOM_STATE = 42
-BASE = r"E:\Desktop\Kaggle_2026\2026-10-10 AI4S Open Innovation：AI for Life Science"
-DATA = os.path.join(BASE, "data")
-REPO = os.path.join(BASE, "github_repo")
+# Paths come from scripts/_paths.py (derived from this file's location; override with
+# AI4S_REPO / AI4S_WORKSPACE), so the script runs from a checkout at any path.
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import _paths  # noqa: E402
+from _paths import BASE, REPO  # noqa: E402
+DATA = _paths.DATA                  # <repo>/data if present, else <workspace>/data
 FIG = os.path.join(REPO, "reports", "figures")
 FIG_ROOT = os.path.join(REPO, "figures")
 REPORTS = os.path.join(REPO, "reports")

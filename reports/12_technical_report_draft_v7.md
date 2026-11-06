@@ -1092,15 +1092,17 @@ Fetch it through the same budgeted, checksum-first path:
 python scripts/stage12_external_site.py --stage fetch --sets meta,profiles
 ```
 
-This writes `data/external/cpg0016/manifest_sha256.csv` (17 objects, 159.9 MB in the run
-behind §4.7) before any modelling, and aborts if the plan would exceed the download cap.
+This writes `data/external/cpg0016/manifest_sha256.csv` (17 objects, 159,909,495 bytes;
+159,914,604 including the manifest itself) before any modelling, and aborts if the plan would
+exceed the download cap.
 
-`scripts/stage12_external_site.py` resolves its data directory from its own location (repo root =
-parent of `scripts/`, workspace = parent of the repo, data = `<workspace>/data`), so a checkout at
-any path works; set `AI4S_REPO` / `AI4S_WORKSPACE` to override. The earlier stage scripts
-(`stage10_*` … `stage12_p1_*`, 13 files) still carry an absolute `E:\Desktop\Kaggle_2026\…` prefix
-and need that same one-line change before they will run off this machine — recorded as an open
-portability item, not fixed here to keep this stage's diff to the code it owns.
+**Path portability (all 14 stage scripts).** Every script under `scripts/` now takes its roots
+from `scripts/_paths.py`, which derives them from its own location: repo root = parent of
+`scripts/`, workspace = parent of the repo, data = `<workspace>/data`. `AI4S_REPO` /
+`AI4S_WORKSPACE` override either. The previously hardcoded `E:\Desktop\Kaggle_2026\…` prefix is
+gone from the checkout, so a clone runs without editing a line — verified by re-deriving the old
+literals from the new expressions (14/14 equal) and by re-running the local-only stages from an
+unrelated working directory (see §10.6).
 
 ### 10.3 Run the pipeline
 
@@ -1125,6 +1127,87 @@ inputs, outputs, and summaries are listed in Appendix B.
 pip install pillow imageio-ffmpeg
 python scripts/make_demo_video.py
 # → demo_video.mp4 (1280×720, 42 s, 30 fps)
+```
+
+### 10.5 Verify the checkout
+
+Two read-only commands check that this document still matches the artifacts it describes, and
+that the definitions the §4.7 claims rest on still hold:
+
+```bash
+python tests/test_stage12_units.py     # 21 unit tests, no network, no pytest needed
+python scripts/check_repo.py           # 49 read-only checks, 7 groups
+python scripts/check_repo.py --deep    # 50/50: also re-hash the 159.9 MB external tree
+```
+
+`check_repo.py` fails (exit 1) on: a quoted number that no longer equals the JSON/CSV that
+produced it, a doc citing an artifact that is not on disk (20 citation tokens currently), a
+markdown image link that does not resolve, a script that grew a hardcoded absolute path again,
+a path literal replaced at HEAD whose value does not equal the derived root (16 of them, all
+equal), a PDF whose hash is not the one the ledger records, a manifest row whose size or SHA256
+moved, or an `AI4S_REPO` / `AI4S_WORKSPACE` override that the module does not honour. The unit
+tests cover the retrieval-arm definitions (which query lands in
+`position-matched`, `position-decoupled` and the strict `decoupled-only`, and how the applicable
+null scales with the number of accepted matches), the vehicle-only robust z, the well-coordinate
+encoding, the additive-layout residualiser, the four scaling arms, and the `DATA` resolution rule
+in `scripts/_paths.py`.
+
+Neither entry point needs the inputs. Measured on a clone of the tracked files with no `data/`
+tree: the suite prints `20/20 tests pass (1 skipped: paths_data_rule_prefers_the_repo_and_falls_back_to_the_workspace)`,
+and `check_repo.py` prints `43/46`, the three failures being exactly the data-dependent rows
+("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
+each naming the path it resolved. Skips are counted out of the denominator and named on the
+summary line, so a missing input can neither fail the run nor inflate it.
+
+Known environment gaps, stated rather than papered over: `stage10_retrieval.py` and
+`stage10_harmony.py` import `harmonypy`, which is not installed here (verified: `ImportError`), so
+those two stages are unverified off the original machine — and `stage10_harmony.py` additionally
+monkey-patches `DataFrame.describe` for a harmonypy 0.0.9 / pandas ≥ 2 incompatibility that has not
+been exercised against the installed pandas 3.0.3. `pytest` is likewise absent, which is why the
+suite is a plain script with its own runner.
+
+### 10.6 Byte-level re-run evidence for the path refactor
+
+Re-running the local-only stages after the refactor (from `C:\Users\<user>`, i.e. not from the
+repo) reproduced 60 of 62 artifacts in `reports/` byte-for-byte. The two that moved are
+`20_stage11_p3_cross_plate_{results.csv,summary.json}`: cross-plate AUC 0.6825120 → 0.6824519
+(Δ 6.0e-5), AP 0.9106728 → 0.9105973 (Δ 7.5e-5), and the 256-class identity top-5 accuracy row
+0.5115385 → 0.5192308 (2 queries of 260). The pre-refactor version of the same script, with its
+hardcoded paths restored, produces the *new* bytes exactly, so the drift comes from the library
+stack (scikit-learn 1.9.1, numpy 2.3.4, pandas 3.0.3, scipy 1.18.1 now, against the 2026-10-06
+commit that produced the baseline) and not from path handling.
+
+The second migration step — moving `DATA` and `REPORTS` themselves into `_paths.py`, 17 rewrites
+across the same 14 scripts — was re-checked the same way, running the five stages again from
+outside the repo. Every non-documentation artifact came back byte-identical (59 of 62; the three
+other mismatches are `reports/12`, `reports/22` and `reports/24`, which that step edits on
+purpose). The two p3 files moved again, and moved to *exactly* the bytes of the first round: the
+regenerated CSV is one file across five independent invocations — three post-refactor runs, the
+legacy pre-refactor script, and this second round (working-tree MD5 `0bc4212a…`). Drift of the
+library stack is deterministic run to run; it is the commit that produced the baseline that
+differs.
+
+One comparison caveat that cost a detour: this checkout has `core.autocrlf = true`, so a
+checked-out CSV is CRLF while `git show HEAD:…` returns LF, and the two hashes of the *same
+content* differ (`3d6d398d…` on disk vs `58652847…` in the object store). `build/verify/reports_before.txt`
+records working-tree hashes, so `md5sum -c` is self-consistent, but a hash taken from `git show`
+is not comparable to it. Normalise before comparing.
+
+The committed artifacts were left in place, so §4.3 and §26.4 keep quoting the numbers the shipped
+CSVs contain. This is a real, declared limitation rather than a rounding detail: the top-5 row is
+quoted at three decimals (0.512) in §26.4 and in `reports/20`, and a fresh run on the current
+library stack would write 0.519 — same conclusion (≫ the 0.0115 full-scope baseline, < the 0.929
+14-well ceiling), different last digit. Anyone re-running the pipeline should expect the same
+5th-decimal movement and re-quote from their own artifacts. The regenerated copies, and the log of
+this comparison, are kept under `build/verify/` (git-ignored).
+
+```bash
+python scripts/stage11_p1_retrieval_full.py
+python scripts/stage11_p3_cross_plate.py
+python scripts/stage11_p4_trt_trt_boost.py
+python scripts/stage11_p4b_prototype_discrimination.py
+python scripts/stage12_external_site.py --stage controls
+md5sum -c build/verify/reports_before.txt     # run from reports/
 ```
 
 ---

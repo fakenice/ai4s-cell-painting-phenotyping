@@ -83,6 +83,17 @@ Cellpose (cyto2) segmentation of the DNA channel.
      raw/BR00116991/  # 8-channel TIFFs (only needed for the Cellpose demo)
    ```
 
+   `data/` may sit **inside the checkout** (`<repo>/data`, as above) or **one level above it**
+   (`<workspace>/data` — the layout this project grew up in, and the one `reports/24` describes
+   for the gitignored `data/external/cpg0016/` tree). `scripts/_paths.py` prefers whichever of
+   the two exists, so no re-download is needed either way. To force a location, set an
+   environment variable instead of editing code:
+
+   ```bash
+   export AI4S_REPO=/absolute/path/to/github_repo       # the checkout with scripts/ + reports/
+   export AI4S_WORKSPACE=/absolute/path/that/holds/data # implies <that>/data unconditionally
+   ```
+
    > If a path component differs on the live bucket, list the parent prefix and
    > adjust: `aws s3 ls --no-sign-request s3://cellpainting-gallery/cpg0000-jump-pilot/source_4/`
 
@@ -103,8 +114,11 @@ Cellpose (cyto2) segmentation of the DNA channel.
    python 04_cellpose_demo.py   # optional; requires cellpose + torch
    ```
 
-   Scripts read/write relative to the repository root and will create
-   `reports/figures/` and result CSVs automatically.
+   Scripts resolve every path through `scripts/_paths.py`, which derives the repo, workspace and
+   `data/` roots from its own file location — so a script can be invoked from any working
+   directory, on any machine, and will create `reports/figures/` and result CSVs automatically.
+   The seven root-level scripts (`demo.py`, `01_…`–`06_…`) still carry their own absolute-path
+   derivation; see `reports/22` Stage 13 "Not done".
 
    Stage 5–6 extension scripts (structure-aware modeling, uncertainty-aware
    modeling, exploratory SIDER screen, in-house deep model, deep-embedding
@@ -121,7 +135,26 @@ Cellpose (cyto2) segmentation of the DNA channel.
    DMSO control images; the script contains the exact public S3 download
    instructions and will print them when the assets are absent.
 
-5. (Optional) Rebuild the **live run** demo video — it actually executes the
+5. Check the checkout. Two entry points, both read-only (they never write into `reports/`):
+
+   ```bash
+   python tests/test_stage12_units.py     # 21 unit tests, no data needed, no pytest needed
+   python scripts/check_repo.py           # 49 checks: paths, imports, citations, artifacts,
+                                          # committed numbers, docs claims, the test suite
+   python scripts/check_repo.py --deep    # 50: also re-hash the 17 external objects (SHA256)
+   ```
+
+   Both print one line per check with a `FAIL` reason and exit non-zero if anything fails, so
+   they are usable as a pre-commit gate. Measured on a **fresh clone with no `data/` yet** (a copy
+   of the tracked files placed one level above this repo's own `data/`): the test suite reports
+   `20/20 tests pass (1 skipped)` — the skip is the one assertion that needs the live inputs —
+   and `check_repo.py` reports `43/46`, the three failures being exactly the data-dependent ones
+   ("the resolved data tree exists", "pilot profile tables are present", "fetch manifest present"),
+   each naming the path it looked at. Nothing else changes: the path, citation, artifact, number,
+   PDF and test groups all pass without the inputs. With the data tree in place you should see
+   `21/21` and `49/49` (`50/50 --deep`).
+
+6. (Optional) Rebuild the **live run** demo video — it actually executes the
    stage scripts, runs a real Cellpose inference and renders charts from the
    result CSVs (no fictional footage; every frame comes from real execution):
 

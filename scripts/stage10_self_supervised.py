@@ -25,12 +25,16 @@ os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ.setdefault("HF_HOME", os.path.join(os.environ.get("TEMP", os.getcwd()), "hf_home"))
 
 
-BASE = r"E:\Desktop\Kaggle_2026\2026-10-10 AI4S Open Innovation：AI for Life Science"
-DATA = os.path.join(BASE, "data")
+# Paths come from scripts/_paths.py (derived from this file's location; override with
+# AI4S_REPO / AI4S_WORKSPACE), so the script runs from a checkout at any path.
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import _paths  # noqa: E402
+from _paths import BASE, REPO  # noqa: E402
+DATA = _paths.DATA                  # <repo>/data if present, else <workspace>/data
 RAW_TRT = os.path.join(DATA, "raw", "BR00116991")
 RAW_DMSO = os.path.join(DATA, "raw", "BR00116991_dmso")
 PROFILES_DIR = os.path.join(DATA, "profiles")
-REPO = r"E:\Desktop\Kaggle_2026\2026-10-10 AI4S Open Innovation：AI for Life Science\github_repo"
 FIG = os.path.join(REPO, "reports", "figures")
 os.makedirs(FIG, exist_ok=True)
 REPORTS = os.path.join(REPO, "reports")

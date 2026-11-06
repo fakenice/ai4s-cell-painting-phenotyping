@@ -8,11 +8,16 @@ import tifffile
 from torchvision import transforms
 from torchvision.models import resnet18, ResNet18_Weights
 
-BASE = r"E:\Desktop\Kaggle_2026\2026-10-10 AI4S Open Innovation：AI for Life Science"
-RAW92 = os.path.join(BASE, "data", "raw", "BR00116992")
-RAW91 = os.path.join(BASE, "data", "raw", "BR00116991")
-RAW91D = os.path.join(BASE, "data", "raw", "BR00116991_dmso")
-REPORTS = os.path.join(BASE, "github_repo", "reports")
+# Paths come from scripts/_paths.py (derived from this file's location; override with
+# AI4S_REPO / AI4S_WORKSPACE), so the script runs from a checkout at any path.
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import _paths  # noqa: E402
+from _paths import BASE, DATA, REPO  # noqa: E402
+RAW92 = os.path.join(DATA, "raw", "BR00116992")
+RAW91 = os.path.join(DATA, "raw", "BR00116991")
+RAW91D = os.path.join(DATA, "raw", "BR00116991_dmso")
+REPORTS = os.path.join(REPO, "reports")
 OUT_NPZ = os.path.join(REPORTS, "19_stage11_p2_embeddings.npz")
 
 SITE_WELL = {"r01c01": "A01", "r01c03": "A03", "r01c04": "A04",

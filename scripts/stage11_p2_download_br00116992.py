@@ -4,8 +4,13 @@ import os, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.request import urlopen, Request
 
-BASE = r"E:\Desktop\Kaggle_2026\2026-10-10 AI4S Open Innovation：AI for Life Science"
-OUT = os.path.join(BASE, "data", "raw", "BR00116992")
+# Paths come from scripts/_paths.py (derived from this file's location; override with
+# AI4S_REPO / AI4S_WORKSPACE), so the script runs from a checkout at any path.
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import _paths  # noqa: E402
+from _paths import BASE, DATA, REPO  # noqa: E402
+OUT = os.path.join(DATA, "raw", "BR00116992")
 os.makedirs(OUT, exist_ok=True)
 
 S3_PREFIX = ("https://cellpainting-gallery.s3.amazonaws.com/cpg0000-jump-pilot/source_4/images/"

@@ -80,12 +80,13 @@ from sklearn.preprocessing import StandardScaler, normalize
 warnings.filterwarnings("ignore", message=".*highly fragmented.*")
 
 RANDOM_STATE = 42
-# Repo root = the directory above this scripts/ folder, so the checkout works wherever it
-# lives; the workspace root (which holds data/, gitignored) is one level above that.
-# Override either with the environment variables AI4S_REPO / AI4S_WORKSPACE.
-REPO = os.environ.get("AI4S_REPO") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE = os.environ.get("AI4S_WORKSPACE") or os.path.dirname(REPO)
-DATA = os.path.join(BASE, "data")
+# Paths come from scripts/_paths.py (derived from this file's location; override with
+# AI4S_REPO / AI4S_WORKSPACE). data/ lives at the workspace root, one level above this repo.
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+import _paths  # noqa: E402
+from _paths import BASE, REPO  # noqa: E402
+DATA = _paths.DATA                  # <repo>/data if present, else <workspace>/data
 REPORTS = os.path.join(REPO, "reports")
 EXT = os.path.join(DATA, "external", "cpg0016")
 MANIFEST = os.path.join(EXT, "manifest_sha256.csv")
