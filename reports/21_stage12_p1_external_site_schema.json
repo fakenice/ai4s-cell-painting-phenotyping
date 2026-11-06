@@ -1,0 +1,123 @@
+{
+ "UL000109.parquet": {
+  "key": "cpg0016-jump/source_1/workspace/profiles/Batch1_20221004/UL000109/UL000109.parquet",
+  "rows": 1472,
+  "cols": 4765,
+  "row_groups": 1,
+  "prefix_counts": {
+   "Metadata": 3,
+   "Cells": 1256,
+   "Cytoplasm": 1241,
+   "Image": 1089,
+   "Nuclei": 1176
+  },
+  "metadata_cols": [
+   "Metadata_Source",
+   "Metadata_Plate",
+   "Metadata_Well"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 3673
+ },
+ "1053600674.parquet": {
+  "key": "cpg0016-jump/source_2/workspace/profiles/20210614_Batch_1/1053600674/1053600674.parquet",
+  "rows": 383,
+  "cols": 4765,
+  "row_groups": 1,
+  "prefix_counts": {
+   "Metadata": 3,
+   "Cells": 1256,
+   "Cytoplasm": 1241,
+   "Image": 1089,
+   "Nuclei": 1176
+  },
+  "metadata_cols": [
+   "Metadata_Source",
+   "Metadata_Plate",
+   "Metadata_Well"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 3673
+ },
+ "well.parquet": {
+  "key": "cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/well.parquet",
+  "rows": 1151808,
+  "cols": 4,
+  "row_groups": 10,
+  "prefix_counts": {
+   "Metadata": 4
+  },
+  "metadata_cols": [
+   "Metadata_Source",
+   "Metadata_Plate",
+   "Metadata_Well",
+   "Metadata_JCP2022"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 0
+ },
+ "compound.parquet": {
+  "key": "cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/compound.parquet",
+  "rows": 115796,
+  "cols": 4,
+  "row_groups": 1,
+  "prefix_counts": {
+   "Metadata": 4
+  },
+  "metadata_cols": [
+   "Metadata_JCP2022",
+   "Metadata_InChIKey",
+   "Metadata_InChI",
+   "Metadata_SMILES"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 0
+ },
+ "plate.parquet": {
+  "key": "cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/plate.parquet",
+  "rows": 2525,
+  "cols": 4,
+  "row_groups": 1,
+  "prefix_counts": {
+   "Metadata": 4
+  },
+  "metadata_cols": [
+   "Metadata_Source",
+   "Metadata_Batch",
+   "Metadata_Plate",
+   "Metadata_PlateType"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 0
+ },
+ "perturbation.parquet": {
+  "key": "cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/perturbation.parquet",
+  "rows": 138906,
+  "cols": 2,
+  "row_groups": 2,
+  "prefix_counts": {
+   "Metadata": 2
+  },
+  "metadata_cols": [
+   "Metadata_JCP2022",
+   "Metadata_perturbation_modality"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 0
+ },
+ "compound_source.parquet": {
+  "key": "cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/compound_source.parquet",
+  "rows": 126044,
+  "cols": 2,
+  "row_groups": 2,
+  "prefix_counts": {
+   "Metadata": 2
+  },
+  "metadata_cols": [
+   "Metadata_Compound_Source",
+   "Metadata_JCP2022"
+  ],
+  "url_cols": [],
+  "n_features_cells_nuclei_cyto": 0
+ }
+}

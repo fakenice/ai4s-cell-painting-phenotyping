@@ -6,6 +6,12 @@
 
 **Competition:** AI4S Open Innovation: AI for Life Science (Hackathon — Kaggle Writeup, technical report component)
 **Direction:** Single-cell phenotypic analysis (Cell Painting morphology)
+
+> **Archived draft — superseded by `12_technical_report_draft_v7.md`.** One statement in the Data
+> section is no longer accurate: the pilot compound plates do **not** carry "4 technical replicates
+> per compound". Measured 2026-11-06 against `source_4`: each treated compound occupies **1 well per
+> plate** (2 wells across the pair, which is the same 384-well array). Evidence and reproduction:
+> `reports/21_stage12_replicate_structure.csv`, `reports/24_cross_site_external_validation.md` §9.
 **Date:** 2026-10-01
 **Status:** Draft v6 — consolidates analyses 01–12 and v4/v5 enhancements (13–20); adds Stage 7 deep representation learning & transfer learning (Section 21: in-house MLP on 904-feature morphology, compound-grouped leak-free GroupKFold, ImageNet-pretrained ResNet18 embedding extraction), version-6 summary, and reproduction updates
 

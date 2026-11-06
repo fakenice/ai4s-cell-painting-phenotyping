@@ -1,0 +1,104 @@
+{
+ "plates": [
+  "1053600674",
+  "1053600681",
+  "1053600704",
+  "1053600711",
+  "1053600728",
+  "1053600735",
+  "1053600742",
+  "1053600759",
+  "1053600766",
+  "1053600773"
+ ],
+ "plates_used": [
+  "1053600674",
+  "1053600704",
+  "1053600711",
+  "1053600728",
+  "1053600735",
+  "1053600742",
+  "1053600759",
+  "1053600766",
+  "1053600773"
+ ],
+ "plates_skipped": [
+  {
+   "plate": "1053600681",
+   "n_dmso": 384,
+   "n_trt": 0
+  }
+ ],
+ "n_common_features": 601,
+ "ext_AP_prevalence_floor": 0.9065774155995343,
+ "pilot_trt": 260,
+ "pilot_dmso": 64,
+ "ext_trt": 3115,
+ "ext_dmso": 321,
+ "in_site_reference_cross_plate": {
+  "AUC": 0.6825120192307691,
+  "AP": 0.9106727827503514
+ },
+ "table": [
+  {
+   "scaling": "negcon_z",
+   "forward_AUC": 0.5695464114449729,
+   "forward_AP": 0.9349526417306939,
+   "reverse_AUC": 0.5624399038461538,
+   "reverse_AP": 0.838514836090434,
+   "coef_cosine": -0.0007279905836424093,
+   "coef_spearman": 0.02161978098517974,
+   "sign_agree_pilot_top50": 0.48,
+   "abs_p999_pilot": 37.71499946709033,
+   "abs_p999_external": 56.70973525979726,
+   "forward_AP_floor": 0.9065774155995343,
+   "forward_AP_lift_over_floor": 0.028375226131159614,
+   "ext_dmso_called_treated_rate": 0.411214953271028
+  },
+  {
+   "scaling": "rank",
+   "forward_AUC": 0.64355570223469,
+   "forward_AP": 0.9458659069592146,
+   "reverse_AUC": 0.5569110576923078,
+   "reverse_AP": 0.8503309007528345,
+   "coef_cosine": 0.0638879458543659,
+   "coef_spearman": 0.05974848121348142,
+   "sign_agree_pilot_top50": 0.54,
+   "abs_p999_pilot": 3.0109675670593745,
+   "abs_p999_external": 3.0109675670593745,
+   "forward_AP_floor": 0.9065774155995343,
+   "forward_AP_lift_over_floor": 0.039288491359680267,
+   "ext_dmso_called_treated_rate": 0.29595015576323985
+  },
+  {
+   "scaling": "zclip5",
+   "forward_AUC": 0.6010800918078036,
+   "forward_AP": 0.9395093072128529,
+   "reverse_AUC": 0.565625,
+   "reverse_AP": 0.8646103164727574,
+   "coef_cosine": -0.004435058653918721,
+   "coef_spearman": 0.0020240905246516057,
+   "sign_agree_pilot_top50": 0.46,
+   "abs_p999_pilot": 5.0,
+   "abs_p999_external": 5.0,
+   "forward_AP_floor": 0.9065774155995343,
+   "forward_AP_lift_over_floor": 0.032931891613318554,
+   "ext_dmso_called_treated_rate": 0.32710280373831774
+  },
+  {
+   "scaling": "posresid",
+   "forward_AUC": 0.5155288199496957,
+   "forward_AP": 0.917183248748543,
+   "reverse_AUC": 0.5991586538461537,
+   "reverse_AP": 0.8597740436181389,
+   "coef_cosine": 0.0419538471169154,
+   "coef_spearman": 0.03859387178622562,
+   "sign_agree_pilot_top50": 0.46,
+   "abs_p999_pilot": 32.74735441408714,
+   "abs_p999_external": 2295.6276901675046,
+   "forward_AP_floor": 0.9065774155995343,
+   "forward_AP_lift_over_floor": 0.010605833149008648,
+   "ext_dmso_called_treated_rate": 0.49221183800623053
+  }
+ ]
+}

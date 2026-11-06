@@ -1,0 +1,130 @@
+{
+ "experiment": "stage12 cross-site external validation",
+ "train": {
+  "dataset": "cpg0000-jump-pilot/source_4",
+  "plate": "BR00116991",
+  "n_trt": 260,
+  "n_dmso": 64
+ },
+ "test": {
+  "dataset": "cpg0016-jump/source_2",
+  "batch": "20210614_Batch_1",
+  "plates_used": 9,
+  "plates_requested": 10,
+  "n_trt": 3115,
+  "n_dmso": 321,
+  "n_unknown_identity_wells_dropped": 18
+ },
+ "features": {
+  "pilot_cells_cyto_nuclei": 904,
+  "common_with_external": 601
+ },
+ "cross_site_pooled": {
+  "AUC": 0.5155288199496957,
+  "AP": 0.917183248748543,
+  "AP_prevalence_floor": 0.9065774155995343,
+  "AP_lift_over_floor": 0.010605833149008648,
+  "AUC_plate_bootstrap_95CI": [
+   0.46007478773701066,
+   0.5670237537104118
+  ],
+  "AUC_plate_bootstrap_n": 2000,
+  "AUC_bootstrap_prob_above_0.5": 0.7465
+ },
+ "cross_site_pooled_by_vehicle_layout": {
+  "vehicle-in-fixed-columns": {
+   "n_plates": 8,
+   "AUC": 0.5531819806936003,
+   "AUC_plate_bootstrap_95CI": [
+    0.5350327450750919,
+    0.5740728873032618
+   ],
+   "AUC_plate_bootstrap_n": 2000,
+   "AUC_bootstrap_prob_above_0.5": 1.0
+  },
+  "vehicle-scattered": {
+   "n_plates": 1,
+   "AUC": 0.424770198355104
+  }
+ },
+ "cross_site_per_plate": {
+  "AUC_min": 0.424770198355104,
+  "AUC_median": 0.5610632183908048,
+  "AUC_max": 0.6062320402298851,
+  "AP_min": 0.8247963191170191,
+  "AP_median": 0.9366244161196384,
+  "AP_max": 0.9441121962205559
+ },
+ "within_site_per_plate": {
+  "AUC_median": 0.02142857142857143,
+  "AP_median": 0.778887299293061
+ },
+ "negative_control_shuffled_pilot_labels": {
+  "AUC": 0.4823449993249426,
+  "AP": 0.9051341331351279
+ },
+ "cross_site_same_compound_retrieval": [
+  {
+   "n_queries": 161,
+   "pair_AUC": 0.6086959500793843,
+   "median_rank": 91.0,
+   "recall_at_1": 0.012422360248447204,
+   "recall_at_5": 0.055900621118012424,
+   "recall_at_10": 0.08695652173913043,
+   "chance_recall_at_1_random_ranking": 0.0038461538461538464,
+   "chance_recall_at_10_random_ranking": 0.03780263973734521,
+   "plate": "1053600674",
+   "n_shared_compounds": 161
+  },
+  {
+   "n_queries": 5,
+   "pair_AUC": 0.7933590733590734,
+   "median_rank": 27.0,
+   "recall_at_1": 0.0,
+   "recall_at_5": 0.0,
+   "recall_at_10": 0.0,
+   "chance_recall_at_1_random_ranking": 0.0038461538461538464,
+   "chance_recall_at_10_random_ranking": 0.03780263973734521,
+   "plate": "1053600742",
+   "n_shared_compounds": 5
+  },
+  {
+   "n_queries": 5,
+   "pair_AUC": 0.9703474903474903,
+   "median_rank": 6.0,
+   "recall_at_1": 0.0,
+   "recall_at_5": 0.0,
+   "recall_at_10": 0.8,
+   "chance_recall_at_1_random_ranking": 0.0038461538461538464,
+   "chance_recall_at_10_random_ranking": 0.03780263973734521,
+   "plate": "1053600759",
+   "n_shared_compounds": 5
+  }
+ ],
+ "in_site_reference_cross_plate": {
+  "AUC": 0.6825120192307691,
+  "AP": 0.9106727827503514,
+  "source": "reports/20_stage11_p3_cross_plate_summary.json"
+ },
+ "in_site_reference_this_protocol": {
+  "AUC": 0.6718149038461538,
+  "AP": 0.8944330353840947,
+  "train": "pilot BR00116991",
+  "test": "pilot BR00116992",
+  "n_features": 601,
+  "scaling": "posresid"
+ },
+ "normalisation": "both sides: per-plate robust z against that plate's own DMSO wells (mode posresid). Note this is not something the pipeline had to enforce on the pilot side - its published table is already that transform, see pilot_pre_normalisation_check",
+ "pilot_pre_normalisation_check": {
+  "n_pilot_dmso_wells": 64,
+  "n_features_checked": 601,
+  "max_abs_dmso_median": 0.0,
+  "robust_scale_min": 0.999998874,
+  "robust_scale_max": 1.000006287,
+  "already_negcon_robust_z": true
+ },
+ "label_symmetry": "both sides define DMSO by InChIKey (IAZDPXIOMUYVGZ-UHFFFAOYSA-N); the external positives carry no poscon annotation, so the external negative class is pure vehicle",
+ "scaling_applied_identically_to_both_sides": "posresid",
+ "manifest_rows": 17,
+ "manifest_bytes": 159909495
+}

@@ -62,8 +62,8 @@ Importantly, we build on the official competition-recommended dataset: the **JUM
 
 ## Methods (summary)
 
-1. **Data:** JUMP-CP pilot `source_4`, compound plates `BR00116991` / `BR00116992` (303 unique compounds, 4 replicate wells each); CellProfiler normalized, feature-selected profiles (904 morphological features per well); public S3 `cellpainting-gallery` bucket (CC BY 4.0).
-2. **Compound fingerprints:** mean of replicate wells per compound (303 × 904).
+1. **Data:** JUMP-CP pilot `source_4`, compound plates `BR00116991` / `BR00116992` (303 unique compounds across the pair; one well per treated compound per plate, i.e. 2 technical wells per compound since the two plates are the same array); CellProfiler normalized, feature-selected profiles (904 morphological features per well); public S3 `cellpainting-gallery` bucket (CC BY 4.0).
+2. **Compound fingerprints:** mean of the two wells carrying each compound (one per plate) → 303 × 904.
 3. **Unsupervised structure:** UMAP (n_neighbors = 15, min_dist = 0.1) + KMeans (k = 12, n_init = 10, silhouette = 0.166); refined clustering for enrichment.
 4. **Classification baseline:** XGBoost with 5-fold stratified cross-validation on well-level features; tasks: treated vs DMSO (648 wells) and treated vs all controls (768 wells). Random state fixed at 42.
 5. **Evaluation protocol:** soft scaffold-grouped CV (τ = 0.6) as the default generalization estimate; well-level CV demoted to an in-fold sanity check; trt-vs-DMSO AUC 1.000 labeled a structural control.

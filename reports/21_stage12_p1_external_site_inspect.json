@@ -1,0 +1,29 @@
+{
+ "columns_sample": [
+  "URL_OrigBrightfield_L",
+  "URL_OrigBrightfield_H",
+  "URL_OrigBrightfield",
+  "URL_OrigRNA",
+  "URL_OrigMito",
+  "URL_OrigER",
+  "URL_OrigDNA",
+  "URL_OrigAGP",
+  "Metadata_Source",
+  "Metadata_Batch",
+  "Metadata_Plate",
+  "Metadata_Well",
+  "Metadata_Site"
+ ],
+ "n_cols": 13,
+ "meta_cols": [
+  "Metadata_Source",
+  "Metadata_Batch",
+  "Metadata_Plate",
+  "Metadata_Well",
+  "Metadata_Site"
+ ],
+ "prefixes": [
+  "Metadata",
+  "URL"
+ ]
+}

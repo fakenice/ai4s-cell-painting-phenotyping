@@ -1,0 +1,157 @@
+{
+ "scaling": "zclip5",
+ "rows": [
+  {
+   "pilot_train": "1 plate",
+   "pilot_compounds": 32,
+   "pilot_wells_used": 96,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.6198534875464414,
+   "cross_site_AUC_sd": 0.013676204640400763,
+   "in_site_plate2_AUC_mean": 0.6922956730769231,
+   "in_site_plate2_AUC_sd": 0.028922410223686194,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  },
+  {
+   "pilot_train": "1 plate",
+   "pilot_compounds": 65,
+   "pilot_wells_used": 129,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.6148128590930229,
+   "cross_site_AUC_sd": 0.035981152041695164,
+   "in_site_plate2_AUC_mean": 0.6917187499999999,
+   "in_site_plate2_AUC_sd": 0.022049553200014445,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  },
+  {
+   "pilot_train": "1 plate",
+   "pilot_compounds": 130,
+   "pilot_wells_used": 194,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.6124586589860138,
+   "cross_site_AUC_sd": 0.00916711877113828,
+   "in_site_plate2_AUC_mean": 0.7202764423076923,
+   "in_site_plate2_AUC_sd": 0.012098154338062198,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  },
+  {
+   "pilot_train": "1 plate",
+   "pilot_compounds": 260,
+   "pilot_wells_used": 324,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.6010800918078036,
+   "cross_site_AUC_sd": 0.0,
+   "in_site_plate2_AUC_mean": 0.6932091346153847,
+   "in_site_plate2_AUC_sd": 0.0,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  },
+  {
+   "pilot_train": "2 plates",
+   "pilot_compounds": 130,
+   "pilot_wells_used": 388,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.5810951930914128,
+   "cross_site_AUC_sd": 0.04547961697355259,
+   "in_site_plate2_AUC_mean": null,
+   "in_site_plate2_AUC_sd": null,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  },
+  {
+   "pilot_train": "2 plates",
+   "pilot_compounds": 260,
+   "pilot_wells_used": 648,
+   "scaling": "zclip5",
+   "cross_site_AUC_mean": 0.5869138876804529,
+   "cross_site_AUC_sd": 0.0,
+   "in_site_plate2_AUC_mean": null,
+   "in_site_plate2_AUC_sd": null,
+   "n_reps": 5,
+   "in_site_reference": 0.6825120192307691
+  }
+ ],
+ "paired_contrasts": {
+  "1 plate": {
+   "fewer_compounds": 32,
+   "more_compounds": 260,
+   "per_plate_AUC_fewer": [
+    0.6529946782776973,
+    0.5742499999999999,
+    0.6335826210826211,
+    0.6184087643678161,
+    0.6712142857142858,
+    0.5804058908045977,
+    0.6459694602272726,
+    0.6084949712643678,
+    0.6090178571428572
+   ],
+   "per_plate_AUC_more": [
+    0.5085631349782294,
+    0.6141964285714285,
+    0.5900997150997151,
+    0.6377514367816093,
+    0.6023214285714286,
+    0.5516343390804598,
+    0.7249644886363638,
+    0.6096443965517242,
+    0.6141964285714285
+   ],
+   "mean_AUC_gain_from_fewer": 0.015662970226569817,
+   "gain_95CI": [
+    -0.02202879850433737,
+    0.058257244019991335
+   ],
+   "wilcoxon_p_fewer_gt_more": 0.3671875,
+   "n_plates": 9
+  },
+  "2 plates": {
+   "fewer_compounds": 130,
+   "more_compounds": 260,
+   "per_plate_AUC_fewer": [
+    0.5878084179970972,
+    0.5701428571428572,
+    0.5721153846153846,
+    0.5560704022988505,
+    0.5851607142857143,
+    0.5434267241379309,
+    0.677432528409091,
+    0.6023168103448275,
+    0.5440357142857143
+   ],
+   "per_plate_AUC_more": [
+    0.6083212385099176,
+    0.558125,
+    0.5855591168091168,
+    0.6038972701149425,
+    0.5615178571428572,
+    0.5745330459770115,
+    0.6697443181818181,
+    0.6162895114942528,
+    0.5332142857142856
+   ],
+   "mean_AUC_gain_from_fewer": -0.00807689893630386,
+   "gain_95CI": [
+    -0.02297642006934991,
+    0.006376818236036865
+   ],
+   "wilcoxon_p_fewer_gt_more": 0.875,
+   "n_plates": 9
+  }
+ },
+ "external_plate_ids": [
+  "1053600674",
+  "1053600704",
+  "1053600711",
+  "1053600728",
+  "1053600735",
+  "1053600742",
+  "1053600759",
+  "1053600766",
+  "1053600773"
+ ],
+ "external_AP_prevalence_floor": 0.9065774155995343
+}

@@ -1,0 +1,434 @@
+{
+ "totals": {
+  "cross-site pair": {
+   "n_pairs": 18,
+   "shared_compounds": 338,
+   "same_coordinate": 0,
+   "same_coordinate_fraction": 0.0,
+   "shared_per_pair_min": 1,
+   "shared_per_pair_max": 159
+  },
+  "external pair (both plates scored)": {
+   "n_pairs": 36,
+   "shared_compounds": 291,
+   "same_coordinate": 224,
+   "same_coordinate_fraction": 0.7697594501718213,
+   "shared_per_pair_min": 8,
+   "shared_per_pair_max": 10
+  },
+  "pilot pair": {
+   "n_pairs": 1,
+   "shared_compounds": 260,
+   "same_coordinate": 260,
+   "same_coordinate_fraction": 1.0,
+   "shared_per_pair_min": 260,
+   "shared_per_pair_max": 260
+  },
+  "coordinate_overlap_cells": {
+   "external pair (both plates scored)": {
+    "wells_a=1,wells_b=4,shared_wells=0": 40,
+    "wells_a=2,wells_b=4,shared_wells=0": 24,
+    "wells_a=1,wells_b=1,shared_wells=0": 3,
+    "wells_a=4,wells_b=4,shared_wells=4": 224
+   },
+   "cross-site pair": {
+    "wells_a=2,wells_b=1,shared_wells=0": 4,
+    "wells_a=1,wells_b=1,shared_wells=0": 318,
+    "wells_a=4,wells_b=1,shared_wells=0": 16
+   },
+   "pilot pair": {
+    "wells_a=1,wells_b=1,shared_wells=1": 260
+   }
+  },
+  "counting": "one well per compound per plate (the compound's first well in file order)",
+  "pilot_note": "the two pilot plates share every treated compound at an identical coordinate, which is why the pilot has no position-decoupled retrieval arm",
+  "external_note": "within a plate only a minority of compounds are replicated: 8 of the ~326 distinct InChIKeys occupy 4 wells, the rest 1 well (plate 1053600674: 19 of 299 in 2 wells)"
+ },
+ "per_pair": [
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600704",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600711",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600728",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600735",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600742",
+   "n_shared_compounds": 10,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 9,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600674",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600674",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 159,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600674",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 159,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600711",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600728",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600735",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600742",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600704",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600704",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600704",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600728",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600735",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600742",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600711",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600711",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600711",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600728",
+   "plate_b": "1053600735",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600728",
+   "plate_b": "1053600742",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600728",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600728",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600728",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600728",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600728",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600735",
+   "plate_b": "1053600742",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600735",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600735",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600735",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600735",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600735",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600742",
+   "plate_b": "1053600759",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600742",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600742",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600742",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 2,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600742",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 2,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600759",
+   "plate_b": "1053600766",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600759",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600759",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 2,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600759",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 2,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "external pair (both plates scored)",
+   "plate_a": "1053600766",
+   "plate_b": "1053600773",
+   "n_shared_compounds": 8,
+   "n_same_coordinate": 8
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600766",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600766",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600773",
+   "plate_b": "BR00116991",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "cross-site pair",
+   "plate_a": "1053600773",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 1,
+   "n_same_coordinate": 0
+  },
+  {
+   "scope": "pilot pair",
+   "plate_a": "BR00116991",
+   "plate_b": "BR00116992",
+   "n_shared_compounds": 260,
+   "n_same_coordinate": 260
+  }
+ ]
+}

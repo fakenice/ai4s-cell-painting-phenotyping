@@ -382,6 +382,25 @@ zero new downloads); P4 tests model-side upgrades on the P2 harder task
 | P4-A Boost protocol parity | P2-identical 21 pairs, LOOCV LR AUC, fold-internal fitting; M0 reproduces **0.7619** exactly | report v7 §27.1 |
 | P4-B Model-side upgrades | M1 bagging **0.7619** (tie); M2 k=50/100/200 0.7262/0.7619/0.7500; M3 XGB+LR **0.5714** (−0.19); M4 comb **0.4762** (−0.29); M5 904+deep **0.5952** (−0.17) — honest negative: no upgrade beats baseline | report v7 §27.2, `20_stage11_p4_trt_trt_boost_results.csv` |
 
+## Stage 12 — Cross-site external validation (`cpg0016-jump`, 2026-11-06)
+
+Question: does the committed treated-vs-DMSO boundary survive a **site** change — train on the
+`cpg0000-jump-pilot` plate, test on another lab's `cpg0016-jump/source_2` plates? Reported as
+measured, positive and negative alike:
+
+| Layer | Verdict | Evidence |
+|---|---|---|
+| Data | 完成 | 17 objects ≤ 200 MB cap, SHA256 manifest written before modelling (`data/external/cpg0016/manifest_sha256.csv`, 159,909,495 B, all `ok`); 10 plates, 9 usable (`1053600681` = 384 DMSO / 0 treated, excluded by rule) |
+| Replication of trt-vs-DMSO | **未通过** | plate-level-bootstrap AUC 0.5695 / 0.6436 / 0.6011 / 0.5155 (`negcon_z` / `rank` / `zclip5` / `posresid`) vs in-site 0.7100 / 0.6947 / 0.6932 / 0.6718 and committed 0.6825; AP lift +0.011…+0.039 over the 0.9066 prevalence floor; shuffled-label control 0.458–0.492 |
+| Confound | 完成 (measured) | 8/9 plates put every vehicle well in columns 02/23 → position-only CV AUC 1.0000, layout-permutation p 0.0000; on the one layout-clean plate cross-site AUCs are 0.5041/0.5543/0.5086/0.4248 while *within*-plate 5-fold is 0.7301 |
+| Committed claim | 需要限定 | coordinate-only in-site transfer AUC **0.7450** > committed 0.6825; the two pilot plates are the same array (384/384 compound + 64/64 vehicle positions) → 0.6825 is not layout-held-out |
+| Retrieval (positive) | 通过 | strict `decoupled-only` arm R@1 **0.5971 [0.5488, 0.6403]**, R@10 0.700, median rank 1, n = 350 / 16 plate pairs, applicable null 0.0061 (~98×); broad decoupled 0.4514 (n = 2,142), matched 0.3689; paired +0.0541, Wilcoxon p 0.0057 |
+| Train-size question | 未定 | sign flips with the normalisation arm (+0.0306 `negcon_z` p 0.150; −0.0552 `rank` p 0.973; +0.0157 `zclip5` p 0.367) — unresolved, not reported as a negative |
+
+Full write-up: `reports/24_cross_site_external_validation.md`; engine `scripts/stage12_external_site.py`;
+manuscript §4.7 + the §2.1/§3.1 replicate-layout correction; `reports/22_optimization_log.md` keeps the
+stage ledger.
+
 ## AI Use Disclosure
 
 This project was developed with the assistance of AI-based tools in the following capacities:

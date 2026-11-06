@@ -138,7 +138,9 @@ Cellpose (cyto2) segmentation of the DNA channel.
 - **Primary imaging data:** JUMP-CP pilot dataset (`cpg0000-jump-pilot`, `source_4`)
   from the public `cellpainting-gallery` S3 bucket (no authentication required).
   We used the four plates of this source: two compound plates (`BR00116991`,
-  `BR00116992`, 303 unique compounds, 4 replicates each) and two ORF/CRISPR plates
+  `BR00116992`, 303 unique compounds across the pair, one well per treated
+  compound per plate — so 2 technical wells per compound, the two plates being
+  the same array) and two ORF/CRISPR plates
   (excluded from chemical analysis).
 - **Compound metadata:** names, target genes, SMILES, barcode–platemap mapping
   (JUMP-Target-1 compound metadata, `data/metadata/`).
@@ -172,6 +174,21 @@ the technical report (`reports/12_technical_report_draft_v7.md`, §22–§24).
   from every compound (mean ECFP4 distance 0.9683); that run is reported as a
   structural control, not a phenotype result. Top morphology features are
   cytoplasmic intensity MAD, nuclear Zernike and AGP texture.
+- **Cross-site external validation (`cpg0016-jump`, independent lab + derivation batch):**
+  the treated-vs-DMSO model was re-trained on the pilot and tested on 9 external JUMP plates
+  (`data/external/cpg0016` at the workspace root, above this repo; SHA256-manifested, 159.9 MB). **Result: not reproduced.** Pooled
+  cross-site AUC is 0.5155–0.6436 across four normalisation arms, but 8 of the 9 plates place
+  every vehicle well in two fixed columns (position-only CV AUC 1.0000, permutation
+  p = 0.0000), so their above-chance scores are a column readout; the single plate with a
+  pilot-like layout scores 0.4248–0.5543. Measured in the same pass: the pilot's two plates are
+  the same array (384/384 identical compound), and a coordinate-only model transfers between
+  them at AUC 0.7450 — so the in-site 0.6825 is **not** layout-held-out. Transfer that does not
+  depend on position survives: on external plate pairs where a compound has **no** well at the
+  query's own coordinate — so a layout readout is impossible — same-compound retrieval still gives
+  R@1 0.5971 [0.5488, 0.6403] (n = 350 queries, 16 plate pairs, applicable null 0.0061, ~98×);
+  the broader different-coordinate arm gives R@1 0.4514 / R@10 0.8445 (n = 2,142) and is
+  **higher** than the position-matched arm (paired +0.0541, one-sided p = 0.0057). Full
+  evidence and reproduction commands: `reports/24_cross_site_external_validation.md`.
 - **Target enrichment:** **36 significant cluster–target pairs** at BH-adjusted
   p < 0.05, dominated by a microtubule module (cluster 13, 15 tubulin genes),
   HSP90 (cluster 1), and CDK/Aurora cell-cycle kinases (cluster 4) — recovering

@@ -4,6 +4,10 @@
 **Direction:** Single-cell phenotypic analysis (Cell Painting morphology)
 **Date:** 2026-10-07
 **Status:** Draft v7 (restructured, streamlined to 15–20 pages)
+**Revision:** 2026-11-06 — cross-site external validation on `cpg0016-jump` added as §4.7 and
+reflected in the Abstract, §2.1, §3.1, §5.1, §5.3, §6.1 and §8; the "4 technical replicates"
+wording in §2.1/§3.1 corrected against the measured well layout. Full evidence:
+`reports/24_cross_site_external_validation.md`.
 
 ## Category Declaration
 
@@ -54,7 +58,9 @@ AUC across soft/hard scaffold and cluster definitions. This protocol prevents
 memorizing scaffolds while estimating new-structure generalization.
 
 **Main results.** (i) Treated-vs-DMSO morphology classification: AUC 0.768, with
-positive cross-plate transfer to BR00116992 (strict AUC 0.6825, AP 0.9107);
+positive cross-plate transfer to BR00116992 (strict AUC 0.6825, AP 0.9107) — but that
+cross-plate contrast is **not layout-held-out**: the pilot's two plates are the same array,
+and a coordinate-only model transfers between them at AUC 0.7450 (§4.7);
 (ii) prototype-based compound discrimination reaches mean AUC 0.985 / sign
 accuracy 0.927 across the full cross-plate pair grid, with per-plate z-score
 and mean-centering controls confirming the signal; (iii) same-compound
@@ -75,6 +81,21 @@ negative or inconclusive on the small image subset. MOA cluster enrichment and
 SIDER side-effect associations show no significant signal. All negative results
 are reported honestly and detailed in the Appendix; repository scripts and data
 for the full analyses are retained.
+
+**External validation (§4.7).** The treated-vs-DMSO model was re-trained on the pilot and
+tested on nine independent JUMP plates from another lab, batch, and Cell Painting Gallery
+source (`cpg0016-jump/source_2`; 159.9 MB, SHA256-manifested before modelling). The
+classification replication is **not reproduced**: pooled cross-site AUC is 0.5155–0.6436 over
+four normalisation arms that treat both sides identically, but eight of the nine plates place
+every vehicle well in two fixed columns (position-only CV AUC 1.0000, permutation
+p = 0.0000), so those scores are a column readout rather than transfer evidence, and the one
+plate with a pilot-compatible layout scores 0.4248–0.5543. The feature-importance direction
+does not carry either (cross-site coefficient cosine |r| ≤ 0.064). What does transfer is
+identity retrieval with position decoupled: at the external site, on the queries whose compound
+has **no well at the query's own coordinate at all** the match is still retrieved at R@1 0.5971
+[0.5488, 0.6403] (n = 350; ~98× the null that applies when several replicate wells count as
+correct), and the broader different-coordinate arm reaches R@1 0.4514 / R@10 0.8445 (n = 2,142) —
+**higher** than the position-matched arm (paired +0.0541, one-sided Wilcoxon p = 0.0057).
 
 ## Table of Contents
 
@@ -130,7 +151,7 @@ controls.
 
 ### 1.2 Research questions
 
-The report is organized around four questions:
+The report is organized around five questions:
 
 1. **Task definition and sensitivity floor** — Can a standard classifier
    separate compound-treated wells from DMSO controls, and why is this task
@@ -138,18 +159,27 @@ The report is organized around four questions:
 2. **Evaluation protocol** — What protocol gives an honest estimate of
    generalization to new chemical scaffolds (soft scaffold-grouped CV)?
 3. **Main results** — Do morphology-based models generalize across plates
-   (AUC 0.6825), discriminate compounds by prototype (mean AUC 0.985), retrieve
+   (AUC 0.6825; §4.7 shows this particular contrast is **not** layout-held-out),
+   discriminate compounds by prototype (mean AUC 0.985), retrieve
    replicate wells (AP 6.1× chance), and recover known target biology
    (36 enrichments, AUROC 0.5611)?
 4. **Exploration and boundaries** — Which exploratory directions (self-supervised
    embeddings, Harmony, single-cell CNN, model-side upgrades, MOA/toxicity
    association) fail or remain inconclusive, and what are the dataset's honest
    limits?
+5. **External validity** — Does the treated-vs-vehicle boundary survive when the test
+   plates come from another lab, another derivation batch, and another Cell Painting
+   Gallery source, and which of the in-site conclusions survive removal of well position
+   (§4.7; classification transfer: **not reproduced**; position-decoupled identity
+   retrieval: **reproduced**)?
 
 ### 1.3 Scope and contribution
 
-This project is scoped to a single JUMP-CP source (`source_4`, four plates)
-because the hackathon timeline favors rapid iteration over exhaustive scale.
+This project is scoped to a single JUMP-CP source (`source_4`, four plates) for model
+development, because the hackathon timeline favors rapid iteration over exhaustive scale;
+one additional public source (`cpg0016-jump/source_2`) is used **for testing only** in the
+external-validation analysis (§4.7), with no external data entering any training fit that is
+quoted elsewhere in this report.
 Within this scope we deliver: (i) an end-to-end, versioned, publicly available
 code repository; (ii) a 42-second demo video; and (iii) this technical report.
 The scientific contribution is a validation that (a) standard ML tools recover
@@ -168,20 +198,42 @@ We used the **JUMP-CP pilot dataset** (`cpg0000-jump-pilot`, `source_4`) from th
 public `cellpainting-gallery` S3 bucket (no authentication required; see
 Section 11 for license). From the full plate set we retained the **four plates of
 this source**: 1,536 wells in total. Two plates (`BR00116991`, `BR00116992`) are
-compound plates (384 wells each, **303 unique compounds**, 4 technical replicates
-per compound); the other two (`BR00117001`, `BR00117002`) are ORF/CRISPR
-perturbation plates without drug names and were **excluded** from
+compound plates (384 wells each, **303 unique compounds** across the pair —
+distinct `Metadata_pert_iname`); the other two (`BR00117001`, `BR00117002`) are
+ORF/CRISPR perturbation plates without drug names and were **excluded** from
 chemical-phenotype analysis.
 
-Well composition of the analyzed compound plates: 1,040 treated wells, 488
-control wells, of which 128 are DMSO negative controls and 240 are positive
-controls (known-mechanism compounds).
+Within a compound plate the layout is **one well per treated compound**, not a
+replicate block: `BR00116991` = 260 treated wells at 260 distinct InChIKeys
+(each appearing once) + 64 DMSO wells + 60 positive-control wells over 46 keys
+(14 keys appear twice within the plate); `BR00116992` has the identical
+384-well composition, and the two plates are the same array (§4.7), so a treated
+compound has 2 technical wells in the analysed set. (Earlier drafts of this
+report said "4 technical replicates per compound"; that description does not
+match the loaded profiles and was corrected here — the 303 count and every
+downstream number derived from it are unchanged.)
+
+Well composition of all four plates of this source (1,536 rows, `pert_type`
+from the profile tables): 1,040 treated wells and 488 control wells, of which
+128 carry the DMSO InChIKey (both compound plates) and 240 are positive
+controls (known-mechanism compounds); the remaining 120 negative controls are
+ORF/CRISPR-plate wells with no compound identity assigned.
 
 Raw 8-channel images are used for a focused deep-representation arm: 6 imaged
 wells of BR00116991 (3 treated / 3 DMSO, 12 sites) plus 18 treated wells of
 BR00116992 (144 TIFFs) downloaded from the public AWS bucket (CC BY 4.0),
 totaling **24 imaged wells / 30 sites** (Table 1). Coverage is still partial:
 624 of the 648 full-scope wells (260 treated) remain without images.
+
+**Independent test source (external validation, §4.7 only).** For the cross-site
+experiment we additionally downloaded `cpg0016-jump`, `source_2`, batch
+`20210614_Batch_1` from the same public bucket: 10 plates, ~384 wells each, 3,673
+precomputed feature columns, joined to compound identity through
+`well → Metadata_JCP2022 → compound.parquet → Metadata_InChIKey`. This data was
+downloaded to `data/external/cpg0016/` (at the workspace root, one level above this repo, and
+gitignored) with a SHA256 manifest written **before**
+modelling (17 objects, 159,909,495 bytes, all verified). It is used only as a test
+set; no external well enters any training fit quoted elsewhere in this report.
 
 | Quantity | BR00116991 | BR00116992 | Total |
 |---|---|---|---|
@@ -243,9 +295,12 @@ were used.
 ### 3.1 Preprocessing and compound fingerprints
 
 Normalized negative-control-batch profiles were used as provided. Well-level
-profiles were averaged over the 4 technical replicates to obtain
+profiles were averaged over the replicate wells of each compound to obtain
 compound-level fingerprints (303 compounds × 904 features), matching the
-standard JUMP-CP analysis convention. Well-level probabilities were retained
+standard JUMP-CP analysis convention. The replicate count is 2, not 4, in this
+dataset as loaded: each compound plate carries one well per compound (§2.1), and
+the two compound plates are the same array, so a treated compound contributes 2
+wells. Well-level probabilities were retained
 for the classification arm.
 
 **Role of structural fingerprints (ECFP4).** Throughout this report, the ECFP4
@@ -514,15 +569,40 @@ i.e., cross-structure generalization depends on scaffold information
 **Cross-plate treated-vs-DMSO.** A logistic-regression classifier trained on all
 260 treated wells of plate 1 is evaluated on the 260 treated wells of plate 2.
 Cross-plate performance matches or exceeds the same-plate baselines (Table 5):
-the treated-vs-control boundary is **not plate-specific**.
+the treated-vs-control boundary is **not plate-specific** — read together with the
+layout caveat below Table 5, which applies to every number in this subsection.
 
 | Control definition | Cross-plate AUC / AP (plate 1 train → plate 2 test) | Within plate 1 5-fold AUC / AP | Within plate 2 5-fold AUC / AP |
 |---|---|---|---|
 | strict DMSO (64 wells) | **0.6825 / 0.9107** | 0.6794 / 0.9080 | 0.6892 / 0.9074 |
 | broad control (124 wells) | **0.6404 / 0.7933** | 0.6163 / 0.7714 | 0.5563 / 0.7269 |
+| **control: well position only, no morphology** (row + column dummies, §4.7) | **0.7450 / —** | 0.5361 (5-fold CV, plate 1) | 0.5361 (5-fold CV, plate 2) |
 
 *Table 5: cross-plate trt-vs-DMSO is at parity with (strict) or above (broad)
-the same-plate baselines.*
+the same-plate baselines — but the last row shows that a coordinate-only model
+matches or beats the morphology model, because the two pilot plates are the same array.*
+
+**Layout caveat on Table 5 (measured in §4.7).** The two pilot plates are the *same
+array*: 384/384 wells carry the identical compound in both plates and the 64 vehicle
+wells occupy an identical set of 64 coordinates. The contrast above therefore does
+not hold well position out. A model given only the well barcode (row + column
+dummies, no morphology at all) transfers from plate 1 to plate 2 at **AUC 0.7450** —
+above the 0.6825 strict figure and above the 0.6718–0.7100 range that the same
+protocol spans across normalisation arms. What is *not* withdrawn: within the pilot,
+position alone is a weak predictor (position-only CV AUC 0.5361, layout permutation
+p = 0.979, vehicle spread over 22 columns), and after row-and-column residualisation
+the morphology model still reaches 0.6718 in site. So non-positional morphological
+signal exists; what the 0.6825 can no longer carry is the claim that it was measured
+with the layout held out.
+
+*Why the two position columns in Table 5 differ (0.5361 within plate, 0.7450 across
+plates):* each pilot compound occupies exactly **one** well per plate, so a within-plate
+cross-validation never sees the test well's coordinate and can only use additive row and
+column marginal effects — hence near-chance. Across plates the identical coordinate recurs
+with the identical label, so the same additive layout code learned on plate 1 applies to
+plate 2 and carries real label information. That asymmetry is precisely what makes the
+cross-plate arm a layout test as much as a phenotype test, and it is not observable from
+the within-plate columns alone.
 
 **Cross-plate compound identity and prototype discrimination.**
 
@@ -661,6 +741,121 @@ generalization is modest (AUC ≈ 0.52), cross-plate identity top-k is
 intermediate (0.331), and no method tested here beats the treated-vs-treated LR
 baseline. All negative results are reported with their mechanistic
 interpretation; repository scripts and data for the full analyses are retained.
+The boundary is now drawn one step further out: the treated-vs-vehicle result does
+**not** replicate on an independent site's plates, and part of the in-site
+cross-plate number is attributable to well position rather than phenotype (§4.7).
+
+### 4.7 External validation on an independent site, and the contribution of well position
+
+This section tests the committed control-separation claim outside the source it was
+measured on, and it measures (rather than assumes) how much of any plate-to-plate
+contrast is available from the well coordinate alone. Full tables, per-plate numbers,
+sensitivity arms and reproduction commands: `reports/24_cross_site_external_validation.md`;
+engine: `scripts/stage12_external_site.py`.
+
+**Design.** Train on the pilot's `BR00116991` (260 treated / 64 DMSO), test on 9 usable
+compound plates of `cpg0016-jump/source_2`, batch `20210614_Batch_1` (3,115 treated /
+321 DMSO; the 10th plate, `1053600681`, is that batch's vehicle plate — 384 DMSO, 0
+treated — and is excluded). Labels are defined by the same rule on both sides
+(DMSO = InChIKey `IAZDPXIOMUYVGZ-UHFFFAOYSA-N`; the external side has no positive-control
+annotation, so its negative class is pure vehicle). The feature intersection is
+**601 of the pilot's 904** morphological features. Four normalisation arms
+(`negcon_z`, `rank`, `zclip5`, and `posresid`, a two-way row+column residualisation) are
+applied **identically to both sides**; 18 `JCP2022_UNKNOWN` wells are dropped and re-added
+as treated in a sensitivity arm (max ΔAUC 0.0039). Intervals come from a 2,000-resample
+**plate-level** bootstrap, because wells inside a plate are not independent, and AP is
+reported as lift over the prevalence floor 0.9066 (DMSO is 9.3 % of the pooled class mass).
+
+**Result 1 — classification transfer is not reproduced.**
+
+| Arm | Cross-site AUC (plate bootstrap 95 % CI) | AP lift | Negative control (shuffled pilot labels) | In-site, same protocol |
+|---|---|---|---|---|
+| `negcon_z` | 0.5695 [0.539, 0.600] | +0.0284 | 0.4923 | 0.7100 |
+| `rank` | 0.6436 [0.601, 0.701] | +0.0393 | 0.4581 | 0.6947 |
+| `zclip5` | 0.6011 [0.565, 0.640] | +0.0329 | 0.4823 | 0.6932 |
+| `posresid` (layout stripped) | 0.5155 [0.460, 0.567] | +0.0106 | 0.4823 | 0.6718 |
+
+**Result 2 — the reason: on 8 of 9 external plates the label *is* the column.** The
+vehicle wells of those eight plates sit exclusively in columns 02 and 23 (max share of
+vehicle in one column 0.500, permutation p = 0.0000 over 2,000 layouts), and a
+position-only classifier — well row and column dummies, no morphology — separates treated
+from vehicle there at **CV AUC 1.0000**. Their cross-site AUCs (0.50–0.81 per plate)
+are therefore not readable as morphology transfer. The pilot scatters its 64 vehicle wells
+over 22 columns (position-only CV AUC 0.5361). One external plate follows the pilot
+convention, and it is the plate where the replication actually fails:
+
+| Plate | Vehicle columns | Position-only CV AUC | Cross-site AUC, `negcon_z` / `rank` / `zclip5` / `posresid` | Within-plate 5-fold AUC (`negcon_z`) |
+|---|---|---|---|---|
+| `1053600674` (pilot-like layout) | all 24 | 0.3556 | 0.5041 / 0.5543 / 0.5086 / 0.4248 | 0.7301 |
+| 8 compound plates | 02 and 23 | 1.0000 | 0.5837 / 0.6660 / 0.6173 / 0.5532 (pooled) | 0.796–0.933 |
+
+Their per-plate cross-site AUCs span 0.501–0.810 for the eight column-vehicle plates and
+0.425–0.554 for the layout-clean plate.
+
+Two further measurements corroborate a genuine site change rather than a scoring
+artefact: coefficient vectors of the two sites' models are essentially uncorrelated
+(cosine −0.0007 / +0.064 / −0.004 / +0.042; sign agreement on the pilot's 50 strongest
+features 0.46–0.54), and the pilot-trained model calls **30–49 %** of the external vehicle
+wells "treated". A coordinate model trained on pilot plate 1 scores 0.414–0.421 on the
+external compound plates — the two sites' layouts are not just different, they are
+anti-aligned.
+
+**Result 3 — what survives removal of position is identity retrieval.** The external
+site gives this test and the pilot cannot. The compound layout that makes it possible was
+measured, not assumed (`21_stage12_replicate_structure.csv`,
+`21_stage12_replicate_sharing.json`); it is narrower than a "replicated library" suggests:
+
+- Within a plate, `cpg0016-jump` replicates only a handful of compounds: each of the eight
+  column-vehicle plates puts **8 of its ~324–328 distinct InChIKeys in 4 wells** and the
+  remaining ~316–320 in a single well; plate 1053600674 has 19 of 299 in 2 wells and 280 in 1.
+- Between plates, a pair shares only **8–10 compounds** (36 usable pairs, 291
+  compound × pair cells). Of those cells, 224 are "4 wells here, the same 4 coordinates
+  there", 40 are "1 well here, 4 different coordinates there", 24 are "2 wells here
+  (plate 1053600674), 4 different coordinates there", and 3 are single-well pairs at
+  different coordinates. So *most* recurrence is layout-repeating, and the useful case is
+  the 67 cells where no coordinate overlaps at all.
+- The pilot offers neither route: its 260 treated wells are 260 distinct InChIKeys (one well
+  per compound per plate), the two plates are the same array, and 100 % of its cross-plate
+  retrieval positives are therefore same-coordinate wells.
+
+Three arms follow from the coordinate relation between query well and true match. A query can
+belong to the first two at once (a 4-well compound offers both a same-coordinate and
+different-coordinate matches), which is why the strict arm is defined as "no same-coordinate
+match exists".
+
+| Arm | Plate pairs | Queries | R@1 | R@10 | Chance R@1 (single match / any accepted replicate) |
+|---|---|---|---|---|---|
+| External, **decoupled-only** (no same-coordinate well exists for that compound) | 16 | 350 | **0.5971** [0.5488, 0.6403] | 0.700 | 0.00300 / 0.00609 |
+| External, position-decoupled (≥1 match at another coordinate) | 72 | 2,142 | 0.4514 [0.4280, 0.4751] | 0.8445 | 0.00289 / 0.00817 |
+| External, position-matched (a same-coordinate match exists) | 56 | 1,792 | 0.3689 [0.3443, 0.3940] | 0.8181 | 0.00286 / 0.00286 |
+| Pilot in-site cross-plate (all position-matched; 904-feature block) | 1 | 260 | 0.3692 | 0.6038 | 0.00385 |
+
+Lift over the *applicable* null (a query with 4 acceptable replicate wells does not have chance
+R@1 of 1/n; it is 4/n) is ~98× for the strict arm, ~55× for the broad decoupled arm and ~129×
+for the matched arm. The strict arm is also the one where reading the layout is impossible, and
+it scores **highest** (0.5971 vs 0.3689); its 16 pairs are exactly the 1053600674 ↔
+column-vehicle pairs, i.e. the same layout-clean plate whose *classification* result sits at
+chance. Restricted to the 56 plate pairs where the broad decoupled and matched arms both exist,
+the decoupled arm is 0.4230 [0.4001, 0.4442] (plate-pair bootstrap) against 0.3689 matched; mean
+paired difference **+0.0541**, one-sided Wilcoxon **p = 0.0057**, 31 pairs better / 19 worse.
+Compound identity is thus recoverable across plates *without* the layout — the retrieval claim
+does not depend on position, while the classification claim does not survive the site change.
+Two limitations bound how far that claim goes: it rests on 8–10 compounds per plate pair
+(350 queries in the strict arm), and it is retrieval of compound identity, not a treatment
+vs vehicle decision.
+
+**Result 4 — open question, training-set size.** Subsampling the pilot train (32/65/130/260
+compounds; 5 repeats; paired per-plate) gives a "fewer compounds transfers better" effect
+of +0.0306 AUC under `negcon_z` (p = 0.150), −0.0552 under `rank` (p = 0.973), and +0.0157
+under `zclip5` (p = 0.367): the sign flips with the normalisation choice and no contrast is
+significant. Recorded as **unresolved**, and it cannot be settled on the eight
+column-vehicle plates, where any apparent train-size effect is partly an effect on how well
+the model reads the column code.
+
+**Verdict, by layer.** Data layer: 完成 (SHA256 manifest before modelling, 9/10 plates
+usable). Replication layer (trt-vs-DMSO across sites): **未通过**. Confound layer (position
+≡ label): 完成, measured. Committed-claim layer (in-site 0.6825 as layout-free transfer):
+**需要限定**. Retrieval layer (position-decoupled identity): 通过. Train-size layer: 未定.
 
 ---
 
@@ -672,8 +867,13 @@ The core positive results are threefold. First, a standard gradient-boosted
 classifier separates compound-treated wells from DMSO controls with
 AUC ≈ 0.77 using only 904 precomputed morphological features — and, more
 importantly, this boundary **transfers across plates** (strict cross-plate
-AUC 0.6825), is accompanied by strong cross-plate prototype discrimination
-(mean AUC 0.985) and replicate retrieval (6.1× chance AP), and is dominated by
+AUC 0.6825 — with the qualification from §4.7 that this particular contrast is not
+layout-held-out, coordinate-only transfer scoring 0.7450, and that the boundary does
+**not** replicate on an independent site's plates), is accompanied by strong
+cross-plate prototype discrimination
+(mean AUC 0.985) and replicate retrieval (6.1× chance AP in-house; on the external
+site the strict position-decoupled-only arm reaches ~98× the applicable null at R@1,
+§4.7), and is dominated by
 a structural control (DMSO chemical isolation) rather than by phenotype alone.
 Second, unsupervised clustering of compound fingerprints recovers known
 pharmacology at target-gene resolution (36 significant cluster–target pairs,
@@ -687,6 +887,15 @@ matters — unseen-structure generalization (pheno+fp 0.5222 vs pheno-only
 confound check** (§3.1, §4.1): they support structure–phenotype ablations and
 the structural-confirmation step of the OoC decision chain, and they are
 **not** an input to the phenotypic-recognition task.
+
+A fourth finding is a **negative** one, and it reframes the first: when the same
+classifier is tested on plates from another lab and another derivation batch, the
+control-separation boundary does not replicate (§4.7), and the in-site version of that
+boundary turns out to be partially available from the well coordinate alone. Retrieval of
+compound identity is what survives both the site change and the removal of position. The
+practical consequence for reporting is that a cross-plate experiment inside one source is
+not an external test, and that plate-level vehicle layout has to be measured before any
+treated-vs-vehicle AUC on a new plate set is interpreted (§4.7, Table 5 caveat).
 
 ### 5.2 Comparison with published work
 
@@ -707,8 +916,11 @@ evaluation, and explicit structural and negative-result reporting.
 
 ### 5.3 Limitations
 
-- **Small pilot scale:** 303 compounds from one source; no independent held-out
-  validation dataset.
+- **Small pilot scale:** 303 compounds from one source used for model development.
+  An independent test source exists now and is used in §4.7 (`cpg0016-jump/source_2`,
+  9 usable plates), but it does not replace a held-out *training* set: it is one batch
+  of one protocol, its plates are layout-confounded for the vehicle contrast (§4.7), and
+  no cross-site positive classification result was obtained from it.
 - **Precomputed features only:** well-level aggregated profiles; single-cell
   features were used only in the Cellpose demo and the below-chance CNN arm.
 - **Heuristic choices:** k (12 and refined), UMAP hyperparameters, and the
@@ -733,8 +945,10 @@ Per-fold AUC spread is modest (pheno-only 0.7688 ± 0.0261, aggregate 0.7682
 matches the reported 0.768); pheno+fp is 1.0000 ± 0.0000, an in-fold sanity
 check whose interpretation is the structural control of §4.1. The **default
 evaluation protocol for the main models is the soft scaffold-grouped CV
-(τ = 0.6)** (§4.2); no independent held-out test exists at this scale, so all
-metrics are internal-validation estimates.
+(τ = 0.6)** (§4.2). One independent external test now exists (§4.7, 9 plates of
+`cpg0016-jump/source_2`); it did not reproduce the treated-vs-vehicle boundary, so every
+classification metric quoted elsewhere in this report remains an
+**internal-validation** estimate, and §4.7 is the only external estimate available.
 
 ### 6.2 Error analysis
 
@@ -799,11 +1013,16 @@ the models.
 We delivered an end-to-end morphological profiling pipeline that (i) separates
 treated from DMSO control wells (AUC 0.768) and, under scaffold-aware
 leakage-controlled evaluation, quantifies the honest generalization regime
-(cross-plate AUC 0.6825; scaffold-grouped pheno+fp AUC 0.5222); (ii) recovers
+(cross-plate AUC 0.6825 — a number that §4.7 shows is not layout-held-out, coordinate-only
+transfer reaching 0.7450, and that did **not** replicate on an independent site's plates;
+scaffold-grouped pheno+fp AUC 0.5222); (ii) recovers
 known target pharmacology from unsupervised clustering (36 significant
 cluster–target enrichments, dominated by microtubule, HSP90 and CDK/Aurora
 biology) with independent supervised convergence; (iii) retrieves
-same-compound replicates at 6.1× chance AP with the 904-feature baseline; and
+same-compound replicates at 6.1× chance AP with the 904-feature baseline, a retrieval
+signal that survives both the site change and the removal of well position (§4.7,
+R@1 0.5971 on the 350 queries whose compound has no same-coordinate well, vs the
+applicable null 0.0061); and
 (iv) links phenotypic strength to target class (microtubule p = 0.00145,
 Src-family p = 0.0019, CDK p = 0.018). The exploratory battery — self-supervised
 embeddings, Harmony correction, single-cell CNN, model-side upgrades to the
@@ -817,8 +1036,12 @@ annotation requirements for reliable downstream inference.
 
 ## 9. Future Work
 
-1. **Scale up:** include additional JUMP-CP plates/sources for a genuine
-   held-out validation split.
+1. **Scale up:** partly executed — an independent public source was used as an
+   external test in §4.7 and the treated-vs-vehicle boundary did not replicate there.
+   What remains is the complementary half: additional *training* breadth (several
+   sources in the fit, not one plate), external plates whose vehicle layout is not
+   collapsed into two columns, and a dose dimension, so that a cross-site estimate
+   is not reduced to the single pilot-compatible plate available today.
 2. **Single-cell resolution:** extract Cellpose-based single-cell features and
    model intra-cluster heterogeneity.
 3. **MOA-aware modeling:** multi-label models over MOA classes with curated
@@ -857,6 +1080,27 @@ commands in the repository README (prefixes:
 and `.../images/BR00116991/`); if a path component differs on the live bucket,
 list the parent prefix and adjust. Alternative: AWS Open Data Registry page
 https://registry.opendata.aws/cellpainting-gallery/.
+
+**External test source (§4.7 only).** Per-plate well tables
+`s3://cellpainting-gallery/cpg0016-jump/source_2/workspace/load_data_csv/20210614_Batch_1/<plate>/load_data.csv`,
+profiles `s3://cellpainting-gallery/cpg0016-jump/source_2/workspace/profiles/20210614_Batch_1/<plate>/<plate>.parquet`,
+and the identity tables from the linked publication bundle
+`s3://cellpainting-gallery/cpg0016-jump/source_all/workspace/publication_data/2025_Chandrasekaran/datasets/v0.13/parquet/{well,plate,perturbation,compound,compound_source}.parquet`.
+Fetch it through the same budgeted, checksum-first path:
+
+```bash
+python scripts/stage12_external_site.py --stage fetch --sets meta,profiles
+```
+
+This writes `data/external/cpg0016/manifest_sha256.csv` (17 objects, 159.9 MB in the run
+behind §4.7) before any modelling, and aborts if the plan would exceed the download cap.
+
+`scripts/stage12_external_site.py` resolves its data directory from its own location (repo root =
+parent of `scripts/`, workspace = parent of the repo, data = `<workspace>/data`), so a checkout at
+any path works; set `AI4S_REPO` / `AI4S_WORKSPACE` to override. The earlier stage scripts
+(`stage10_*` … `stage12_p1_*`, 13 files) still carry an absolute `E:\Desktop\Kaggle_2026\…` prefix
+and need that same one-line change before they will run off this machine — recorded as an open
+portability item, not fixed here to keep this stage's diff to the code it owns.
 
 ### 10.3 Run the pipeline
 
@@ -950,7 +1194,10 @@ the execution environment, so OpenPhenom weights were loaded through the
 hard scaffold) correction *decreases* AUC from 0.4679 to 0.4136. Interpretation:
 part of the plate/well-position structure is informative for unseen-structure
 generalization in this dataset, so default Harmony correction is **not**
-recommended. Scripts: `scripts/stage10_harmony*.py`; results:
+recommended. §4.7 measures the same phenomenon from the other direction and much more
+sharply: on the external plates the vehicle wells occupy two fixed columns, so there the
+label *is* the column and position-only CV AUC is 1.0000. Scripts:
+`scripts/stage10_harmony*.py`; results:
 `reports/18_stage10_harmony_results.csv`.
 
 **Self-trained single-cell CNN (negative).** 2,564 Cellpose crops from 6 wells,

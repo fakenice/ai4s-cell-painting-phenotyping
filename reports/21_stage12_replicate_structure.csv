@@ -1,0 +1,17 @@
+site,plate,class,n_wells,n_distinct_compounds,compounds_in_1_well,compounds_in_2_wells,compounds_in_3_wells,compounds_in_4_wells,max_wells_per_compound
+external cpg0016,1053600674,treated,318,299,280,19,0,0,2
+external cpg0016,1053600681,treated,0,0,0,0,0,0,0
+external cpg0016,1053600704,treated,350,326,318,0,0,8,4
+external cpg0016,1053600711,treated,351,327,319,0,0,8,4
+external cpg0016,1053600728,treated,348,324,316,0,0,8,4
+external cpg0016,1053600735,treated,350,326,318,0,0,8,4
+external cpg0016,1053600742,treated,348,324,316,0,0,8,4
+external cpg0016,1053600759,treated,352,328,320,0,0,8,4
+external cpg0016,1053600766,treated,348,324,316,0,0,8,4
+external cpg0016,1053600773,treated,350,326,318,0,0,8,4
+pilot cpg0000,BR00116991,treated,260,260,260,0,0,0,1
+pilot cpg0000,BR00116991,positive control,60,46,32,14,0,0,2
+pilot cpg0000,BR00116992,treated,260,260,260,0,0,0,1
+pilot cpg0000,BR00116992,positive control,60,46,32,14,0,0,2
+pilot cpg0000,BR00116991+BR00116992,treated,520,260,0,260,0,0,2
+pilot cpg0000,BR00116991+BR00116992,distinct Metadata_pert_iname (all wells),768,303,0,0,0,0,0
