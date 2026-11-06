@@ -336,6 +336,8 @@ machine-checkable. Three new files (`scripts/_paths.py`, `scripts/check_repo.py`
 | Stage 12 (cross-site external validation on `cpg0016-jump`) | 完成，结论 = **未复现** (9 usable plates behind a SHA256 manifest; trt-vs-DMSO 0.5155–0.6436 vs in-site 0.6825; vehicle column ≡ label measured on 8/9 plates; retrieval positive — strict position-decoupled-only R@1 0.5971 ≈ 98× the applicable null; reports/24 + report v7 §4.7 + README + writeup + this log synced; PDF 15 pp MD5 726cc357…; scripted build `scripts/build_report_pdf.py`) |
 | Git commit (Stage 12 = `6861df5`, 39 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 1）。本行由紧随其后的 ledger commit 记录 |
 | Git push (P3/P4 commit) | 成功推送 origin/master（ssh://ssh.github.com:443），远程与本地一致 |
+| Stage 13 (portability, self-check, unit tests) | 完成 (scripts/_paths.py + 14 scripts migrated; scripts/check_repo.py 49 checks / 50 --deep; tests/test_stage12_units.py 21 tests with SKIP semantics; README §3 + reports/12 §10.2/§10.5/§10.6 + reports/20 Stage 13 + this log synced; PDF rebuilt 16 pp MD5 29aadaf3…; two re-runs from a foreign cwd ⇒ 59/62 artifacts byte-identical) |
+| Git commit (Stage 13 = `cad2391`, 23 files) | 本地提交完成，**未 push**（按要求；`origin/master` 仍停在 `31ca5d5`，本地 ahead 3：`6861df5`、`31f8c4e`、`cad2391`） |
 
 ## AI Use Disclosure
 
