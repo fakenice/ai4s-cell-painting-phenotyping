@@ -10,6 +10,10 @@ next release and is not described here.
 - Planned: external-baseline comparison table (published JUMP-CP phenotypic
   profiling results, e.g. the You et al. 2023 baseline accuracies), each row with
   source, protocol, and caveat about what is and is not comparable
+- 2026-11-18 Added `docs/DECISIONS.md`: leakage-controlled headline, grouping
+  protocol comparison, structural-control reframing, cross-site negative result
+  and figure-provenance decisions, each grounded only in written in-repo evidence
+  (dates = published-branch commit dates)
 
 ## 2026-11-18
 
