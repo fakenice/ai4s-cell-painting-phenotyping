@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: >-
+  If you use this repository or the analyses it ships, please cite it using the
+  metadata below (a BibTeX entry is also provided in the README).
+title: "Morphological phenotypic profiling of chemical perturbations with JUMP-Cell Painting data (AI4S Open Innovation hackathon writeup)"
+authors:
+  - family-names: Wu
+    given-names: Yiting
+repository-code: "https://github.com/fakenice/ai4s-cell-painting-phenotyping"
+url: "https://github.com/fakenice/ai4s-cell-painting-phenotyping"
+license: MIT

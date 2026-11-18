@@ -207,3 +207,18 @@ A narrated demo video is included:
 ## 7. License
 
 MIT — see [LICENSE](LICENSE).
+
+## 8. How to cite
+
+Machine-readable metadata lives in `CITATION.cff` at the repo root (GitHub renders it in the
+sidebar). When citing a result, state which split it was computed under — the leakage-
+controlled classification numbers and the exploratory ones are not interchangeable. The
+JUMP-Cell Painting / cpg0016 data has its own upstream citation; see §4.
+
+```bibtex
+@software{wu2026cellpainting,
+  author  = {Wu, Yiting},
+  title   = {Morphological phenotypic profiling of chemical perturbations with JUMP-Cell Painting data (AI4S Open Innovation hackathon writeup)},
+  url     = {https://github.com/fakenice/ai4s-cell-painting-phenotyping}
+}
+```
