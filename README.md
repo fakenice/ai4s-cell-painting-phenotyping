@@ -204,11 +204,33 @@ A narrated demo video is included:
   walkthrough (136 s, narration-only audio, no background music, English,
   no watermark; ≤ 5 min requirement satisfied).
 
-## 7. License
+## 7. External baselines (published numbers, source-verified)
+
+`docs/external_baselines.md` re-checks, against the papers themselves (2026-11-18),
+the published Cell Painting numbers this project can and cannot be read next to:
+the assay's own feature scale and distance-threshold activity convention
+(Gustafsdóttir 2013: 203/1600 = 13 % active; Bray 2016: ~1,500 features); the
+formal publication of the **same 303-compound dataset** (Chandrasekaran 2024
+*Nature Methods* — sister-compound matching succeeds for only ~5–25 % of
+signal-yielding compounds, and its authors state the plate-layout confounding
+this repo quantified cross-site); replication/matching norms on compound
+libraries (Way 2022: 57–83 % percent-replicating, 16–28 % percent-matching;
+Wolff 2025: 84–94 % / 12–41 %); gene-level top-5 % enrichment (Rohban 2017:
+9 % vs 5 %, p = 0.04; 20 % vs 6 %, p = 7.53×10⁻⁹); and representation-learning
+gains quoted against CellProfiler features (CP4All +30 %, SSL +31–37 %,
+Wong held-out-compound MOA accuracy 6.0–10.7 % — preprint caliber).
+
+The file is deliberately a *caliber* document, not a leaderboard: none of these
+are commensurable with this repo's supervised AUC/AP, the reasons are listed
+explicitly, and three anchors that earlier working notes cited by title turned
+out not to exist, so they are logged as do-not-cite with their correct
+counterparts.
+
+## 8. License
 
 MIT — see [LICENSE](LICENSE).
 
-## 8. How to cite
+## 9. How to cite
 
 Machine-readable metadata lives in `CITATION.cff` at the repo root (GitHub renders it in the
 sidebar). When citing a result, state which split it was computed under — the leakage-

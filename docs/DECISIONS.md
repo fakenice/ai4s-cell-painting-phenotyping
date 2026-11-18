@@ -38,4 +38,5 @@
 ## 2026-11-18（`29120d5`）
 
 9. **引用锚定为仓库本身**（CITATION.cff + How to cite 节）；JUMP-CP 上游数据按
-   其引用要求另行致谢（README §4/§7）。
+   其引用要求另行致谢（README §4/§8；2026-11-18 因新增 §7 External baselines，
+   License/How-to-cite 顺延为 §8/§9）。

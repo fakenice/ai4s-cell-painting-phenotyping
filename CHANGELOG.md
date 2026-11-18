@@ -7,9 +7,18 @@ next release and is not described here.
 
 ## [Unreleased]
 
-- Planned: external-baseline comparison table (published JUMP-CP phenotypic
-  profiling results, e.g. the You et al. 2023 baseline accuracies), each row with
-  source, protocol, and caveat about what is and is not comparable
+- 2026-11-18 Added `docs/external_baselines.md`: published Cell Painting numbers
+  re-checked against the primary sources (Gustafsdóttir 2013 13 %-active distance
+  threshold; Bray 2016 protocol; Chandrasekaran 2024 — the formal publication of
+  this repo's own 303-compound dataset — with its 5–25 % sister-matching range,
+  permutation/BH metric definitions and plate-layout admission; Way 2022 and
+  Wolff 2025 replication/matching norms; Rohban 2017 gene-level enrichment;
+  CP4All/SSL/MorphDiff representation gains; Wong only as preprint caliber), the
+  seven caliber rules that say which of them this repo's AUC/AP may be quoted
+  next to, and the do-not-cite register (three widely-mis-cited anchors verified
+  not to exist; the report's 99.1 %/94.9 % S8/S3 lead logged as unverified).
+  README gained section 7, pushing License and How-to-cite to §8/§9
+  (docs/DECISIONS.md cross-reference updated)
 - 2026-11-18 Added `docs/DECISIONS.md`: leakage-controlled headline, grouping
   protocol comparison, structural-control reframing, cross-site negative result
   and figure-provenance decisions, each grounded only in written in-repo evidence
