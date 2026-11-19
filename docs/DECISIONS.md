@@ -39,3 +39,23 @@
 
 9. **引用锚定为仓库本身**（CITATION.cff + How to cite 节）；JUMP-CP 上游数据按
    其引用要求另行致谢（README §4/§7）。
+
+## 2026-11-19（merge `4ab6b91`）
+
+10. **整合远程 3 个新提交用 merge，不用 rebase**：判据来自仓库内部证据——
+    `reports/22_optimization_log.md` 的多行写死了本地这批提交自己的短 hash
+    （`6861df5`/`cad2391`/`23b8a04`/`2b45eff`/`de7a85a`/`11c5e4d`），rebase 重写
+    hash 会让账本记录变成假的；merge 保持 11 个已有提交不变。合并前
+    `git merge-tree --write-tree` 干跑为单树零冲突，实际 merge 同样干净
+    （`11 未推 + 3 远程 → ahead 12 / behind 0`）。
+11. **两个撞名未跟踪文件（`CHANGELOG.md`、`docs/DECISIONS.md`）先验证再让路**：
+    逐行 diff 证明 `DECISIONS.md` 与远程版全等、`CHANGELOG.md` 是远程版的严格
+    子集（只少 2026-11-18 那条说明，共 4 行，无本地独有内容），故以复制而非移动到
+    仓库外备份目录 `Kaggle_2026/cell-painting_backup_20261119/` 后删除工作树副本、
+    由远程版接管；不存在"删了才发现本地有独有内容"的路径。四个
+    「-副本202610091157…」pdf/png 继续保持未跟踪，本次仍未纳入提交。
+12. **53/54 而非 54/54 如实登记，不顺手重录环境指纹**：唯一 FAIL 是
+    `reports/23_environment_fingerprint.json` 中 `transformers` 记为 `None`、
+    本机为 5.22.2。重录要改写一个已跟踪工件（并牵动 fingerprint 自洽测试与
+    PDF 文本锚点），属独立决定，故只写进 CHANGELOG 的 Planned 与本 ledger，
+    不在推送批次里附带完成（`scripts/record_environment.py` 为既定重录入口）。
