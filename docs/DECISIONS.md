@@ -38,14 +38,15 @@
 ## 2026-11-18（`29120d5`）
 
 9. **引用锚定为仓库本身**（CITATION.cff + How to cite 节）；JUMP-CP 上游数据按
-   其引用要求另行致谢（README §4/§7）。
+   其引用要求另行致谢（README §4/§8；2026-11-18 因新增 §7 External baselines，
+   License/How-to-cite 顺延为 §8/§9）。
 
-## 2026-11-19（merge `4ab6b91`）
+## 2026-11-19（merge `4ab6b91` 与其后的第二次 merge）
 
-10. **整合远程 3 个新提交用 merge，不用 rebase**：判据来自仓库内部证据——
+10. **整合远程新提交用 merge，不用 rebase**：判据来自仓库内部证据——
     `reports/22_optimization_log.md` 的多行写死了本地这批提交自己的短 hash
     （`6861df5`/`cad2391`/`23b8a04`/`2b45eff`/`de7a85a`/`11c5e4d`），rebase 重写
-    hash 会让账本记录变成假的；merge 保持 11 个已有提交不变。合并前
+    hash 会让账本记录变成假的；merge 保持 11 个已有提交不变。第一次合并前
     `git merge-tree --write-tree` 干跑为单树零冲突，实际 merge 同样干净
     （`11 未推 + 3 远程 → ahead 12 / behind 0`）。
 11. **两个撞名未跟踪文件（`CHANGELOG.md`、`docs/DECISIONS.md`）先验证再让路**：
@@ -59,3 +60,10 @@
     本机为 5.22.2。重录要改写一个已跟踪工件（并牵动 fingerprint 自洽测试与
     PDF 文本锚点），属独立决定，故只写进 CHANGELOG 的 Planned 与本 ledger，
     不在推送批次里附带完成（`scripts/record_environment.py` 为既定重录入口）。
+13. **推送被二次拒绝对待人工折叠冲突**：第一次 merge 后 `git push` 仍报
+    non-fast-forward，fetch 发现远程多出 `7e456c3`（`docs/external_baselines.md`，
+    README 新增 §7）。第二次 merge 只在 `CHANGELOG.md` 与 `docs/DECISIONS.md`
+    冲突（README 自动合并成功）。两处都不是取舍而是折叠：external-baseline 对比表
+    从「Planned」变为已交付，故删掉本地侧那条 Planned、保留远程的交付条目；
+    决定 9 的 § 引用按新章节号采用远程版。本地新增的 Stage 12–16 条目与
+    10–12 条决定全部保留，没有为消除冲突而丢弃任何一侧的内容。

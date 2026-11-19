@@ -7,9 +7,6 @@ unreleased.
 
 ## [Unreleased]
 
-- Planned: external-baseline comparison table (published JUMP-CP phenotypic
-  profiling results, e.g. the You et al. 2023 baseline accuracies), each row with
-  source, protocol, and caveat about what is and is not comparable
 - Planned: `reports/23_environment_fingerprint.json` re-record. `check_repo.py`
   reports 53/54 on this machine; the single FAIL is that the recorded fingerprint
   has `transformers = None` (not importable when it was recorded) while the live
@@ -18,9 +15,25 @@ unreleased.
 - 2026-11-19 `4ab6b91` merged `origin/master` (CITATION.cff, this changelog,
   `docs/DECISIONS.md`) into the 11 unpushed local commits instead of rebasing
   them: `reports/22_optimization_log.md` hard-codes those commits' own hashes, so
-  a rewrite would invalidate the ledger. The merge is conflict-free, and the two
+  a rewrite would invalidate the ledger. That merge was conflict-free, and the two
   untracked local copies of `CHANGELOG.md` / `docs/DECISIONS.md` were verified to
-  be identical-or-subset of the published versions before being set aside.
+  be identical-or-subset of the published versions before being set aside. The
+  push was then rejected again because `7e456c3` had landed in the meantime, so a
+  second merge followed; it conflicted only in this file and `docs/DECISIONS.md`,
+  and was resolved by keeping the published external-baselines entry (which
+  retires the matching "Planned" line) and both §-renumbered cross-references.
+- 2026-11-18 Added `docs/external_baselines.md`: published Cell Painting numbers
+  re-checked against the primary sources (Gustafsdóttir 2013 13 %-active distance
+  threshold; Bray 2016 protocol; Chandrasekaran 2024 — the formal publication of
+  this repo's own 303-compound dataset — with its 5–25 % sister-matching range,
+  permutation/BH metric definitions and plate-layout admission; Way 2022 and
+  Wolff 2025 replication/matching norms; Rohban 2017 gene-level enrichment;
+  CP4All/SSL/MorphDiff representation gains; Wong only as preprint caliber), the
+  seven caliber rules that say which of them this repo's AUC/AP may be quoted
+  next to, and the do-not-cite register (three widely-mis-cited anchors verified
+  not to exist; the report's 99.1 %/94.9 % S8/S3 lead logged as unverified).
+  README gained section 7, pushing License and How-to-cite to §8/§9
+  (docs/DECISIONS.md cross-reference updated)
 - 2026-11-18 Added `docs/DECISIONS.md`: leakage-controlled headline, grouping
   protocol comparison, structural-control reframing, cross-site negative result
   and figure-provenance decisions, each grounded only in written in-repo evidence
