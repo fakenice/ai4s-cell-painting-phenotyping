@@ -22,6 +22,9 @@ unreleased.
   second merge followed; it conflicted only in this file and `docs/DECISIONS.md`,
   and was resolved by keeping the published external-baselines entry (which
   retires the matching "Planned" line) and both §-renumbered cross-references.
+  Pushed as `e7c8600` (`7e456c3..e7c8600`); no rebase and no force push, so all
+  11 Stage 12–16 hashes quoted in `reports/22_optimization_log.md` hold on the
+  published branch.
 - 2026-11-18 Added `docs/external_baselines.md`: published Cell Painting numbers
   re-checked against the primary sources (Gustafsdóttir 2013 13 %-active distance
   threshold; Bray 2016 protocol; Chandrasekaran 2024 — the formal publication of
